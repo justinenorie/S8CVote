@@ -1,5 +1,5 @@
 {
-  "name": "S8CVote",
+  "name": "s8cvote",
   "private": true,
   "scripts": {
     "build": "turbo run build",
