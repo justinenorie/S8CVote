@@ -38,11 +38,11 @@ export const addCandidate = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { name, description, category } = req.body;
+  const { name, description, categoryId } = req.body;
 
   try {
     const candidate = await prisma.candidate.create({
-      data: { name, description, category },
+      data: { name, description, categoryId },
     });
     res.status(201).json(candidate);
   } catch (err) {
