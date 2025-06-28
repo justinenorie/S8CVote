@@ -16,13 +16,14 @@ datasource db {
 }
 
 model Student {
-  id                String   @id @default(uuid())
-  studentID         String   @unique
-  fullname          String
-  categoryIDVoted   String? // Nullable initially
-  candidatesIDVoted String? // Nullable initially
-  timestamp         DateTime @default(now())
-  token             String? // Refresh token
+  id        String   @id @default(uuid())
+  studentID String   @unique
+  fullname  String
+  timestamp DateTime @default(now())
+  token     String?
+
+  // Relations
+  votes Vote[]
 }
 
 model Admin {
@@ -30,5 +31,43 @@ model Admin {
   adminUser String  @unique
   fullname  String
   password  String
-  token     String? // Refresh token
+  token     String?
+}
+
+model Category {
+  id              String @id @default(uuid())
+  title           String
+  description     String
+  maxVotesAllowed Int
+  status          String
+
+  // Relations
+  candidates Candidate[]
+  votes      Vote[]
+}
+
+model Candidate {
+  id          String @id @default(uuid())
+  name        String
+  description String
+
+  // Relations
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  votes      Vote[]
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  timestamp DateTime @default(now())
+
+  // Foreign keys & relations
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId String
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+  candidateId String
 }
