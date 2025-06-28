@@ -8,7 +8,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -17,8 +16,19 @@ datasource db {
 }
 
 model Student {
-  id       String  @id @default(uuid())
-  name     String
-  section  String
-  hasVoted Boolean @default(false)
+  id                String   @id @default(uuid())
+  studentID         String   @unique
+  fullname          String
+  categoryIDVoted   String? // Nullable initially
+  candidatesIDVoted String? // Nullable initially
+  timestamp         DateTime @default(now())
+  token             String? // Refresh token
+}
+
+model Admin {
+  id        String  @id @default(uuid())
+  adminUser String  @unique
+  fullname  String
+  password  String
+  token     String? // Refresh token
 }
