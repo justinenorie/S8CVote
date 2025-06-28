@@ -71,8 +71,6 @@ export const loginStudent = async (
       data: {
         studentID,
         fullname,
-        categoryIDVoted: null,
-        candidatesIDVoted: null,
       },
     });
   }
