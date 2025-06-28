@@ -15,3 +15,10 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Student {
+  id       String  @id @default(uuid())
+  name     String
+  section  String
+  hasVoted Boolean @default(false)
+}
