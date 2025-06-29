@@ -52,7 +52,7 @@ model Candidate {
   description String
 
   // Relations
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId String
   votes      Vote[]
 }
@@ -61,13 +61,12 @@ model Vote {
   id        String   @id @default(uuid())
   timestamp DateTime @default(now())
 
-  // Foreign keys & relations
-  student   Student @relation(fields: [studentId], references: [id])
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId String
 
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId String
 
-  candidate   Candidate @relation(fields: [candidateId], references: [id])
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   candidateId String
 }
