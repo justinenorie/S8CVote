@@ -52,7 +52,7 @@ export const loginAdmin = async (req: Request, res: Response): Promise<any> => {
       httpOnly: true,
       secure: false,
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     })
     .json({ accessToken });
 };
@@ -117,5 +117,40 @@ export const logout = async (req: Request, res: Response): Promise<any> => {
     res.clearCookie("refreshToken").sendStatus(200);
   } catch {
     res.sendStatus(403);
+  }
+};
+
+// Refresh Access Token
+export const refreshAccessToken = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  const token = req.cookies.refreshToken;
+  if (!token) return res.sendStatus(401);
+
+  try {
+    const decoded = verifyRefreshToken(token) as {
+      id: string;
+      role: "admin" | "student";
+    };
+
+    let user;
+    if (decoded.role === "admin") {
+      user = await prisma.admin.findUnique({ where: { id: decoded.id } });
+    } else if (decoded.role === "student") {
+      user = await prisma.student.findUnique({ where: { id: decoded.id } });
+    }
+
+    if (!user || user.token !== token) {
+      return res.sendStatus(403); // Refresh token is invalid or doesn't match DB
+    }
+
+    const accessToken = generateAccessToken({
+      id: decoded.id,
+      role: decoded.role,
+    });
+    return res.status(200).json({ accessToken });
+  } catch (err) {
+    return res.sendStatus(403); // Invalid refresh token
   }
 };

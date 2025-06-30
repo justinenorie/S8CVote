@@ -6,7 +6,7 @@ import {
   deleteCandidate,
   addStudent,
 } from "../../controllers/adminController";
-import { verifyAdmin } from "../../middlewares/verifyAdmin";
+import { verifyAdmin } from "../../middlewares/verifyMiddleware";
 
 const router = express.Router();
 

@@ -27,3 +27,6 @@ export const verifyAdmin = async (
     res.sendStatus(403);
   }
 };
+
+// TODO: Add the verify accessToken for students to vote.
+export const verifyStudent = async () => {};
