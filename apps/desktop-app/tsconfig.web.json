@@ -12,6 +12,10 @@
     "baseUrl": ".",
     "paths": {
       "@renderer/*": ["src/renderer/src/*"]
-    }
+    },
+    "moduleResolution": "bundler",
+    "module": "esnext", // optional but ideal for modern tooling
+    "target": "esnext", // optional, matches Vite + Electron better
+    "types": ["vite/client"] // makes sure vite-specific modules work
   }
 }
