@@ -7,6 +7,14 @@ import {
   verifyRefreshToken,
 } from "../utils/jwtHandler";
 
+type ApiResponse<T> = {
+  success: boolean;
+  message: string;
+  data?: T;
+  token?: string;
+  errors?: string[];
+};
+
 // ADMIN REGISTER
 // TODO: must have a confirmation with the other admin before succeeding with the registration
 export const registerAdmin = async (
@@ -16,7 +24,16 @@ export const registerAdmin = async (
   const { adminUser, fullname, password } = req.body;
 
   const existing = await prisma.admin.findUnique({ where: { adminUser } });
-  if (existing) return res.status(409).json({ error: "Admin already exists" });
+
+  if (existing) {
+    const response: ApiResponse<null> = {
+      success: false,
+      message: "Registration failed",
+      errors: ["Admin already exists"],
+    };
+
+    return res.status(409).json(response);
+  }
 
   const hashed = await bcrypt.hash(password, 10);
 
@@ -24,7 +41,13 @@ export const registerAdmin = async (
     data: { adminUser, fullname, password: hashed },
   });
 
-  res.status(201).json({ message: "Admin registered", adminID: newAdmin.id });
+  const response: ApiResponse<{ adminID: string }> = {
+    success: true,
+    message: "Admin registered",
+    data: { adminID: newAdmin.id },
+  };
+
+  res.status(201).json(response);
 };
 
 // ADMIN LOGIN
@@ -33,10 +56,26 @@ export const loginAdmin = async (req: Request, res: Response): Promise<any> => {
   const { adminUser, password } = req.body;
 
   const admin = await prisma.admin.findUnique({ where: { adminUser } });
-  if (!admin) return res.status(401).json({ error: "Invalid credentials" });
+  if (!admin) {
+    const response: ApiResponse<null> = {
+      success: false,
+      message: "Login Failed: Credential not exist",
+      errors: ["Admin not found"],
+    };
+
+    return res.status(404).json(response);
+  }
 
   const isValid = await bcrypt.compare(password, admin.password);
-  if (!isValid) return res.status(401).json({ error: "Invalid credentials" });
+  if (!isValid) {
+    const response: ApiResponse<null> = {
+      success: false,
+      message: "Login Failed: Incorrect Password",
+      errors: ["Invalid credentials"],
+    };
+
+    return res.status(401).json(response);
+  }
 
   const payload = { id: admin.id, role: "admin" };
   const accessToken = generateAccessToken(payload);
@@ -47,6 +86,12 @@ export const loginAdmin = async (req: Request, res: Response): Promise<any> => {
     data: { token: refreshToken },
   });
 
+  const response: ApiResponse<{ token: string }> = {
+    success: true,
+    message: "Login successful",
+    token: accessToken,
+  };
+
   res
     .cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -54,7 +99,7 @@ export const loginAdmin = async (req: Request, res: Response): Promise<any> => {
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     })
-    .json({ accessToken });
+    .json(response);
 };
 
 // STUDENT LOGIN (Auto-register + vote check placeholder)
@@ -91,7 +136,11 @@ export const loginStudent = async (
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
-    .json({ accessToken });
+    .json({
+      success: true,
+      token: accessToken,
+      message: "Login successful",
+    });
 };
 
 // LOGOUT (for both admin & student)
