@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../config/database";
 
-// CATEGORY
+// CATEGORY (Elections)
+// TODO: Add the Editing category(elections)
 export const createCategory = async (
   req: Request,
   res: Response
@@ -34,6 +35,7 @@ export const deleteCategory = async (
 };
 
 // CANDIDATE
+// TODO: Add the Editing candidates
 export const addCandidate = async (
   req: Request,
   res: Response
@@ -65,6 +67,8 @@ export const deleteCandidate = async (
 };
 
 // STUDENT
+// TODO: Add the Delete method
+// TODO: Add the edit method
 export const addStudent = async (
   req: Request,
   res: Response

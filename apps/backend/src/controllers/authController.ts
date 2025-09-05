@@ -8,7 +8,7 @@ import {
 } from "../utils/jwtHandler";
 
 // ADMIN REGISTER
-// TODO: not ideal this will change in the future
+// TODO: must have a confirmation with the other admin before succeeding with the registration
 export const registerAdmin = async (
   req: Request,
   res: Response
