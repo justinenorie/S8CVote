@@ -1,1 +1,50 @@
 @import "tailwindcss";
+
+/* Setup Color Theme Here */
+@theme {
+  /* BACKGROUND THEME */
+  --color-BGlight: #e8ebfd;
+  --color-BGdark: #020617;
+
+  /* TEXT THEME */
+  --color-TEXTlight: #e9eefd;
+  --color-TEXTdark: #020617;
+
+  /* PRIMARY THEME */
+  --color-PRIMARY-50: #eef0f9;
+  --color-PRIMARY-100: #dee2f3;
+  --color-PRIMARY-200: #bfc8e9;
+  --color-PRIMARY-300: #9dacde;
+  --color-PRIMARY-400: #7b91d3;
+  --color-PRIMARY-500: #5a77c1;
+  --color-PRIMARY-600: #49619f;
+  --color-PRIMARY-700: #364a7b;
+  --color-PRIMARY-800: #253458;
+  --color-PRIMARY-900: #151f38;
+  --color-PRIMARY-950: #0e162a;
+
+  /* SECONDARY THEME */
+  --color-SECONDARY-50: #c3fffc;
+  --color-SECONDARY-100: #61fff8;
+  --color-SECONDARY-200: #14ece5;
+  --color-SECONDARY-300: #11d4ce;
+  --color-SECONDARY-400: #0ebfb9;
+  --color-SECONDARY-500: #0ba8a3;
+  --color-SECONDARY-600: #078581;
+  --color-SECONDARY-700: #03625f;
+  --color-SECONDARY-800: #024341;
+  --color-SECONDARY-900: #012423;
+  --color-SECONDARY-950: #001716;
+
+  /* ALERTS THEME */
+  --color-ERRORlight: #b00121;
+
+  --color-WARNlight: #febb32;
+  --color-WARNdark: #fe8801;
+
+  --color-INFOlight: #33b5e5;
+  --color-INFOdark: #0099cc;
+
+  --color-SUCCESSlight: #00c851;
+  --color-SUCCESSdark: #017e32;
+}
