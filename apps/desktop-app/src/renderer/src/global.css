@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Setup Color Theme Here */
+/* COLOR THEMES */
 @theme {
   /* BACKGROUND THEME */
   --color-BGlight: #e8ebfd;
@@ -47,4 +47,47 @@
 
   --color-SUCCESSlight: #00c851;
   --color-SUCCESSdark: #017e32;
+}
+
+@theme {
+  /* FONT SIZES IN RESPONSIVE */
+  /* clamp(min, preferred, max) */
+  --font-title: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --text-h1: clamp(2rem, 4vw, 3rem);
+  --text-h2: clamp(1.5rem, 3vw, 2.25rem);
+  --text-h3: clamp(1.25rem, 2vw, 1.5rem);
+  --text-p: clamp(1rem, 1.5vw, 1.125rem);
+  --text-small: clamp(0.875rem, 1vw, 0.95rem);
+}
+
+/* FONTS HERE */
+@font-face {
+  font-family: "Poppins";
+  src: url("../src/assets/fonts/Poppins/Poppins-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../src/assets/fonts/Poppins/Poppins-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../src/assets/fonts/Inter/Inter_28pt-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../src/assets/fonts/Inter/Inter_28pt-SemiBold.ttf")
+    format("truetype");
+  font-weight: 600;
+  font-style: normal;
 }
