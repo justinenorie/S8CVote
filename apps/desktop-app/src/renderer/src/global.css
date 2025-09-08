@@ -92,3 +92,8 @@
   font-weight: 600;
   font-style: normal;
 }
+
+/* Globally Setup */
+section {
+  @apply w-full px-4 py-5 md:px-12 md:py-10 lg:px-30 xl:px-50;
+}

@@ -1,7 +1,7 @@
 import { Suspense, lazy, useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-const Login = lazy(() => import("./pages/Login"));
+const Login = lazy(() => import("./pages/account/Login"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Elections = lazy(() => import("./pages/Elections"));
 const Candidates = lazy(() => import("./pages/Candidates"));

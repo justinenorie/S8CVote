@@ -4,7 +4,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "multi": "turbo run dev --filter=backend --filter=desktop-app",
+    "multi": "turbo run dev --filter=backend --filter=s8cvote",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
