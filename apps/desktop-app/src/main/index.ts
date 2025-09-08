@@ -1,7 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
-import icon from "../../resources/icon.png?asset";
 import axios from "axios";
 import { AxiosError } from "axios";
 
@@ -14,7 +13,12 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === "linux" ? { icon } : {}),
+    icon:
+      process.platform === "win32"
+        ? join(__dirname, "../../resources/icon.ico")
+        : process.platform === "linux"
+          ? join(__dirname, "../../resources/icon.png")
+          : undefined, // macOS handled by app bundle
     webPreferences: {
       preload: join(__dirname, "../preload/index.mjs"),
       sandbox: false,
