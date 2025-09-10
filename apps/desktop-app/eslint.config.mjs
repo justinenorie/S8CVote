@@ -25,6 +25,7 @@ export default tseslint.config(
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginReactRefresh.configs.vite.rules,
+      "react-refresh/only-export-components": "off",
       "prettier/prettier": [
         "error",
         {
