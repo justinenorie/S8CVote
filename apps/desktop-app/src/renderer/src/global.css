@@ -97,3 +97,45 @@
 section {
   @apply w-full px-4 py-5 md:px-12 md:py-10 lg:px-30 xl:px-50;
 }
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* SHADCN THEMES */
+@theme {
+  /* Base background/foreground */
+  --color-background: white;
+  --color-foreground: #020617; /* slate-950 (very dark) */
+
+  /* Primary */
+  --color-primary: var(--color-PRIMARY-800);
+  --color-primary-foreground: white;
+
+  /* Secondary */
+  --color-secondary: var(--color-SECONDARY-800);
+  --color-secondary-foreground: white;
+
+  /* Destructive (errors, alerts) */
+  --color-destructive: var(--color-ERRORlight);
+  --color-destructive-foreground: white;
+
+  /* Success (you can map it for alerts/notifications) */
+  --color-success: var(--color-SUCCESSlight);
+  --color-success-foreground: white;
+
+  /* Warning (mapped as accent OR standalone) */
+  --color-warning: var(--color-WARNlight);
+  --color-warning-foreground: #020617;
+
+  /* Accent (neutral hover states, ghost buttons) */
+  --color-accent: var(--color-PRIMARY-100);
+  --color-accent-foreground: var(--color-PRIMARY-700);
+
+  /* Muted (disabled states, subtle text) */
+  --color-muted: #f1f5f9; /* slate-100 */
+  --color-muted-foreground: #64748b; /* slate-500 */
+
+  /* Borders, inputs, rings */
+  --color-border: #e2e8f0; /* slate-200 */
+  --color-input: #e2e8f0; /* slate-200 */
+  --color-ring: var(--color-PRIMARY-400);
+}
