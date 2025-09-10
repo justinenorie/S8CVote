@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { LoginResponse } from "../../types/api";
-import Typography from "@renderer/components/Typography";
+import Typography from "@renderer/components/ui/Typography";
 import s8cvotelogo from "../../assets/S8CVote-TempLogo.png";
-import { FaUser, FaLock } from "react-icons/fa";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { UserRound, Lock, Eye, EyeOff } from "lucide-react";
+import { Button } from "@renderer/components/ui/Button";
+import { Input } from "@renderer/components/ui/input";
+import { ThemeToggle } from "@renderer/components/ui/ThemeToggle";
 
 type LoginProps = {
   onLogin: () => void;
@@ -31,6 +33,7 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
         onLogin();
         navigate("/dashboard");
       } else {
+        // TODO: Need a better alert
         alert(res.message);
       }
     } catch {
@@ -41,7 +44,7 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
   };
 
   return (
-    <section className="bg-BGlight flex h-screen items-center justify-center">
+    <section className="bg-BGlight dark:bg-BGdark flex h-screen items-center justify-center">
       <div className="grid w-full grid-cols-2 items-center">
         <div className="h-auto">
           <img src={s8cvotelogo} alt="s8cvotelogo" className="h-20 w-20" />
@@ -69,11 +72,11 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
           <div className="mb-4">
             <div className="relative">
               <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
-                <FaUser className="h-5 w-5" />
+                <UserRound className="h-5 w-5" />
               </span>
-              <input
+              <Input
                 type="text"
-                className="w-full rounded-lg border px-10 py-2 focus:ring focus:ring-blue-300"
+                className="w-full px-10"
                 value={adminUser}
                 onChange={(e) => setAdminUser(e.target.value)}
                 placeholder="Email"
@@ -84,7 +87,7 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
           <div className="mb-6">
             <div className="relative">
               <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
-                <FaLock className="h-5 w-5" />
+                <Lock className="h-5 w-5" />
               </span>
               <input
                 type={showPassword ? "text" : "password"}
@@ -99,9 +102,9 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
                 className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
               >
                 {showPassword ? (
-                  <AiFillEyeInvisible className="h-6 w-6" />
+                  <EyeOff className="h-6 w-6" />
                 ) : (
-                  <AiFillEye className="h-6 w-6" />
+                  <Eye className="h-6 w-6" />
                 )}
               </button>
             </div>
@@ -109,13 +112,10 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
 
           {/* TODO: Make a component for this to reuse it in another ui */}
           <div className="grid gap-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-blue-500 py-2 text-white transition hover:bg-blue-600 disabled:bg-gray-400"
-            >
+            <Button type="submit" disabled={loading} variant="default">
               {loading ? "Logging in..." : "Login"}
-            </button>
+            </Button>
+
             <div className="block text-center">
               <Typography variant="small" className="">
                 Forgot password?{" "}
@@ -130,6 +130,9 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
             </div>
           </div>
         </form>
+        <div className="w-full">
+          <ThemeToggle></ThemeToggle>
+        </div>
       </div>
     </section>
   );
