@@ -1,17 +1,12 @@
-import { Suspense, lazy, useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
-const Login = lazy(() => import("./pages/account/Login"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Elections = lazy(() => import("./pages/Elections"));
-const Candidates = lazy(() => import("./pages/Candidates"));
+import { Suspense, useState, useEffect } from "react";
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./routes/AppRoutes";
 
 const App = (): React.JSX.Element => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     localStorage.getItem("isAuthenticated") === "true"
   );
 
-  // listen to login/logout changes
   useEffect(() => {
     localStorage.setItem("isAuthenticated", String(isAuthenticated));
   }, [isAuthenticated]);
@@ -19,22 +14,10 @@ const App = (): React.JSX.Element => {
   return (
     <BrowserRouter>
       <Suspense fallback={<div className="p-6 text-center">Loading...</div>}>
-        <Routes>
-          <Route
-            path="/"
-            element={<Login onLogin={() => setIsAuthenticated(true)} />}
-          />
-
-          {isAuthenticated ? (
-            <>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/elections" element={<Elections />} />
-              <Route path="/candidates" element={<Candidates />} />
-            </>
-          ) : (
-            <Route path="*" element={<Navigate to="/" replace />} />
-          )}
-        </Routes>
+        <AppRoutes
+          isAuthenticated={isAuthenticated}
+          setIsAuthenticated={setIsAuthenticated}
+        />
       </Suspense>
     </BrowserRouter>
   );
