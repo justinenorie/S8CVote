@@ -1,5 +1,5 @@
 import { Suspense, useState, useEffect } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
 
 const App = (): React.JSX.Element => {
@@ -12,14 +12,14 @@ const App = (): React.JSX.Element => {
   }, [isAuthenticated]);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Suspense fallback={<div className="p-6 text-center">Loading...</div>}>
         <AppRoutes
           isAuthenticated={isAuthenticated}
           setIsAuthenticated={setIsAuthenticated}
         />
       </Suspense>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
