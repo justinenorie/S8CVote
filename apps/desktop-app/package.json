@@ -26,13 +26,13 @@
     "@electron-toolkit/utils": "^4.0.0",
     "axios": "^1.11.0",
     "dotenv": "^16.5.0",
-    "motion": "^12.23.12",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
     "@electron-toolkit/eslint-config-ts": "^3.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
+    "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.1.11",
     "@types/node": "^22.14.1",
