@@ -6,7 +6,6 @@ import s8cvotelogo from "../../assets/S8CVote-TempLogo.png";
 import { UserRound, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@renderer/components/ui/Button";
 import { Input } from "@renderer/components/ui/input";
-import { ThemeToggle } from "@renderer/components/ui/ThemeToggle";
 
 type LoginProps = {
   onLogin: () => void;
@@ -49,11 +48,14 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
         <div className="h-auto">
           <img src={s8cvotelogo} alt="s8cvotelogo" className="h-20 w-20" />
 
-          <Typography variant="h3" className="text-TEXTdark font-semibold">
+          <Typography
+            variant="h3"
+            className="text-TEXTdark dark:text-TEXTlight font-semibold"
+          >
             Welcome to S8CVote
           </Typography>
 
-          <Typography variant="p" className="">
+          <Typography variant="p" className="text-TEXTdark dark:text-TEXTlight">
             Manage school elections simple and transparent with S8CVote.
           </Typography>
         </div>
@@ -69,14 +71,14 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
             Sign in to Admin Panel
           </Typography>
 
-          <div className="mb-4">
+          <div className="mb-4 grid gap-3">
             <div className="relative">
               <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
                 <UserRound className="h-5 w-5" />
               </span>
               <Input
                 type="text"
-                className="w-full px-10"
+                className="border-TEXTdark/20 w-full rounded-lg border px-10"
                 value={adminUser}
                 onChange={(e) => setAdminUser(e.target.value)}
                 placeholder="Email"
@@ -89,13 +91,14 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
               <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
                 <Lock className="h-5 w-5" />
               </span>
-              <input
+              <Input
                 type={showPassword ? "text" : "password"}
-                className="w-full rounded-lg border px-10 py-2 focus:ring focus:ring-blue-300"
+                className="border-TEXTdark/20 w-full rounded-lg border px-10"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -130,9 +133,6 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
             </div>
           </div>
         </form>
-        <div className="w-full">
-          <ThemeToggle></ThemeToggle>
-        </div>
       </div>
     </section>
   );
