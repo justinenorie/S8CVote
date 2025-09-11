@@ -4,12 +4,12 @@ import SideNav from "./SideNav";
 
 const Layout = (): React.JSX.Element => {
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
+    <div className="shadow-PRIMARY-900 flex h-screen w-screen overflow-hidden">
       {/* Sidebar */}
       <SideNav />
 
       {/* Main Content */}
-      <main className="bg-BGlight dark:bg-BGdark flex-1 overflow-y-auto p-6">
+      <main className="bg-BGlight dark:bg-BGdark flex-1 overflow-y-auto p-6 transition-colors duration-300">
         <Outlet />
       </main>
     </div>

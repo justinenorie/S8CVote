@@ -1,21 +1,28 @@
 import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Users, Vote, BarChart, Settings } from "lucide-react"; // Example icons
+import {
+  LayoutDashboard,
+  Users,
+  ChartBarStacked,
+  BarChart,
+  Settings,
+} from "lucide-react";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 const SideNav = (): React.JSX.Element => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const location = useLocation();
 
   const navItems = [
-    { label: "Dashboard", path: "/dashboard", icon: <Home /> },
-    { label: "Elections", path: "/elections", icon: <Vote /> },
+    { label: "Dashboard", path: "/dashboard", icon: <LayoutDashboard /> },
+    { label: "Elections", path: "/elections", icon: <ChartBarStacked /> },
     { label: "Candidates", path: "/candidates", icon: <Users /> },
     { label: "Reports", path: "/reports", icon: <BarChart /> },
   ];
 
   return (
     <aside
-      className={`bg-BGdark dark:bg-BGlight text-TEXTlight dark:text-TEXTdark h-screen transition-all duration-300 ${
+      className={`bg-PRIMARY-50 dark:bg-PRIMARY-950 text-TEXTdark dark:text-TEXTlight z-10 h-screen shadow-[7px_7px_21px_5px_rgba(0,_0,_0,_0.1)] transition-all duration-300 ${
         isCollapsed ? "w-20" : "w-64"
       } flex flex-col`}
     >
@@ -50,6 +57,10 @@ const SideNav = (): React.JSX.Element => {
 
       {/* Bottom Section */}
       <div className="p-4">
+        {/* Toggle */}
+        <div>
+          <ThemeToggle isCollapsed={isCollapsed} />
+        </div>
         <Link
           to="/settings"
           className="hover:bg-BGlight/10 flex items-center gap-3 rounded-md px-3 py-2"
