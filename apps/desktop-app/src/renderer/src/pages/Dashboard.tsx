@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = (): React.JSX.Element => {
   const navigate = useNavigate();
@@ -9,19 +9,16 @@ const Dashboard = (): React.JSX.Element => {
   };
 
   return (
-    <div className="p-6">
+    <div>
       <h1 className="mb-4 text-3xl font-bold">Dashboard</h1>
-      <nav className="space-x-4">
-        <Link to="/elections" className="text-blue-500 underline">
-          Elections
-        </Link>
-        <Link to="/candidates" className="text-blue-500 underline">
-          Candidates
-        </Link>
-        <button onClick={logout} className="text-blue-500 underline">
-          Logout
-        </button>
-      </nav>
+      <p className="text-gray-500">Overview of the student voting system</p>
+      {/* Cards, charts, etc */}
+      <button
+        onClick={logout}
+        className="mt-6 rounded bg-red-500 px-4 py-2 text-white"
+      >
+        Logout
+      </button>
     </div>
   );
 };

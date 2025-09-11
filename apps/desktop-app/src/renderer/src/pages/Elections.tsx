@@ -1,14 +1,9 @@
-import { Link } from "react-router-dom";
-
 const Elections = (): React.JSX.Element => {
   return (
     <div className="bg-blue-500">
-      Elections
-      <Link to="/dashboard">
-        <button className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
-          Go to Dashboard
-        </button>
-      </Link>
+      <h1 className="mb-4 text-3xl font-bold">Elections</h1>
+      <p className="text-gray-500">Overview of the student voting system</p>
+      {/* Your cards and charts here */}
     </div>
   );
 };
