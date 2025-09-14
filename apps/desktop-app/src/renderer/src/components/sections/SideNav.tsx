@@ -6,8 +6,15 @@ import {
   ChartBarStacked,
   BarChart,
   Settings,
+  ContactRound,
+  ChevronsRight,
+  ChevronsLeft,
+  LogOut,
 } from "lucide-react";
 import { ThemeToggle } from "../ui/ThemeToggle";
+import Typography from "../ui/Typography";
+import { Button } from "../ui/Button";
+import s8cvotelogo from "../../assets/S8CVote-TempLogo.png";
 
 const SideNav = (): React.JSX.Element => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
@@ -16,6 +23,7 @@ const SideNav = (): React.JSX.Element => {
   const navItems = [
     { label: "Dashboard", path: "/dashboard", icon: <LayoutDashboard /> },
     { label: "Elections", path: "/elections", icon: <ChartBarStacked /> },
+    { label: "Students", path: "/a", icon: <ContactRound /> },
     { label: "Candidates", path: "/candidates", icon: <Users /> },
     { label: "Reports", path: "/reports", icon: <BarChart /> },
   ];
@@ -27,18 +35,25 @@ const SideNav = (): React.JSX.Element => {
       } flex flex-col`}
     >
       {/* Logo / Toggle */}
-      <div className="flex items-center justify-between p-4">
-        {!isCollapsed && <h1 className="text-lg font-bold">S8CVote</h1>}
-        <button
+      <div className="flex w-full items-center justify-between p-4">
+        {!isCollapsed && (
+          <div className="flex flex-row place-items-center content-center gap-2">
+            <img src={s8cvotelogo} alt="s8cvotelogo" className="h-10 w-10" />
+            <Typography variant="h3">S8CVote</Typography>
+          </div>
+        )}
+
+        <Button
+          variant="ghost"
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hover:bg-BGlight/10 rounded-md p-2"
+          className={`hover:bg-BGdark/10 dark:hover:bg-BGlight/10 text-TEXTdark dark:text-TEXTlight items-center rounded-md p-2 ${isCollapsed ? "w-full" : ""}`}
         >
-          {isCollapsed ? "»" : "«"}
-        </button>
+          {isCollapsed ? <ChevronsRight /> : <ChevronsLeft />}
+        </Button>
       </div>
 
       {/* Nav Items */}
-      <nav className="flex-1 space-y-2 p-2">
+      <nav className="flex-1 space-y-2 p-4">
         {navItems.map((item) => (
           <Link
             key={item.path}
@@ -46,28 +61,48 @@ const SideNav = (): React.JSX.Element => {
             className={`flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${
               location.pathname === item.path
                 ? "bg-primary text-primary-foreground"
-                : "hover:bg-BGlight/10"
+                : "hover:bg-BGdark/10 dark:hover:bg-BGlight/10"
             }`}
           >
             {item.icon}
-            {!isCollapsed && <span>{item.label}</span>}
+            {!isCollapsed && <Typography variant="p">{item.label}</Typography>}
           </Link>
         ))}
       </nav>
 
       {/* Bottom Section */}
-      <div className="p-4">
-        {/* Toggle */}
-        <div>
-          <ThemeToggle isCollapsed={isCollapsed} />
-        </div>
+      <div className="grid gap-2 p-4">
+        <div className="border-TEXTdark/30 dark:border-TEXTlight/30 my-2 w-full border-t" />
         <Link
           to="/settings"
-          className="hover:bg-BGlight/10 flex items-center gap-3 rounded-md px-3 py-2"
+          className={`flex items-center gap-3 rounded-md px-3 py-2 ${
+            location.pathname === "/settings"
+              ? "bg-primary text-primary-foreground"
+              : "hover:bg-BGdark/10 dark:hover:bg-BGlight/10"
+          }`}
         >
           <Settings />
-          {!isCollapsed && <span>Settings</span>}
+          {!isCollapsed && <Typography variant="p">Settings</Typography>}
         </Link>
+
+        <ThemeToggle isCollapsed={isCollapsed} />
+
+        {!isCollapsed ? (
+          <div className="flex flex-row place-content-between items-center">
+            <img src={s8cvotelogo} alt="s8cvotelogo" className="h-10 w-10" />
+            <div className="row-span-2 grid">
+              <Typography variant="p">Admin Admin</Typography>
+              <Typography variant="small">example@gmail.com</Typography>
+            </div>
+            <Button variant="ghost">
+              <LogOut />
+            </Button>
+          </div>
+        ) : (
+          <Button variant="ghost">
+            <LogOut />
+          </Button>
+        )}
       </div>
     </aside>
   );
