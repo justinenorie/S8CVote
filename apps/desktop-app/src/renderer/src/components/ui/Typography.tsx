@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { cn } from "@renderer/lib/utils";
 
 type Variant = "h1" | "h2" | "h3" | "h4" | "p" | "small";
 
@@ -24,7 +25,7 @@ const Typography: React.FC<TypographyProps> = ({
 
   return React.createElement(
     variant,
-    { className: `${baseStyles[variant]} ${className}` },
+    { className: cn(`${baseStyles[variant]} ${className}`) },
     children
   );
 };
