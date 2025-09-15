@@ -1,5 +1,33 @@
 import Typography from "@renderer/components/ui/Typography";
 import SummaryStat from "@renderer/components/dashboard/SummaryStat";
+import ElectionsCard from "@renderer/components/dashboard/ElectionsCard";
+
+// TODO: Change this later based on the database
+const sampleCategories = [
+  {
+    title: "President",
+    candidates: [
+      { name: "Candidate A", votes: 1000 },
+      { name: "Candidate B", votes: 80 },
+      { name: "Candidate C", votes: 20 },
+      { name: "Candidate C", votes: 0 },
+    ],
+  },
+  {
+    title: "Vice President",
+    candidates: [
+      { name: "Juan Dela Cruz", votes: 450 },
+      { name: "Maria Clara", votes: 480 },
+    ],
+  },
+  {
+    title: "Vice President",
+    candidates: [
+      { name: "Juan Dela Cruz", votes: 450 },
+      { name: "Maria Clara", votes: 480 },
+    ],
+  },
+];
 
 const Dashboard = (): React.JSX.Element => {
   return (
@@ -23,24 +51,18 @@ const Dashboard = (): React.JSX.Element => {
         <SummaryStat title="Total Voters" value={10} subtext="aye" />
       </div>
 
-      <Typography variant="h1">Hi</Typography>
-      <Typography variant="h2">Hi</Typography>
-      <Typography variant="h3">Hi</Typography>
-      <Typography variant="h4">Hi</Typography>
-      <Typography variant="p">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor,
-        praesentium.
-      </Typography>
-      <Typography variant="p">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam
-        consequuntur error labore doloremque excepturi quidem? Tempora in
-        incidunt repellendus amet.
-      </Typography>
-      <Typography variant="small">
-        rror labore doloremque excepturi quidem? Tempora in incidunt repellendus
-        amet.
-      </Typography>
-      {/* Cards, charts, etc */}
+      <div>
+        <Typography variant="h3">Vote Results</Typography>
+        {/* TODO: change the date based on the database */}
+        <Typography variant="small">As of July 13, 2025 - 7:05pm</Typography>
+      </div>
+
+      {/* Elections and Candidates */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {sampleCategories.map((election) => (
+          <ElectionsCard key={election.title} category={election} />
+        ))}
+      </div>
     </div>
   );
 };
