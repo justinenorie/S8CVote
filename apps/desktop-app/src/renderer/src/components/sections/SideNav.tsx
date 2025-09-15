@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -19,12 +19,18 @@ import s8cvotelogo from "../../assets/S8CVote-TempLogo.png";
 const SideNav = (): React.JSX.Element => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const logout = (): void => {
+    localStorage.setItem("isAuthenticated", "false");
+    navigate("/", { replace: true });
+  };
 
   const navItems = [
     { label: "Dashboard", path: "/dashboard", icon: <LayoutDashboard /> },
     { label: "Elections", path: "/elections", icon: <ChartBarStacked /> },
-    { label: "Students", path: "/a", icon: <ContactRound /> },
     { label: "Candidates", path: "/candidates", icon: <Users /> },
+    { label: "Students", path: "/students", icon: <ContactRound /> },
     { label: "Reports", path: "/reports", icon: <BarChart /> },
   ];
 
@@ -94,12 +100,12 @@ const SideNav = (): React.JSX.Element => {
               <Typography variant="p">Admin Admin</Typography>
               <Typography variant="small">example@gmail.com</Typography>
             </div>
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={logout}>
               <LogOut />
             </Button>
           </div>
         ) : (
-          <Button variant="ghost">
+          <Button variant="ghost" onClick={logout}>
             <LogOut />
           </Button>
         )}
