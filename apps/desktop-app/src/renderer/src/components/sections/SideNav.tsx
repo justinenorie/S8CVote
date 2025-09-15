@@ -41,25 +41,28 @@ const SideNav = (): React.JSX.Element => {
       } flex flex-col`}
     >
       {/* Logo / Toggle */}
-      <div className="flex w-full items-center justify-between p-4">
-        {!isCollapsed && (
-          <div className="flex flex-row place-items-center content-center gap-2">
-            <img src={s8cvotelogo} alt="s8cvotelogo" className="h-10 w-10" />
-            <Typography variant="h3">S8CVote</Typography>
-          </div>
-        )}
+      <div className="p-4">
+        <div className="flex w-full items-center justify-between py-2">
+          {!isCollapsed && (
+            <div className="flex flex-row place-items-center content-center gap-2">
+              <img src={s8cvotelogo} alt="s8cvotelogo" className="h-10 w-10" />
+              <Typography variant="h3">S8CVote</Typography>
+            </div>
+          )}
 
-        <Button
-          variant="ghost"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`hover:bg-BGdark/10 dark:hover:bg-BGlight/10 text-TEXTdark dark:text-TEXTlight items-center rounded-md p-2 ${isCollapsed ? "w-full" : ""}`}
-        >
-          {isCollapsed ? <ChevronsRight /> : <ChevronsLeft />}
-        </Button>
+          <Button
+            variant="ghost"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className={`hover:bg-BGdark/10 dark:hover:bg-BGlight/10 text-TEXTdark dark:text-TEXTlight items-center rounded-md p-2 ${isCollapsed ? "w-full" : ""}`}
+          >
+            {isCollapsed ? <ChevronsRight /> : <ChevronsLeft />}
+          </Button>
+        </div>
+        <div className="border-TEXTdark/30 dark:border-TEXTlight/30 w-full border-b" />
       </div>
 
       {/* Nav Items */}
-      <nav className="flex-1 space-y-2 p-4">
+      <nav className="flex-1 space-y-2 px-4">
         {navItems.map((item) => (
           <Link
             key={item.path}
@@ -96,6 +99,7 @@ const SideNav = (): React.JSX.Element => {
         {!isCollapsed ? (
           <div className="flex flex-row place-content-between items-center">
             <img src={s8cvotelogo} alt="s8cvotelogo" className="h-10 w-10" />
+            {/* TODO: Change this based on the what user admin logged in */}
             <div className="row-span-2 grid">
               <Typography variant="p">Admin Admin</Typography>
               <Typography variant="small">example@gmail.com</Typography>
