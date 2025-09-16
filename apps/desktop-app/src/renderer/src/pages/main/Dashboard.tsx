@@ -53,8 +53,16 @@ const Dashboard = (): React.JSX.Element => {
 
       <div>
         <Typography variant="h3">Vote Results</Typography>
-        {/* TODO: change the date based on the database */}
-        <Typography variant="small">As of July 13, 2025 - 7:05pm</Typography>
+        <Typography variant="small">
+          As of{" "}
+          {new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }).format(new Date())}
+        </Typography>
       </div>
 
       {/* Elections and Candidates */}
