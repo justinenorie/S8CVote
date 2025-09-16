@@ -1,10 +1,10 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
-import axios from "axios";
-import { AxiosError } from "axios";
+import { registerIpcHandlers } from "./api";
+import dotenv from "dotenv";
 
-let authToken: string | null = null; // store token in memory (safer than localStorage)
+dotenv.config();
 
 function createWindow(): void {
   // Create the browser window.
@@ -59,31 +59,7 @@ app.whenReady().then(() => {
   });
 
   // IPC HANDLER
-  // TODO: Separate the different routes
-  ipcMain.handle("auth:login", async (_event, { adminUser, password }) => {
-    try {
-      const res = await axios.post(
-        "http://localhost:8000/api/auth/admin/login",
-        {
-          adminUser,
-          password,
-        }
-      );
-
-      if (res.data && res.data.success) {
-        authToken = res.data.token; // save in memory
-        return { success: true, token: authToken };
-      } else {
-        return { success: false, message: "Invalid credentials" };
-      }
-    } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-      return {
-        success: false,
-        message: error.response?.data?.message || "Login failed",
-      };
-    }
-  });
+  registerIpcHandlers();
 
   createWindow();
 
