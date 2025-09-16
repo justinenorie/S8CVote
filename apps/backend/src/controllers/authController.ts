@@ -198,7 +198,11 @@ export const refreshAccessToken = async (
       id: decoded.id,
       role: decoded.role,
     });
-    return res.status(200).json({ accessToken });
+    return res.status(200).json({
+      success: true,
+      token: accessToken,
+      message: "Login successful",
+    });
   } catch (err) {
     return res.sendStatus(403); // Invalid refresh token
   }

@@ -47,7 +47,8 @@ export const getCategories = async (
 ): Promise<void> => {
   try {
     const categories = await prisma.category.findMany({
-      include: { candidates: true }, // include candidates if useful
+      // Including candidates to show it
+      include: { candidates: true },
     });
 
     const response: ApiResponse<typeof categories> = {
