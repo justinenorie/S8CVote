@@ -8,9 +8,9 @@ type Candidate = {
 };
 
 const getOrdinal = (n: number): string => {
-  if (n >= 20 && n % 10 === 1) return `${n}st`;
-  if (n >= 20 && n % 10 === 2) return `${n}nd`;
-  if (n >= 20 && n % 10 === 3) return `${n}rd`;
+  if (n % 10 === 1 && n % 100 !== 11) return `${n}st`;
+  if (n % 10 === 2 && n % 100 !== 12) return `${n}nd`;
+  if (n % 10 === 3 && n % 100 !== 13) return `${n}rd`;
   return `${n}th`;
 };
 
