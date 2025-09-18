@@ -6,8 +6,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@renderer/components/ui/dropdown-menu";
-import { ArrowUpDown, ArrowDown, ArrowUp } from "lucide-react";
-import { useState } from "react";
+import {
+  ArrowUpDown,
+  ArrowDown,
+  ArrowUp,
+  Delete,
+  SquarePen,
+} from "lucide-react";
 
 export type Election = {
   id: string;
@@ -17,40 +22,13 @@ export type Election = {
   status: "Open" | "Closed";
 };
 
-// Simple reusable modal for demo
-// TODO: TEMPORARY MODAL
-const Modal = ({
-  open,
-  onClose,
-  content,
+export const useElectionColumns = ({
+  onEdit,
+  onDelete,
 }: {
-  open: boolean;
-  onClose: () => void;
-  content: string;
-}): React.ReactElement | null => {
-  if (!open) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent backdrop-blur-xs">
-      <div className="w-[300px] rounded-xl bg-white p-6 text-center dark:bg-gray-800">
-        <h1 className="mb-4 text-xl font-semibold">{content}</h1>
-        <Button variant="outline" onClick={onClose}>
-          Close
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-export const useElectionColumns = (): ColumnDef<Election>[] => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState("");
-
-  const handleAction = (action: string): void => {
-    setModalContent(action);
-    setModalOpen(true);
-  };
-
+  onEdit: (election: Election) => void;
+  onDelete: (election: Election) => void;
+}): ColumnDef<Election>[] => {
   const columns: ColumnDef<Election>[] = [
     {
       accessorKey: "election",
@@ -125,7 +103,7 @@ export const useElectionColumns = (): ColumnDef<Election>[] => {
     {
       id: "actions",
       header: "Actions",
-      cell: () => (
+      cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -135,12 +113,20 @@ export const useElectionColumns = (): ColumnDef<Election>[] => {
               •••
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-PRIMARY-50 dark:bg-PRIMARY-950 text-TEXTdark dark:text-TEXTlight">
-            <DropdownMenuItem onClick={() => handleAction("Edit Election")}>
-              Edit
+          <DropdownMenuContent className="bg-PRIMARY-50 dark:bg-PRIMARY-950 text-TEXTdark/80 dark:text-TEXTlight/80">
+            <DropdownMenuItem
+              onClick={() => onEdit(row.original)}
+              className="justify-between"
+            >
+              Edit <SquarePen />
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleAction("Delete Election")}>
-              Delete
+            <div className="my-1 h-px bg-gray-200 dark:bg-gray-700" />
+            <DropdownMenuItem
+              onClick={() => onDelete(row.original)}
+              variant="destructive"
+              className="justify-between"
+            >
+              Delete <Delete />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -148,19 +134,5 @@ export const useElectionColumns = (): ColumnDef<Election>[] => {
     },
   ];
 
-  // Return columns + modal JSX (so we can render modal in Elections.tsx)
-  return [
-    ...columns,
-    {
-      id: "modal",
-      header: () => null,
-      cell: () => (
-        <Modal
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          content={modalContent}
-        />
-      ),
-    },
-  ];
+  return [...columns];
 };

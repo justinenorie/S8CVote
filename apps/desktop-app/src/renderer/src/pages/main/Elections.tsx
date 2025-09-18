@@ -1,9 +1,13 @@
+import { useState } from "react";
 import Typography from "@renderer/components/ui/Typography";
 import { DataTable } from "@renderer/components/ui/DataTable";
 import {
   useElectionColumns,
   Election,
 } from "@renderer/components/elections/column";
+import { EditElectionModal } from "@renderer/components/elections/EditElectionModal";
+import { ConfirmDeleteModal } from "@renderer/components/ui/ConfirmDeleteModal";
+import { AddElectionModal } from "@renderer/components/elections/AddElectionModal";
 
 const elections: Election[] = [
   {
@@ -72,7 +76,22 @@ const elections: Election[] = [
 ];
 
 const Elections = (): React.JSX.Element => {
-  const columns = useElectionColumns();
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedElection, setSelectedElection] = useState<Election | null>(
+    null
+  );
+
+  const columns = useElectionColumns({
+    onEdit: (election) => {
+      setSelectedElection(election);
+      setEditModalOpen(true);
+    },
+    onDelete: (election) => {
+      setSelectedElection(election);
+      setDeleteModalOpen(true);
+    },
+  });
 
   return (
     <div className="text-TEXTdark dark:text-TEXTlight space-y-7">
@@ -94,6 +113,23 @@ const Elections = (): React.JSX.Element => {
         data={elections}
         searchPlaceholder="Search Elections..."
         addButtonLabel="Add New Election"
+        addModal={AddElectionModal}
+      />
+
+      <EditElectionModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        election={selectedElection}
+      />
+
+      <ConfirmDeleteModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={() => {
+          // TODO: handle delete
+          setDeleteModalOpen(false);
+        }}
+        itemName={selectedElection?.election ?? ""}
       />
     </div>
   );

@@ -1,4 +1,5 @@
 import Typography from "@renderer/components/ui/Typography";
+import { DataTable } from "@renderer/components/ui/DataTable";
 
 const Candidates = (): React.JSX.Element => {
   return (
@@ -14,6 +15,8 @@ const Candidates = (): React.JSX.Element => {
           Overview of the student voting system
         </Typography>
       </header>
+
+      {/* <DataTable /> */}
     </div>
   );
 };

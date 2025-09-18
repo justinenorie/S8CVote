@@ -26,6 +26,10 @@ type DataTableProps<TData, TValue> = {
   data: TData[];
   searchPlaceholder?: string;
   addButtonLabel?: string;
+  addModal?: React.ComponentType<{
+    open: boolean;
+    onClose: () => void;
+  }>;
 };
 
 export function DataTable<TData, TValue>({
@@ -33,12 +37,15 @@ export function DataTable<TData, TValue>({
   data,
   searchPlaceholder,
   addButtonLabel,
+  addModal: AddModal,
 }: DataTableProps<TData, TValue>): React.ReactElement {
   const [filter, setFilter] = React.useState("");
 
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "election", desc: false },
   ]);
+
+  const [addModalOpen, setAddModalOpen] = React.useState(false);
 
   const table = useReactTable({
     data,
@@ -70,14 +77,24 @@ export function DataTable<TData, TValue>({
           </Typography>
         </div>
 
-        <Button variant="default">
-          <Plus />
-          <Typography variant="small">{addButtonLabel ?? "Add New"}</Typography>
-        </Button>
+        {AddModal && (
+          <>
+            <Button variant="default" onClick={() => setAddModalOpen(true)}>
+              <Plus />
+              <Typography variant="small">
+                {addButtonLabel ?? "Add New"}
+              </Typography>
+            </Button>
+            <AddModal
+              open={addModalOpen}
+              onClose={() => setAddModalOpen(false)}
+            />
+          </>
+        )}
       </div>
 
       {/* 📊 Table */}
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-lg border">
         <Table>
           <TableHeader className="bg-SECONDARY-50/80 dark:bg-SECONDARY-800/80">
             {table.getHeaderGroups().map((headerGroup) => (
