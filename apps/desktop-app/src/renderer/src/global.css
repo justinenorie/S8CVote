@@ -133,3 +133,22 @@ section {
   --color-input: #e2e8f0; /* slate-200 */
   --color-ring: var(--color-PRIMARY-400);
 }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px; /* scrollbar width */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* background of track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; /* scrollbar color */
+  border-radius: 6px; /* roundness */
+  border: 2px solid transparent; /* spacing around thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* darker on hover */
+}
