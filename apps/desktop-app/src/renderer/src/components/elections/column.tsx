@@ -6,6 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@renderer/components/ui/dropdown-menu";
+import { ArrowUpDown, ArrowDown, ArrowUp } from "lucide-react";
 import { useState } from "react";
 
 export type Election = {
@@ -53,7 +54,19 @@ export const useElectionColumns = (): ColumnDef<Election>[] => {
   const columns: ColumnDef<Election>[] = [
     {
       accessorKey: "election",
-      header: "Elections",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            className="flex items-center gap-1"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Elections
+            {column.getIsSorted() === "asc" && <ArrowUp />}
+            {column.getIsSorted() === "desc" && <ArrowDown />}
+          </Button>
+        );
+      },
     },
     {
       accessorKey: "candidates",
@@ -65,7 +78,35 @@ export const useElectionColumns = (): ColumnDef<Election>[] => {
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: ({ column }) => {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-1">
+                Status
+                <ArrowUpDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              className="bg-PRIMARY-50 dark:bg-PRIMARY-950 text-TEXTdark dark:text-TEXTlight"
+            >
+              {/* Filtering */}
+              <DropdownMenuItem
+                onClick={() => column.setFilterValue(undefined)}
+              >
+                All
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => column.setFilterValue("Open")}>
+                Open
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => column.setFilterValue("Closed")}>
+                Closed
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
         return (

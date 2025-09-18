@@ -8,28 +8,28 @@ import {
 const elections: Election[] = [
   {
     id: "1",
-    election: "President",
+    election: "aPresident",
     candidates: 1,
     duration: "13 Days",
     status: "Open",
   },
   {
     id: "2",
-    election: "President",
+    election: "bPresident",
     candidates: 3,
     duration: "Done",
     status: "Closed",
   },
   {
     id: "3",
-    election: "President",
+    election: "cPresident",
     candidates: 4,
     duration: "3 Days",
     status: "Open",
   },
   {
     id: "4",
-    election: "President",
+    election: "AdPresident",
     candidates: 5,
     duration: "14 hrs",
     status: "Open",
@@ -64,7 +64,7 @@ const elections: Election[] = [
   },
   {
     id: "8",
-    election: "President",
+    election: "V",
     candidates: 10,
     duration: "Done",
     status: "Closed",
@@ -89,7 +89,12 @@ const Elections = (): React.JSX.Element => {
       </header>
 
       {/* 📊 DataTable */}
-      <DataTable columns={columns} data={elections} />
+      <DataTable
+        columns={columns}
+        data={elections}
+        searchPlaceholder="Search Elections..."
+        addButtonLabel="Add New Election"
+      />
     </div>
   );
 };

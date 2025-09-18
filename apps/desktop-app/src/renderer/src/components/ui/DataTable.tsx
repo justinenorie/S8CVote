@@ -4,6 +4,8 @@ import {
   getFilteredRowModel,
   flexRender,
   ColumnDef,
+  getSortedRowModel,
+  SortingState,
 } from "@tanstack/react-table";
 import * as React from "react";
 import {
@@ -22,22 +24,33 @@ import Typography from "./Typography";
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  searchPlaceholder?: string;
+  addButtonLabel?: string;
 };
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  searchPlaceholder,
+  addButtonLabel,
 }: DataTableProps<TData, TValue>): React.ReactElement {
   const [filter, setFilter] = React.useState("");
+
+  const [sorting, setSorting] = React.useState<SortingState>([
+    { id: "election", desc: false },
+  ]);
 
   const table = useReactTable({
     data,
     columns,
     state: {
       globalFilter: filter,
+      sorting,
     },
     onGlobalFilterChange: setFilter,
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
 
@@ -50,7 +63,7 @@ export function DataTable<TData, TValue>({
           <Typography variant="small">
             <Input
               className="border-PRIMARY-700 dark:border-PRIMARY-400 text-TEXTdark dark:text-TEXTlight pr-4 pl-12"
-              placeholder="Search Elections..."
+              placeholder={searchPlaceholder ?? "Search..."}
               value={filter ?? ""}
               onChange={(event) => setFilter(event.target.value)}
             />
@@ -59,14 +72,14 @@ export function DataTable<TData, TValue>({
 
         <Button variant="default">
           <Plus />
-          <Typography variant="small">Add New Election</Typography>
+          <Typography variant="small">{addButtonLabel ?? "Add New"}</Typography>
         </Button>
       </div>
 
       {/* 📊 Table */}
-      <div className="rounded-md border">
+      <div className="overflow-hidden rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-SECONDARY-50/80 dark:bg-SECONDARY-800/80">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
