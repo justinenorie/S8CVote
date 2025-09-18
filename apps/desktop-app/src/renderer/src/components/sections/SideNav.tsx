@@ -21,6 +21,7 @@ const SideNav = (): React.JSX.Element => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // TODO: it also clear the tokens
   const logout = (): void => {
     localStorage.setItem("isAuthenticated", "false");
     navigate("/", { replace: true });

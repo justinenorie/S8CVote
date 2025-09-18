@@ -1,6 +1,79 @@
 import Typography from "@renderer/components/ui/Typography";
+import { DataTable } from "@renderer/components/ui/DataTable";
+import {
+  useElectionColumns,
+  Election,
+} from "@renderer/components/elections/column";
+
+const elections: Election[] = [
+  {
+    id: "1",
+    election: "President",
+    candidates: 1,
+    duration: "13 Days",
+    status: "Open",
+  },
+  {
+    id: "2",
+    election: "President",
+    candidates: 3,
+    duration: "Done",
+    status: "Closed",
+  },
+  {
+    id: "3",
+    election: "President",
+    candidates: 4,
+    duration: "3 Days",
+    status: "Open",
+  },
+  {
+    id: "4",
+    election: "President",
+    candidates: 5,
+    duration: "14 hrs",
+    status: "Open",
+  },
+  {
+    id: "5",
+    election: "President",
+    candidates: 10,
+    duration: "Done",
+    status: "Closed",
+  },
+  {
+    id: "6",
+    election: "President",
+    candidates: 10,
+    duration: "Done",
+    status: "Closed",
+  },
+  {
+    id: "7",
+    election: "President",
+    candidates: 10,
+    duration: "Done",
+    status: "Closed",
+  },
+  {
+    id: "8",
+    election: "President",
+    candidates: 10,
+    duration: "Done",
+    status: "Closed",
+  },
+  {
+    id: "8",
+    election: "President",
+    candidates: 10,
+    duration: "Done",
+    status: "Closed",
+  },
+];
 
 const Elections = (): React.JSX.Element => {
+  const columns = useElectionColumns();
+
   return (
     <div className="text-TEXTdark dark:text-TEXTlight space-y-7">
       <header>
@@ -11,9 +84,12 @@ const Elections = (): React.JSX.Element => {
           variant="p"
           className="text-TEXTdark/60 dark:text-TEXTlight/60"
         >
-          Overview of the student voting system
+          Managing and Tracking Elections
         </Typography>
       </header>
+
+      {/* 📊 DataTable */}
+      <DataTable columns={columns} data={elections} />
     </div>
   );
 };
