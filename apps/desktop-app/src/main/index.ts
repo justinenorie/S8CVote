@@ -2,9 +2,10 @@ import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import { registerIpcHandlers } from "./api";
+import path from "path";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, "../../.env.production") });
 
 function createWindow(): void {
   // Create the browser window.

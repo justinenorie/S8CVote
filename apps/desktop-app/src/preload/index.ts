@@ -13,6 +13,9 @@ const api: Api = {
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electron", electronAPI);
+    contextBridge.exposeInMainWorld("config", {
+      get: () => ipcRenderer.invoke("get-config"),
+    });
     contextBridge.exposeInMainWorld("api", api);
   } catch (error) {
     console.error(error);

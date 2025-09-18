@@ -4,6 +4,10 @@ import axios, { AxiosError } from "axios";
 let authToken: string | null = null;
 
 export function registerAuthHandlers(): void {
+  ipcMain.handle("get-config", () => {
+    return { BACKEND_URL: process.env.BACKEND_URL };
+  });
+
   ipcMain.handle("auth:login", async (_event, { adminUser, password }) => {
     try {
       const res = await axios.post(
