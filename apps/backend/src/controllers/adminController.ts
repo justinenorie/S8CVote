@@ -15,11 +15,11 @@ export const createCategory = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { title, description, maxVotesAllowed, status } = req.body;
+  const { election, description, maxVotesAllowed, status } = req.body;
 
   try {
     const category = await prisma.category.create({
-      data: { title, description, maxVotesAllowed, status },
+      data: { election, description, maxVotesAllowed, status },
     });
 
     const response: ApiResponse<typeof category> = {

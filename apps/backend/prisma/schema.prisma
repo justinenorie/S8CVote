@@ -36,7 +36,7 @@ model Admin {
 
 model Category {
   id              String @id @default(uuid())
-  title           String
+  election        String
   description     String
   maxVotesAllowed Int
   status          String

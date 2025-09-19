@@ -23,7 +23,7 @@ CREATE TABLE "Admin" (
 -- CreateTable
 CREATE TABLE "Category" (
     "id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
+    "election" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "maxVotesAllowed" INTEGER NOT NULL,
     "status" TEXT NOT NULL,
