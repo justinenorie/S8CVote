@@ -1,23 +1,22 @@
 import { ipcMain } from "electron";
 import axios, { AxiosError } from "axios";
 
-let authToken: string | null = null;
+let authToken: string | null = null; // Saving Token in main process memory
 
 export function registerAuthHandlers(): void {
-  ipcMain.handle("get-config", () => {
-    return { BACKEND_URL: process.env.BACKEND_URL };
-  });
-
   ipcMain.handle("auth:login", async (_event, { adminUser, password }) => {
     try {
       const res = await axios.post(
         `${process.env.BACKEND_URL}/api/auth/admin/login`,
-        { adminUser, password }
+        {
+          adminUser,
+          password,
+        }
       );
 
       if (res.data && res.data.success) {
-        authToken = res.data.token;
-        return { success: true, token: authToken };
+        authToken = res.data.token; // ✅ save token in memory
+        return { success: true, message: "Login Success" };
       } else {
         return { success: false, message: "Invalid credentials" };
       }
@@ -31,6 +30,9 @@ export function registerAuthHandlers(): void {
   });
 
   // TODO: Add more routes here
-  // you can add more routes here like:
   // ipcMain.handle("auth:logout", ...)
+}
+
+export function getAuthToken(): string | null {
+  return authToken;
 }

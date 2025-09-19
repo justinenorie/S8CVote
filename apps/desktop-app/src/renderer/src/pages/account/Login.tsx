@@ -27,14 +27,13 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
     try {
       const res: LoginResponse = await window.api.login(adminUser, password);
 
-      // TODO: Find a way to have safer way to save the accessTokens
-      if (res.success && res.token) {
-        localStorage.setItem("token", res.token);
+      if (res.success) {
         onLogin();
         navigate("/dashboard");
       } else {
         // TODO: Need a better alert
-        alert(res.message);
+        const responseJSON = JSON.stringify(res, null, 2);
+        alert(responseJSON);
       }
     } catch {
       alert("Unexpected error");

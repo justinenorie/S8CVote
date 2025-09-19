@@ -59,7 +59,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  // IPC HANDLER
+  // IPC HANDLER to communicate with the REST API
   registerIpcHandlers();
 
   createWindow();
