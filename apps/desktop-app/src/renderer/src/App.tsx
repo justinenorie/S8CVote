@@ -1,23 +1,16 @@
-import { Suspense, useState, useEffect } from "react";
+import { Suspense } from "react";
 import { HashRouter } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
+import { useAuthStore } from "./stores/useAuthStore";
 
 const App = (): React.JSX.Element => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    localStorage.getItem("isAuthenticated") === "true"
-  );
-
-  useEffect(() => {
-    localStorage.setItem("isAuthenticated", String(isAuthenticated));
-  }, [isAuthenticated]);
+  // TODO: Replace this entirely
+  const { user } = useAuthStore();
 
   return (
     <HashRouter>
       <Suspense fallback={<div className="p-6 text-center">Loading...</div>}>
-        <AppRoutes
-          isAuthenticated={isAuthenticated}
-          setIsAuthenticated={setIsAuthenticated}
-        />
+        <AppRoutes isAuthenticated={!!user} />
       </Suspense>
     </HashRouter>
   );

@@ -21,8 +21,4 @@ export type ElectionResponse = {
 };
 
 // Exporting the API types
-export interface Api {
-  login: (username: string, password: string) => Promise<LoginResponse>;
-  logout: () => Promise<LoginResponse>;
-  getElections: () => Promise<ElectionResponse>;
-}
+export interface Api {}

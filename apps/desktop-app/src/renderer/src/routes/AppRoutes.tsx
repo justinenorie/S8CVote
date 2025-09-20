@@ -14,18 +14,13 @@ const ProtectedRoutes = lazy(() => import("./ProtectedRoutes"));
 
 const AppRoutes = ({
   isAuthenticated,
-  setIsAuthenticated,
 }: {
   isAuthenticated: boolean;
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 }): React.JSX.Element => {
   return (
     <Routes>
       {/* Public routes (no layout) */}
-      <Route
-        path="/"
-        element={<Login onLogin={() => setIsAuthenticated(true)} />}
-      />
+      <Route path="/" element={<Login />} />
 
       {/* Protected routes (with layout) */}
       <Route element={<ProtectedRoutes isAuthenticated={isAuthenticated} />}>

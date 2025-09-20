@@ -24,9 +24,11 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
+    "@supabase/supabase-js": "^2.57.4",
     "axios": "^1.11.0",
     "dotenv": "^16.5.0",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",

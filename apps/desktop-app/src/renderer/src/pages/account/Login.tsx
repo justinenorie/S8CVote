@@ -1,43 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { LoginResponse } from "../../types/api";
 import Typography from "@renderer/components/ui/Typography";
 import s8cvotelogo from "../../assets/S8CVote-TempLogo.png";
 import { UserRound, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@renderer/components/ui/Button";
 import { Input } from "@renderer/components/ui/input";
+import { useAuthStore } from "@renderer/stores/useAuthStore";
 
-type LoginProps = {
-  onLogin: () => void;
-};
-
-const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
+const Login = (): React.JSX.Element => {
   const navigate = useNavigate();
-  const [adminUser, setAdminUser] = useState("");
+  const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+
+  const { signInWithPassword, loading, error } = useAuthStore();
 
   const handleLogin = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
-    setLoading(true);
+    await signInWithPassword(email, password);
 
-    try {
-      const res: LoginResponse = await window.api.login(adminUser, password);
-
-      if (res.success) {
-        onLogin();
-        navigate("/dashboard");
-      } else {
-        // TODO: Need a better alert
-        alert(res.message);
-      }
-    } catch {
-      alert("Unexpected error");
-    } finally {
-      setLoading(false);
+    if (useAuthStore.getState().user) {
+      navigate("/dashboard");
+    } else {
+      // TODO: Need a better alert
+      alert(error);
     }
   };
 
@@ -78,8 +67,8 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
               <Input
                 type="text"
                 className="border-TEXTdark/20 w-full rounded-lg border px-10"
-                value={adminUser}
-                onChange={(e) => setAdminUser(e.target.value)}
+                value={email}
+                onChange={(e) => setemail(e.target.value)}
                 placeholder="Email"
               />
             </div>
