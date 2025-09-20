@@ -1,9 +1,28 @@
+// LOGIN
 export type LoginResponse = {
   success: boolean;
   token?: string;
   message?: string;
 };
 
+// Elections
+export type Election = {
+  id: string;
+  election: string;
+  candidates: number;
+  duration: string;
+  status: "Active" | "Closed";
+};
+
+export type ElectionResponse = {
+  success: boolean;
+  message?: string;
+  data?: Election[];
+};
+
+// Exporting the API types
 export interface Api {
   login: (username: string, password: string) => Promise<LoginResponse>;
+  logout: () => Promise<LoginResponse>;
+  getElections: () => Promise<ElectionResponse>;
 }
