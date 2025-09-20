@@ -13,15 +13,9 @@ import {
   Delete,
   SquarePen,
 } from "lucide-react";
+import { Election } from "@renderer/types/api";
 
-export type Election = {
-  id: string;
-  election: string;
-  candidates: number;
-  duration: string;
-  status: "Open" | "Closed";
-};
-
+// Generating a column to render the data properly
 export const useElectionColumns = ({
   onEdit,
   onDelete,
@@ -55,6 +49,7 @@ export const useElectionColumns = ({
       header: "Duration",
     },
     {
+      // Status Filtering
       accessorKey: "status",
       header: ({ column }) => {
         return (
@@ -76,7 +71,7 @@ export const useElectionColumns = ({
                 All
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => column.setFilterValue("Open")}>
-                Open
+                Active
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => column.setFilterValue("Closed")}>
                 Closed
@@ -90,7 +85,7 @@ export const useElectionColumns = ({
         return (
           <span
             className={
-              status === "Open"
+              status === "Active"
                 ? "font-semibold text-green-600"
                 : "text-gray-500"
             }

@@ -13,7 +13,7 @@ export type Election = {
   election: string;
   candidates: number;
   duration: string;
-  status: "Open" | "Closed";
+  status: "Active" | "Closed";
 };
 
 // Simple reusable modal for demo

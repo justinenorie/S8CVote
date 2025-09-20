@@ -1,5 +1,4 @@
 import Typography from "@renderer/components/ui/Typography";
-import { DataTable } from "@renderer/components/ui/DataTable";
 
 const Candidates = (): React.JSX.Element => {
   return (

@@ -22,9 +22,23 @@ const SideNav = (): React.JSX.Element => {
   const navigate = useNavigate();
 
   // TODO: it also clear the tokens
-  const logout = (): void => {
-    localStorage.setItem("isAuthenticated", "false");
-    navigate("/", { replace: true });
+  const logout = async (): Promise<void> => {
+    try {
+      const res = await window.api.logout(); // calls ipcMain.handle("auth:logout")
+
+      if (res.success) {
+        // Clear any local storage / state if you used it
+        localStorage.removeItem("token");
+
+        // Navigate to login screen
+        navigate("/", { replace: true });
+      } else {
+        alert(JSON.stringify(res, null, 2));
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+      alert("Unexpected error while logging out");
+    }
   };
 
   const navItems = [

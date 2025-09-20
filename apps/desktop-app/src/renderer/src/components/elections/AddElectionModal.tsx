@@ -14,7 +14,7 @@ export function AddElectionModal({
       <div className="w-[400px] rounded-xl bg-white p-6 dark:bg-gray-800">
         <h1 className="mb-4 text-lg font-semibold">Add New Election</h1>
 
-        {/* TODO: Replace with your actual form */}
+        {/* TODO: Redesign the Form Later */}
         <input
           type="text"
           placeholder="Election name"

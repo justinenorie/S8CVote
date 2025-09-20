@@ -16,7 +16,7 @@ export function EditElectionModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
       <div className="w-[400px] rounded-xl bg-white p-6 dark:bg-gray-800">
         <h1 className="mb-4 text-lg font-semibold">Edit {election.election}</h1>
-        {/* TODO: form fields */}
+        {/* TODO: Design the UI for this Form */}
         <Button onClick={onClose}>Close</Button>
       </div>
     </div>
