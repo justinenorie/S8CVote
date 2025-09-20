@@ -12,6 +12,10 @@ const api: Api = {
     return ipcRenderer.invoke("auth:login", { adminUser, password });
   },
 
+  logout: async () => {
+    return ipcRenderer.invoke("auth:logout");
+  },
+
   getElections: async (): Promise<ElectionResponse> => {
     return ipcRenderer.invoke("elections:list");
   },

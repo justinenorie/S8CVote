@@ -12,6 +12,7 @@ type ApiResponse<T> = {
   message: string;
   data?: T;
   token?: string;
+  refreshToken?: string;
   errors?: string[];
 };
 
@@ -50,8 +51,7 @@ export const registerAdmin = async (
   res.status(201).json(response);
 };
 
-// ADMIN LOGIN
-// TODO: Use the accessToken for the frontend to do something such as add vote or delete something
+// ADMIN LOGIN - STRICTLY FOR ADMIN ONLY!! (Desktop)
 export const loginAdmin = async (req: Request, res: Response): Promise<any> => {
   const { adminUser, password } = req.body;
 
@@ -90,12 +90,13 @@ export const loginAdmin = async (req: Request, res: Response): Promise<any> => {
     success: true,
     message: "Login successful",
     token: accessToken,
+    refreshToken,
   };
 
   res
     .cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     })
@@ -143,30 +144,36 @@ export const loginStudent = async (
     });
 };
 
-// LOGOUT (for both admin & student)
+// LOGOUT ADMIN
 export const logout = async (req: Request, res: Response): Promise<any> => {
-  const token = req.cookies.refreshToken;
-  if (!token) return res.sendStatus(204);
+  const refreshToken = req.cookies.refreshToken;
 
-  try {
-    const decoded = verifyRefreshToken(token) as any;
+  // Check if admin exists with this refreshToken
+  const admin = await prisma.admin.findFirst({
+    where: { token: refreshToken },
+  });
 
-    if (decoded.role === "admin") {
-      await prisma.admin.update({
-        where: { id: decoded.id },
-        data: { token: null },
-      });
-    } else if (decoded.role === "student") {
-      await prisma.student.update({
-        where: { id: decoded.id },
-        data: { token: null },
-      });
-    }
-
-    res.clearCookie("refreshToken").sendStatus(200);
-  } catch {
-    res.sendStatus(403);
+  if (!admin) {
+    res.clearCookie("refreshToken");
+    return res.json({
+      success: true,
+      message: "Logged out (no matching user)",
+    });
   }
+
+  // Clear refreshToken in DB
+  await prisma.admin.update({
+    where: { id: admin.id },
+    data: { token: null },
+  });
+
+  res
+    .clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    })
+    .json({ success: true, message: "Logged out" });
 };
 
 // Refresh Access Token
@@ -174,11 +181,16 @@ export const refreshAccessToken = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  const token = req.cookies.refreshToken;
-  if (!token) return res.sendStatus(401);
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res
+      .status(401)
+      .json({ success: false, message: "No refresh token provided" });
+  }
 
   try {
-    const decoded = verifyRefreshToken(token) as {
+    const decoded = verifyRefreshToken(refreshToken) as {
       id: string;
       role: "admin" | "student";
     };
@@ -190,20 +202,27 @@ export const refreshAccessToken = async (
       user = await prisma.student.findUnique({ where: { id: decoded.id } });
     }
 
-    if (!user || user.token !== token) {
-      return res.sendStatus(403); // Refresh token is invalid or doesn't match DB
+    if (!user || user.token !== refreshToken) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Invalid refresh token" });
     }
 
+    // generate new access token
     const accessToken = generateAccessToken({
       id: decoded.id,
       role: decoded.role,
     });
+
     return res.status(200).json({
       success: true,
       token: accessToken,
-      message: "Login successful",
+      message: "Refresh successful",
     });
   } catch (err) {
-    return res.sendStatus(403); // Invalid refresh token
+    console.error("Refresh error:", err);
+    return res
+      .status(403)
+      .json({ success: false, message: "Token invalid or expired" });
   }
 };

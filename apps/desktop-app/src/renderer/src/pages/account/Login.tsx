@@ -32,8 +32,7 @@ const Login = ({ onLogin }: LoginProps): React.JSX.Element => {
         navigate("/dashboard");
       } else {
         // TODO: Need a better alert
-        const responseJSON = JSON.stringify(res, null, 2);
-        alert(responseJSON);
+        alert(res.message);
       }
     } catch {
       alert("Unexpected error");
