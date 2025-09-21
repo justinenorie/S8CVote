@@ -5,77 +5,12 @@ import { useElectionColumns } from "@renderer/components/elections/column";
 import { EditElectionModal } from "@renderer/components/elections/EditElectionModal";
 import { ConfirmDeleteModal } from "@renderer/components/ui/ConfirmDeleteModal";
 import { AddElectionModal } from "@renderer/components/elections/AddElectionModal";
+import { useElectionStore } from "@renderer/stores/useElectionStore";
 import { Election } from "@renderer/types/api";
 
-// const elections: Election[] = [
-//   {
-//     id: "1",
-//     election: "aPresident",
-//     candidates: 1,
-//     duration: "13 Days",
-//     status: "Open",
-//   },
-//   {
-//     id: "2",
-//     election: "bPresident",
-//     candidates: 3,
-//     duration: "Done",
-//     status: "Closed",
-//   },
-//   {
-//     id: "3",
-//     election: "cPresident",
-//     candidates: 4,
-//     duration: "3 Days",
-//     status: "Open",
-//   },
-//   {
-//     id: "4",
-//     election: "AdPresident",
-//     candidates: 5,
-//     duration: "14 hrs",
-//     status: "Open",
-//   },
-//   {
-//     id: "5",
-//     election: "President",
-//     candidates: 10,
-//     duration: "Done",
-//     status: "Closed",
-//   },
-//   {
-//     id: "6",
-//     election: "President",
-//     candidates: 10,
-//     duration: "Done",
-//     status: "Closed",
-//   },
-//   {
-//     id: "7",
-//     election: "President",
-//     candidates: 10,
-//     duration: "Done",
-//     status: "Closed",
-//   },
-//   {
-//     id: "8",
-//     election: "President",
-//     candidates: 10,
-//     duration: "Done",
-//     status: "Closed",
-//   },
-//   {
-//     id: "8",
-//     election: "V",
-//     candidates: 10,
-//     duration: "Done",
-//     status: "Closed",
-//   },
-// ];
-
 const Elections = (): React.JSX.Element => {
-  const [elections, setElections] = useState<Election[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { elections, loading, fetchElections, deleteElection } =
+    useElectionStore();
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -95,23 +30,8 @@ const Elections = (): React.JSX.Element => {
   });
 
   useEffect(() => {
-    const fetchElections = async (): Promise<void> => {
-      try {
-        setLoading(true);
-        const res = await window.api.getElections(); // ✅ ElectionResponse
-        if (res.success && res.data) {
-          setElections(res.data);
-        } else {
-          console.error("Failed to fetch elections:", res.message);
-        }
-      } catch (error) {
-        console.error("Error fetching elections:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchElections();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -129,17 +49,14 @@ const Elections = (): React.JSX.Element => {
       </header>
 
       {/* 📊 DataTable */}
-      {loading ? (
-        <p>Loading elections...</p>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={elections}
-          searchPlaceholder="Search Elections..."
-          addButtonLabel="Add New Election"
-          addModal={AddElectionModal}
-        />
-      )}
+      <DataTable
+        columns={columns}
+        data={elections}
+        isLoading={loading}
+        searchPlaceholder="Search Elections..."
+        addButtonLabel="Add New Election"
+        addModal={AddElectionModal}
+      />
 
       <EditElectionModal
         open={editModalOpen}
@@ -151,7 +68,7 @@ const Elections = (): React.JSX.Element => {
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={() => {
-          // TODO: handle delete
+          if (selectedElection) deleteElection(selectedElection.id);
           setDeleteModalOpen(false);
         }}
         itemName={selectedElection?.election ?? ""}

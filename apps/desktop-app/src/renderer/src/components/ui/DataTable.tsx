@@ -26,6 +26,7 @@ type DataTableProps<TData, TValue> = {
   data: TData[];
   searchPlaceholder?: string;
   addButtonLabel?: string;
+  isLoading?: boolean;
   addModal?: React.ComponentType<{
     open: boolean;
     onClose: () => void;
@@ -37,6 +38,7 @@ export function DataTable<TData, TValue>({
   data,
   searchPlaceholder,
   addButtonLabel,
+  isLoading,
   addModal: AddModal,
 }: DataTableProps<TData, TValue>): React.ReactElement {
   const [filter, setFilter] = React.useState("");
@@ -139,7 +141,11 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  <Typography variant="small">No results.</Typography>
+                  {isLoading ? (
+                    <Typography variant="small">Loading...</Typography>
+                  ) : (
+                    <Typography variant="small">No results.</Typography>
+                  )}
                 </TableCell>
               </TableRow>
             )}

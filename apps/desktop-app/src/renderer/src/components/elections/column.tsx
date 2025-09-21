@@ -70,10 +70,10 @@ export const useElectionColumns = ({
               >
                 All
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => column.setFilterValue("Open")}>
+              <DropdownMenuItem onClick={() => column.setFilterValue("active")}>
                 Active
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => column.setFilterValue("Closed")}>
+              <DropdownMenuItem onClick={() => column.setFilterValue("closed")}>
                 Closed
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -81,11 +81,11 @@ export const useElectionColumns = ({
         );
       },
       cell: ({ row }) => {
-        const status = row.getValue("status") as string;
+        const status = row.getValue("status") as "active" | "closed";
         return (
           <span
             className={
-              status === "Active"
+              status === "active"
                 ? "font-semibold text-green-600"
                 : "text-gray-500"
             }

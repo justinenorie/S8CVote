@@ -20,13 +20,6 @@ const sampleCategories = [
       { name: "Maria Clara", votes: 480 },
     ],
   },
-  {
-    title: "Vice President",
-    candidates: [
-      { name: "Juan Dela Cruz", votes: 450 },
-      { name: "Maria Clara", votes: 480 },
-    ],
-  },
 ];
 
 const Dashboard = (): React.JSX.Element => {

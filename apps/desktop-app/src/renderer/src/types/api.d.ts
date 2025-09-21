@@ -11,7 +11,7 @@ export type Election = {
   election: string;
   candidates: number;
   duration: string;
-  status: "Active" | "Closed";
+  status: "active" | "closed";
 };
 
 export type ElectionResponse = {
