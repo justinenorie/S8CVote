@@ -15,8 +15,19 @@ export function ConfirmDeleteModal({
 }): React.ReactElement | null {
   if (!open) return null;
 
+  const handleBackdropClick = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ): void => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
+      onClick={handleBackdropClick}
+    >
       <div className="w-[350px] rounded-xl bg-white p-6 text-center dark:bg-gray-800">
         <Typography variant="h3" className="mb-4">
           Delete {itemName}?

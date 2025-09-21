@@ -1,5 +1,5 @@
 import { Button } from "@renderer/components/ui/Button";
-import { Election } from "../candidates/column";
+import { Election } from "@renderer/types/api";
 
 export function EditElectionModal({
   open,

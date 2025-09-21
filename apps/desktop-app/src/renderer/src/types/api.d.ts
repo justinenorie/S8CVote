@@ -19,6 +19,3 @@ export type ElectionResponse = {
   message?: string;
   data?: Election[];
 };
-
-// Exporting the API types
-export interface Api {}

@@ -5,7 +5,6 @@ dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
-import { registerIpcHandlers } from "./api";
 
 console.log("🔑 BACKEND_URL (auth.ts):", process.env.BACKEND_URL);
 
@@ -62,7 +61,7 @@ app.whenReady().then(() => {
   });
 
   // IPC HANDLER to communicate with the REST API
-  registerIpcHandlers();
+  // ipc.handler
 
   createWindow();
 
