@@ -1,6 +1,11 @@
 import { create } from "zustand";
-import { supabase } from "@renderer/lib/supabaseClient"; // make sure you have this client in lib
+import { supabase } from "@renderer/lib/supabaseClient";
 import { Session, User } from "@supabase/supabase-js";
+
+type SignInResult =
+  | { data: null; error: string }
+  | { data: null; error: null }
+  | { data: { user: User; session: Session }; error: null };
 
 interface AuthState {
   user: User | null;
@@ -9,8 +14,11 @@ interface AuthState {
   error: string | null;
 
   // Actions
-  signInWithPassword: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, profile) => Promise<void>;
+  signInWithPassword: (
+    email: string,
+    password: string
+  ) => Promise<SignInResult>;
+  signUp: (email: string, password: string, profile: null) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -31,17 +39,32 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     if (error) {
       set({ error: error.message, loading: false });
-      return;
+      return { data: null, error: error.message };
     }
 
     if (data.user) {
-      await supabase.from("profiles").upsert({
-        id: data.user.id,
-        email: data.user.email,
-      });
+      // 🔎 Fetch profile role
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+
+      if (profileError || !profile) {
+        set({ error: "Profile not found", loading: false });
+        return { data: null, error: "Profile not found" };
+      }
+
+      if (profile.role !== "admin") {
+        await supabase.auth.signOut();
+        set({ user: null, session: null, loading: false });
+        return { data: null, error: "Only admins can log in here" };
+      }
     }
 
+    // ✅ success
     set({ user: data.user, session: data.session, loading: false });
+    return { data, error: null };
   },
 
   // SIGN UP
@@ -55,11 +78,19 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
 
     if (data.user) {
-      await supabase.from("profiles").upsert({
-        id: data.user.id,
-        email: data.user.email,
+      const { error: upsertError } = await supabase.from("profiles").upsert({
+        id: data.user.id, // same as auth.users.id
+        // @ts-ignore
+        role: (profile?.role ?? "student") as "student" | "admin" | "faculty",
+        // @ts-ignore
         fullname: profile?.fullname ?? null,
+        // @ts-ignore
+        student_id: profile?.student_id ?? null,
       });
+
+      if (upsertError) {
+        console.error("Profile upsert failed:", upsertError);
+      }
     }
 
     set({ user: data.user, session: data.session, loading: false });

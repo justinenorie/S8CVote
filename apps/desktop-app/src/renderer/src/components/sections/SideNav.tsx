@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -15,30 +15,38 @@ import { ThemeToggle } from "../ui/ThemeToggle";
 import Typography from "../ui/Typography";
 import { Button } from "../ui/Button";
 import s8cvotelogo from "../../assets/S8CVote-TempLogo.png";
+import { useAuthStore } from "@renderer/stores/useAuthStore";
+import AppRoutes from "@renderer/routes/AppRoutes";
 
 const SideNav = (): React.JSX.Element => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
+
+  const { signOut, error, user } = useAuthStore();
 
   // TODO: it also clear the tokens
   const logout = async (): Promise<void> => {
-    try {
-      const res = await window.api.logout(); // calls ipcMain.handle("auth:logout")
+    await signOut();
 
-      if (res.success) {
-        // Clear any local storage / state if you used it
-        localStorage.removeItem("token");
-
-        // Navigate to login screen
-        navigate("/", { replace: true });
-      } else {
-        alert(JSON.stringify(res, null, 2));
-      }
-    } catch (err) {
-      console.error("Logout error:", err);
-      alert("Unexpected error while logging out");
+    if (useAuthStore.getState().user) {
+      <AppRoutes isAuthenticated={!!user} />;
+    } else {
+      alert(error);
     }
+    // try {
+    //   const res = await window.api.logout(); // calls ipcMain.handle("auth:logout")
+    //   if (res.success) {
+    //     // Clear any local storage / state if you used it
+    //     localStorage.removeItem("token");
+    //     // Navigate to login screen
+    //     navigate("/", { replace: true });
+    //   } else {
+    //     alert(JSON.stringify(res, null, 2));
+    //   }
+    // } catch (err) {
+    //   console.error("Logout error:", err);
+    //   alert("Unexpected error while logging out");
+    // }
   };
 
   const navItems = [

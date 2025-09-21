@@ -14,19 +14,20 @@ const Login = (): React.JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
   // const [loading, setLoading] = useState(false);
 
-  const { signInWithPassword, loading, error } = useAuthStore();
+  const { signInWithPassword, loading } = useAuthStore();
 
   const handleLogin = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
-    await signInWithPassword(email, password);
 
-    if (useAuthStore.getState().user) {
-      navigate("/dashboard");
+    const result = await signInWithPassword(email, password);
+
+    if (result.error) {
+      alert(result.error);
     } else {
-      // TODO: Need a better alert
-      alert(error);
+      alert("Sign In Success");
+      navigate("/dashboard");
     }
   };
 
