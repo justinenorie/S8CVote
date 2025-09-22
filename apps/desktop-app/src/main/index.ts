@@ -6,8 +6,6 @@ import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
-console.log("🔑 BACKEND_URL (auth.ts):", process.env.BACKEND_URL);
-
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
