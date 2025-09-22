@@ -26,7 +26,6 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
   error: null,
 
   // FETCH
-  // FETCH
   fetchElections: async () => {
     set({ loading: true, error: null });
 
@@ -39,23 +38,13 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     candidates:candidates(id)
   `);
 
-    // 🔍 Log the raw response from Supabase
-    console.log("📦 Raw elections data from Supabase:", data);
     if (error) {
       console.error("❌ Error fetching elections:", error);
       set({ error: error.message, loading: false });
       return { data: null, error: error.message };
     }
 
-    // 🔍 If data is empty, show that too
-    if (!data || data.length === 0) {
-      console.warn("⚠️ No elections found in the database.");
-      set({ elections: [], loading: false });
-      return { data: [], error: null };
-    }
-
     const transformed: Election[] = data.map((e) => {
-      // Guard against null times
       let duration = "Not set";
       if (e.start_time && e.end_time) {
         const start = new Date(e.start_time);
@@ -78,9 +67,6 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
         duration,
       };
     });
-
-    // 🔍 Log after transformation
-    console.log("✅ Transformed elections for UI:", transformed);
 
     set({ elections: transformed, loading: false });
     return { data: transformed, error: null };

@@ -43,7 +43,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
 
     if (data.user) {
-      // 🔎 Fetch profile role
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("role")
@@ -62,7 +61,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
     }
 
-    // ✅ success
     set({ user: data.user, session: data.session, loading: false });
     return { data, error: null };
   },
@@ -80,7 +78,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     if (data.user) {
       const { error: upsertError } = await supabase.from("profiles").upsert({
-        id: data.user.id, // same as auth.users.id
+        id: data.user.id,
         // @ts-ignore
         role: (profile?.role ?? "student") as "student" | "admin" | "faculty",
         // @ts-ignore
@@ -104,7 +102,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 }));
 
-// 🔑 Listen for auth state changes
+// Listener for auth state changes
 supabase.auth.onAuthStateChange((event, session) => {
   const { user } = session ?? {};
   useAuthStore.setState({
