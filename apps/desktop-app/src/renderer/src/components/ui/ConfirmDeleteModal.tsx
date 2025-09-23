@@ -1,7 +1,7 @@
 import { Button } from "@renderer/components/ui/Button";
 import Typography from "./Typography";
+import { TriangleAlert } from "lucide-react";
 
-// TODO: need some tweaks here the design
 export function ConfirmDeleteModal({
   open,
   onClose,
@@ -28,18 +28,28 @@ export function ConfirmDeleteModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
       onClick={handleBackdropClick}
     >
-      <div className="w-[350px] rounded-xl bg-white p-6 text-center dark:bg-gray-800">
-        <Typography variant="h3" className="mb-4">
-          Delete {itemName}?
-        </Typography>
-        <Typography variant="p" className="mb-6">
-          This action cannot be undone.
-        </Typography>
+      <div className="bg-PRIMARY-50 dark:bg-PRIMARY-900 grid w-[380px] justify-items-center gap-4 rounded-xl p-6 text-center">
+        <TriangleAlert className="text-ERRORlight h-15 w-15" />
+
+        <div>
+          <Typography variant="h3" className="font-bold">
+            Are you sure to delete {itemName}?
+          </Typography>
+          <Typography variant="p">
+            This action cannot be undone. All values associated with this field
+            will be lost.
+          </Typography>
+        </div>
+
         <div className="flex justify-center gap-4">
-          <Button variant="outline" onClick={onClose}>
+          <Button
+            variant="outline"
+            className="bg-PRIMARY-50 dark:bg-PRIMARY-900/50 dark:hover:bg-PRIMARY-800 hover:dark:text-TEXTlight border-BGdark/20 w-full"
+            onClick={onClose}
+          >
             Cancel
           </Button>
-          <Button variant="destructive" onClick={onConfirm}>
+          <Button variant="destructive" className="w-full" onClick={onConfirm}>
             Delete
           </Button>
         </div>

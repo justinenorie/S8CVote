@@ -23,6 +23,8 @@ import {
 // Schema for Validation
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
+  // TODO: change the password requirements
+  // this is for testing only change this later
   password: z.string().min(4, "Password must be at least 6 characters"),
 });
 
