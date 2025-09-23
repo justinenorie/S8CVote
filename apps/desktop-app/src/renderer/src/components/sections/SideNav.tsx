@@ -17,6 +17,7 @@ import { Button } from "../ui/Button";
 import s8cvotelogo from "../../assets/S8CVote-TempLogo.png";
 import { useAuthStore } from "@renderer/stores/useAuthStore";
 import AppRoutes from "@renderer/routes/AppRoutes";
+import { toast } from "sonner";
 
 const SideNav = (): React.JSX.Element => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
@@ -28,25 +29,16 @@ const SideNav = (): React.JSX.Element => {
   const logout = async (): Promise<void> => {
     await signOut();
 
-    if (useAuthStore.getState().user) {
+    if (!useAuthStore.getState().user) {
+      toast.success("Logout Success!", {
+        description: "Clearing out your tokens...",
+      });
       <AppRoutes isAuthenticated={!!user} />;
     } else {
-      alert(error);
+      toast.error(error, {
+        description: `Please check: ${error}`,
+      });
     }
-    // try {
-    //   const res = await window.api.logout(); // calls ipcMain.handle("auth:logout")
-    //   if (res.success) {
-    //     // Clear any local storage / state if you used it
-    //     localStorage.removeItem("token");
-    //     // Navigate to login screen
-    //     navigate("/", { replace: true });
-    //   } else {
-    //     alert(JSON.stringify(res, null, 2));
-    //   }
-    // } catch (err) {
-    //   console.error("Logout error:", err);
-    //   alert("Unexpected error while logging out");
-    // }
   };
 
   const navItems = [
