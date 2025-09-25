@@ -6,12 +6,7 @@ import { Textarea } from "../ui/textarea";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { ChevronDownIcon, Lock, LockOpen } from "lucide-react";
-
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
-
+import { ChevronDownIcon, Lock, LockOpen, Loader2 } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -21,12 +16,18 @@ import {
   FormMessage,
 } from "@renderer/components/ui/form";
 import { Label } from "../ui/label";
+import { toast } from "sonner";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+import { useElectionStore } from "@renderer/stores/useElectionStore";
 
 // Add Election Form Schema
 const formSchema = z.object({
   name: z.string().min(1, "Election name is required"),
   status: z
-    .enum(["closed", "open"])
+    .enum(["active", "closed"])
     .refine((val) => val !== undefined && val !== null, {
       message: "Status is required",
     }),
@@ -48,15 +49,37 @@ export function AddElectionModal({
     resolver: zodResolver(formSchema),
   });
 
+  const { reset } = form;
+
   const [openState, setOpenState] = useState(false);
+  const { addElection, loading } = useElectionStore();
 
   if (!open) return null;
 
   // TODO: POST the data inside database
   const onSubmit = async (values: AddElectionForm): Promise<void> => {
-    // TODO: Change this into POST the data in DB
-    console.log(values);
-    onClose();
+    const payload = {
+      election: values.name,
+      status: values.status,
+      end_date: values.date.toISOString().split("T")[0],
+      end_time: values.time,
+      description: values.description ?? "",
+    };
+
+    const result = await addElection(payload);
+
+    if (result.error) {
+      console.error("❌ Failed to add election:", result.error);
+      toast.error(result.error, {
+        description: "Invalid Request.....",
+      });
+    } else {
+      toast.success("New Elections added successfully!", {
+        description: `${payload.election} has been added..`,
+      });
+      reset();
+      onClose();
+    }
   };
 
   return (
@@ -175,7 +198,7 @@ export function AddElectionModal({
                       onValueChange={field.onChange}
                       value={field.value}
                       className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 flex gap-2 rounded-md border p-1"
-                      defaultValue="open"
+                      defaultValue="active"
                     >
                       <FormItem className="flex-1">
                         <FormControl>
@@ -196,16 +219,16 @@ export function AddElectionModal({
                       <FormItem className="flex-1">
                         <FormControl>
                           <RadioGroupItem
-                            value="open"
-                            id="open"
+                            value="active"
+                            id="active"
                             className="peer sr-only"
                           />
                         </FormControl>
                         <Label
-                          htmlFor="open"
+                          htmlFor="active"
                           className="peer-data-[state=checked]:bg-PRIMARY-900 dark:peer-data-[state=checked]:bg-PRIMARY-200 dark:peer-data-[state=checked]:text-TEXTdark peer-data-[state=checked]:text-TEXTlight flex cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2 text-sm"
                         >
-                          <LockOpen className="h-4 w-4" /> Open
+                          <LockOpen className="h-4 w-4" /> Active
                         </Label>
                       </FormItem>
                     </RadioGroup>
@@ -246,9 +269,14 @@ export function AddElectionModal({
               <Button
                 type="submit"
                 variant="default"
+                disabled={loading}
                 className="bg-PRIMARY-900 dark:bg-PRIMARY-200 text-TEXTlight hover:bg-PRIMARY-800 hover:dark:bg-PRIMARY-400 dark:text-TEXTdark border-PRIMARY-700 border"
               >
-                Submit
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Submit"
+                )}
               </Button>
             </div>
           </form>

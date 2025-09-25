@@ -33,8 +33,8 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     id,
     election,
     status,
-    start_time,
     end_time,
+    end_date,
     candidates:candidates(id)
   `);
 
@@ -44,12 +44,13 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
       return { data: null, error: error.message };
     }
 
+    // TODO: Fix the duration display
     const transformed: Election[] = data.map((e) => {
       let duration = "Not set";
-      if (e.start_time && e.end_time) {
-        const start = new Date(e.start_time);
-        const end = new Date(e.end_time);
-        const diffMs = end.getTime() - start.getTime();
+      if (e.end_time && e.end_date) {
+        const end_time = new Date(e.end_time);
+        const end_date = new Date(e.end_date);
+        const diffMs = end_time.getTime() - end_date.getTime();
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
         const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
 

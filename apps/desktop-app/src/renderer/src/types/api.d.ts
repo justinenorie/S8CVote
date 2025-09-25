@@ -6,13 +6,16 @@ export type LoginResponse = {
 };
 
 // Elections
-export type Election = {
+export interface Election {
   id: string;
   election: string;
-  candidates: number;
-  duration: string;
   status: "active" | "closed";
-};
+  end_date?: string;
+  end_time?: string;
+  description?: string;
+  candidates?: number;
+  duration?: string;
+}
 
 export type ElectionResponse = {
   success: boolean;

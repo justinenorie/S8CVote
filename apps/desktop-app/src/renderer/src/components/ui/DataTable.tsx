@@ -81,7 +81,11 @@ export function DataTable<TData, TValue>({
 
         {AddModal && (
           <>
-            <Button variant="default" onClick={() => setAddModalOpen(true)}>
+            <Button
+              variant="default"
+              onClick={() => setAddModalOpen(true)}
+              className="cursor-pointer"
+            >
               <Plus />
               <Typography variant="small">
                 {addButtonLabel ?? "Add New"}
