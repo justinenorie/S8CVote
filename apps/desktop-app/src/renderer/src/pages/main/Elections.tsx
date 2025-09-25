@@ -7,6 +7,7 @@ import { ConfirmDeleteModal } from "@renderer/components/ui/ConfirmDeleteModal";
 import { AddElectionModal } from "@renderer/components/elections/AddElectionModal";
 import { useElectionStore } from "@renderer/stores/useElectionStore";
 import { Election } from "@renderer/types/api";
+import { toast } from "sonner";
 
 const Elections = (): React.JSX.Element => {
   const { elections, loading, fetchElections, deleteElection } =
@@ -34,6 +35,23 @@ const Elections = (): React.JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleDelete = async (): Promise<void> => {
+    if (!selectedElection) return;
+
+    const result = await deleteElection(selectedElection.id);
+
+    if (result.error) {
+      toast.error(`❌ Failed to delete: ${result.error}`);
+    } else {
+      toast.success("Delete SuccessFull!", {
+        description: `✅ ${selectedElection.election} deleted successfully..`,
+      });
+    }
+
+    setDeleteModalOpen(false);
+    setSelectedElection(null);
+  };
+
   return (
     <div className="text-TEXTdark dark:text-TEXTlight space-y-7">
       <header>
@@ -48,7 +66,7 @@ const Elections = (): React.JSX.Element => {
         </Typography>
       </header>
 
-      {/* 📊 DataTable */}
+      {/* DataTable */}
       <DataTable
         columns={columns}
         data={elections}
@@ -67,10 +85,7 @@ const Elections = (): React.JSX.Element => {
       <ConfirmDeleteModal
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
-        onConfirm={() => {
-          if (selectedElection) deleteElection(selectedElection.id);
-          setDeleteModalOpen(false);
-        }}
+        onConfirm={handleDelete}
         itemName={selectedElection?.election ?? ""}
       />
     </div>

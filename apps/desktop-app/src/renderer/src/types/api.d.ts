@@ -1,10 +1,3 @@
-// LOGIN
-export type LoginResponse = {
-  success: boolean;
-  token?: string;
-  message?: string;
-};
-
 // Elections
 export interface Election {
   id: string;
@@ -17,8 +10,4 @@ export interface Election {
   duration?: string;
 }
 
-export type ElectionResponse = {
-  success: boolean;
-  message?: string;
-  data?: Election[];
-};
+// TODO: Add more api types here

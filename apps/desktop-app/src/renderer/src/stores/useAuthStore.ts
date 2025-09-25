@@ -76,6 +76,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       return;
     }
 
+    // TODO: Change this later on...
     if (data.user) {
       const { error: upsertError } = await supabase.from("profiles").upsert({
         id: data.user.id,

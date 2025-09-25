@@ -110,11 +110,24 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
 
   // DELETE
   deleteElection: async (id) => {
-    const { error } = await supabase.from("elections").delete().eq("id", id);
+    const { data, error } = await supabase
+      .from("elections")
+      .delete()
+      .eq("id", id)
+      .select();
 
     if (error) {
       set({ error: error.message });
       return { data: null, error: error.message };
+    }
+
+    // FOR TESTING DELETE LATER
+    if (!data || data.length === 0) {
+      console.warn(
+        "⚠️ No election deleted. Check if the id matches exactly:",
+        id
+      );
+      return { data: null, error: "No election deleted" };
     }
 
     await get().fetchElections();
