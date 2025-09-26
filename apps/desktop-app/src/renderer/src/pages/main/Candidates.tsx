@@ -11,7 +11,7 @@ const Candidates = (): React.JSX.Element => {
           variant="p"
           className="text-TEXTdark/60 dark:text-TEXTlight/60"
         >
-          Overview of the student voting system
+          Keep track of candidates and update their details as needed
         </Typography>
       </header>
 

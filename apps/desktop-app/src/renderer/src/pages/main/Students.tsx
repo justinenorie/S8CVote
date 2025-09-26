@@ -11,7 +11,7 @@ const Students = (): React.JSX.Element => {
           variant="p"
           className="text-TEXTdark/60 dark:text-TEXTlight/60"
         >
-          Overview of the student voting system
+          View and manage the list of students for voter verification
         </Typography>
       </header>
     </div>

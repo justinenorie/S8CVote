@@ -11,7 +11,7 @@ const Reports = (): React.JSX.Element => {
           variant="p"
           className="text-TEXTdark/60 dark:text-TEXTlight/60"
         >
-          Overview of the student voting system
+          View and manage election reports here
         </Typography>
       </header>
     </div>

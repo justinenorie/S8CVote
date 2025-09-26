@@ -11,7 +11,7 @@ const Settings = (): React.JSX.Element => {
           variant="p"
           className="text-TEXTdark/60 dark:text-TEXTlight/60"
         >
-          Overview of the student voting system
+          Manage and configure admin settings
         </Typography>
       </header>
     </div>
