@@ -10,4 +10,11 @@ export interface Election {
   duration?: string;
 }
 
+export interface Candidates {
+  profile: string;
+  name: string;
+  election: string;
+  description?: string;
+}
+
 // TODO: Add more api types here
