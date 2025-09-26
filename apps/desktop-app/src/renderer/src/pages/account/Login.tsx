@@ -22,10 +22,12 @@ import {
 
 // Schema for Validation
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email({ message: "Invalid email address" }),
   // TODO: change the password requirements
   // this is for testing only change this later
-  password: z.string().min(4, "Password must be at least 6 characters"),
+  password: z
+    .string()
+    .min(4, { message: "Password must be at least 6 characters" }),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -76,7 +78,6 @@ const Login = (): React.JSX.Element => {
           </Typography>
         </div>
 
-        {/* TODO: Change this into REACT HOOK FORM */}
         {/* LOGIN FORM */}
         <Form {...form}>
           <form
@@ -110,7 +111,7 @@ const Login = (): React.JSX.Element => {
                       />
                     </div>
                   </FormControl>
-                  <FormMessage /> {/* shows validation error */}
+                  <FormMessage />
                 </FormItem>
               )}
             />

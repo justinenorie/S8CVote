@@ -25,7 +25,7 @@ import { useElectionStore } from "@renderer/stores/useElectionStore";
 
 // Add Election Form Schema
 const formSchema = z.object({
-  name: z.string().min(1, "Election name is required"),
+  name: z.string().min(1, { message: "Election name is required" }),
   status: z
     .enum(["active", "closed"])
     .refine((val) => val !== undefined && val !== null, {
@@ -47,6 +47,13 @@ export function AddElectionModal({
 }): React.ReactElement | null {
   const form = useForm<AddElectionForm>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      status: "active",
+      date: new Date(),
+      time: `${new Date().getHours().toString().padStart(2, "0")}:${new Date().getMinutes().toString().padStart(2, "0")}`,
+      description: "",
+    },
   });
 
   const { reset } = form;
@@ -69,7 +76,7 @@ export function AddElectionModal({
     const result = await addElection(payload);
 
     if (result.error) {
-      console.error("❌ Failed to add election:", result.error);
+      console.error("Failed to add election:", result.error);
       toast.error(result.error, {
         description: "Invalid Request.....",
       });

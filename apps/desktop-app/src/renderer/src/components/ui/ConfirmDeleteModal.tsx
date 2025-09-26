@@ -1,17 +1,19 @@
 import { Button } from "@renderer/components/ui/Button";
 import Typography from "./Typography";
-import { TriangleAlert } from "lucide-react";
+import { TriangleAlert, Loader2 } from "lucide-react";
 
 export function ConfirmDeleteModal({
   open,
   onClose,
   onConfirm,
   itemName,
+  isLoading,
 }: {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
   itemName: string;
+  isLoading?: boolean;
 }): React.ReactElement | null {
   if (!open) return null;
 
@@ -43,14 +45,23 @@ export function ConfirmDeleteModal({
 
         <div className="flex justify-center gap-4">
           <Button
-            variant="outline"
-            className="bg-PRIMARY-50 dark:bg-PRIMARY-900/50 dark:hover:bg-PRIMARY-800 hover:dark:text-TEXTlight border-BGdark/20 w-full"
+            variant="default"
+            className="bg-PRIMARY-50 dark:bg-PRIMARY-900/50 hover:bg-PRIMARY-200 hover:dark:bg-PRIMARY-800 text-TEXTdark dark:text-TEXTlight border-PRIMARY-700 w-full border"
             onClick={onClose}
           >
             Cancel
           </Button>
-          <Button variant="destructive" className="w-full" onClick={onConfirm}>
-            Delete
+          <Button
+            variant="destructive"
+            className="w-full"
+            onClick={onConfirm}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Delete"
+            )}
           </Button>
         </div>
       </div>

@@ -82,10 +82,13 @@ const Elections = (): React.JSX.Element => {
         election={selectedElection}
       />
 
+      {/* TODO: Add a Delete message */}
+      {/* TODO: Add a loading method here */}
       <ConfirmDeleteModal
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={handleDelete}
+        isLoading={loading}
         itemName={selectedElection?.election ?? ""}
       />
     </div>
