@@ -39,7 +39,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
   `);
 
     if (error) {
-      console.error("❌ Error fetching elections:", error);
+      console.error("Error fetching elections:", error);
       set({ error: error.message, loading: false });
       return { data: null, error: error.message };
     }
@@ -47,17 +47,28 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     // TODO: Fix the duration display
     const transformed: Election[] = data.map((e) => {
       let duration = "Not set";
-      if (e.end_time && e.end_date) {
-        const end_time = new Date(e.end_time);
-        const end_date = new Date(e.end_date);
-        const diffMs = end_time.getTime() - end_date.getTime();
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
 
-        duration = "";
-        if (diffDays > 0) duration += `${diffDays}d `;
-        if (diffHours > 0) duration += `${diffHours}h`;
-        if (!duration) duration = "Less than 1h";
+      if (e.end_date && e.end_time) {
+        // Combine date + time into a single Date
+        const endDateTime = new Date(`${e.end_date}T${e.end_time}`);
+        const now = new Date();
+
+        // Difference in ms
+        const diffMs = endDateTime.getTime() - now.getTime();
+
+        if (diffMs > 0) {
+          const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+          const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+          const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
+
+          duration = "";
+          if (diffDays > 0) duration += `${diffDays}d `;
+          if (diffHours > 0) duration += `${diffHours}h `;
+          if (diffMinutes > 0 && diffDays === 0) duration += `${diffMinutes}m`;
+          if (!duration) duration = "Less than 1m";
+        } else {
+          duration = "Done";
+        }
       }
 
       return {
@@ -121,7 +132,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
       return { data: null, error: error.message };
     }
 
-    // FOR TESTING DELETE LATER
+    // TODO: FOR TESTING DELETE LATER
     if (!data || data.length === 0) {
       console.warn(
         "⚠️ No election deleted. Check if the id matches exactly:",
