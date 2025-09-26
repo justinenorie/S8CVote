@@ -63,7 +63,6 @@ export function AddElectionModal({
 
   if (!open) return null;
 
-  // TODO: POST the data inside database
   const onSubmit = async (values: AddElectionForm): Promise<void> => {
     const payload = {
       election: values.name,

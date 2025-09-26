@@ -35,7 +35,8 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     status,
     end_time,
     end_date,
-    candidates:candidates(id)
+    candidates:candidates(id),
+    description
   `);
 
     if (error) {
@@ -76,7 +77,10 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
         election: e.election,
         status: e.status,
         candidates: e.candidates?.length ?? 0,
+        end_date: e.end_date,
+        end_time: e.end_time,
         duration,
+        description: e.description,
       };
     });
 
@@ -108,7 +112,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
       .update(updates)
       .eq("id", id)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       set({ error: error.message });
