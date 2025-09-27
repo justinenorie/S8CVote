@@ -90,7 +90,7 @@ export const useElectionColumns = ({
                 : "text-gray-500"
             }
           >
-            {status}
+            {status === "active" ? "Active" : "Closed"}
           </span>
         );
       },
