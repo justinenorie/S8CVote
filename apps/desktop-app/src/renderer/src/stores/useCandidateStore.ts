@@ -45,7 +45,6 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
         )
       `
     );
-
     if (error) {
       console.error("Error fetching candidates:", error);
       set({ error: error.message, loading: false });
@@ -59,10 +58,11 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
         description: c.description,
         profile: c.profile,
         election_id: c.election_id,
-        election: c.election ? c.election[0] : undefined,
+        election: Array.isArray(c.election) ? c.election[0] : c.election, // ✅ fix typing
       };
     });
 
+    console.log(candidatesData);
     set({ candidates: candidatesData, loading: false });
     return { data: candidatesData, error: null };
   },

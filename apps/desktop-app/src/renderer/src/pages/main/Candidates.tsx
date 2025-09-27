@@ -1,30 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Typography from "@renderer/components/ui/Typography";
 import { useCandidatesColumns } from "@renderer/components/candidates/column";
 import { DataTable } from "@renderer/components/ui/DataTable";
+import { EditCandidatesModal } from "@renderer/components/candidates/EditCandidatesModal";
+import { ConfirmDeleteModal } from "@renderer/components/ui/ConfirmDeleteModal";
+import { AddCandidatesModal } from "@renderer/components/candidates/AddCandidatesModal";
+
+import { useCandidateStore } from "@renderer/stores/useCandidateStore";
 import { Candidates } from "@renderer/types/api";
 
-// TODO: Change this. This is Temporary
-import { EditElectionModal } from "@renderer/components/elections/EditElectionModal";
-import { ConfirmDeleteModal } from "@renderer/components/ui/ConfirmDeleteModal";
-import { AddElectionModal } from "@renderer/components/elections/AddElectionModal";
-
-const sampleData: Candidates[] = [
-  {
-    profile: "https://avatars.githubusercontent.com/u/123456?v=4",
-    name: "John Doe",
-    election: "President",
-    description: "A very nice person",
-  },
-  {
-    profile: "https://avatars.githubusercontent.com/u/789012?v=4",
-    name: "Jane Doe",
-    election: "Vice President",
-    description: "A very nice person too",
-  },
-];
+// TODO: Remove this later
+// const sampleData: Candidates[] = [
+//   {
+//     id: "1",
+//     profile:
+//       "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small_2x/profile-icon-design-free-vector.jpg",
+//     name: "John Doe",
+//     election: {
+//       id: "1",
+//       election: "President",
+//       status: "active",
+//     },
+//     description: "A very nice person",
+//   },
+//   {
+//     id: "2",
+//     profile:
+//       "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small_2x/profile-icon-design-free-vector.jpg",
+//     name: "Jane Doe",
+//     election: {
+//       id: "2",
+//       election: "Vice President",
+//       status: "active",
+//     },
+//     description: "A very nice person too",
+//   },
+// ];
 
 const CandidatesPage = (): React.JSX.Element => {
+  // TODO: Add Loading later
+  const { candidates, fetchCandidates, loading } = useCandidateStore();
+
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedCandidates, setSelectedCandidates] =
@@ -41,8 +57,10 @@ const CandidatesPage = (): React.JSX.Element => {
     },
   });
 
-  // TODO: Use Effect to fetch data here
-  // useEffect(() => { }, []);
+  useEffect(() => {
+    fetchCandidates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // TODO: Handle Deletes here
   const handleDelete = async (): Promise<void> => {};
@@ -64,18 +82,19 @@ const CandidatesPage = (): React.JSX.Element => {
       {/* <DataTable /> */}
       <DataTable
         columns={columns}
-        data={sampleData}
+        data={candidates}
+        isLoading={loading}
         searchPlaceholder="Search Candidates...."
         addButtonLabel="Add New Candidates"
-        addModal={AddElectionModal}
+        addModal={AddCandidatesModal}
       />
 
       {/* TODO: Change this into Candidates Modal */}
-      {/* <EditElectionModal
+      <EditCandidatesModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
-        election={selectedCandidates}
-      /> */}
+        candidates={selectedCandidates}
+      />
 
       <ConfirmDeleteModal
         open={deleteModalOpen}

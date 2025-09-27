@@ -16,7 +16,11 @@ export interface Candidates {
   name: string;
   description?: string;
   election_id?: string;
-  election?: Pick<Election, "id" | "election" | "status">;
+  election: {
+    id: string;
+    election: string;
+    status: "active" | "closed";
+  } | null;
 }
 
 // TODO: Add more api types here

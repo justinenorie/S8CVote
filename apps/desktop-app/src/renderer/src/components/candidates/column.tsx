@@ -19,30 +19,43 @@ export const useCandidatesColumns = ({
   const columns: ColumnDef<Candidates>[] = [
     {
       accessorKey: "profile",
-      header: "Profiles",
+      header: "Profile",
+      cell: ({ row }) => {
+        const name = row.getValue("name") as string;
+        const url = row.getValue("profile") as string;
+        return (
+          <img
+            src={url}
+            alt={`${name} Profile`}
+            className="h-10 w-10 rounded-full object-cover"
+          />
+        );
+      },
     },
     {
       accessorKey: "name",
-      header: "Names",
+      header: "Name",
     },
     {
       accessorKey: "election",
       header: "Election",
+      accessorFn: (row) => row.election?.election,
     },
     {
       accessorKey: "status",
       header: "Status",
+      accessorFn: (row) => row.election?.status,
       cell: ({ row }) => {
-        const status = row.getValue("status") as string;
+        const status = row.getValue("status") as "active" | "closed";
         return (
           <span
             className={
-              status === "Open"
+              status === "active"
                 ? "font-semibold text-green-600"
                 : "text-gray-500"
             }
           >
-            {status}
+            {status === "active" ? "Active" : "Closed"}
           </span>
         );
       },
