@@ -11,10 +11,12 @@ export interface Election {
 }
 
 export interface Candidates {
+  id: string;
   profile: string;
   name: string;
-  election: string;
   description?: string;
+  election_id?: string;
+  election?: Pick<Election, "id" | "election" | "status">;
 }
 
 // TODO: Add more api types here
