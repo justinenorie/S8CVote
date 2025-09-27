@@ -88,6 +88,7 @@ export function AddElectionModal({
     }
   };
 
+  // TODO: FIX THE CALENDAR BUG - If you pick a date it will pick the day before not the day you picked
   return (
     <div
       className="bg-BGdark/30 dark:bg-BGlight/10 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
