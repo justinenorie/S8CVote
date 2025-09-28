@@ -117,7 +117,6 @@ export const AddCandidatesModal = ({
               <FormItem>
                 <FormLabel>Election Position</FormLabel>
                 <FormControl>
-                  {/* TODO: Change this into shadcn select */}
                   <div className="relative">
                     <Select {...field}>
                       <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border-1">
@@ -126,6 +125,7 @@ export const AddCandidatesModal = ({
                       <SelectContent className="bg-PRIMARY-100 dark:bg-PRIMARY-800 text-TEXTdark dark:text-TEXTlight">
                         <SelectGroup>
                           <SelectLabel>Election Positions</SelectLabel>
+                          {/* TODO: Render the item based on the current positions from db */}
                           <SelectItem
                             value="president"
                             className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80 dark:focus:text-TEXTdark/80 focus:text-TEXTlight/80"
