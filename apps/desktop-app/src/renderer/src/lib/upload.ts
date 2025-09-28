@@ -22,6 +22,5 @@ export async function uploadProfileImage(file: File): Promise<string | null> {
 
   // Get public URL of uploaded file
   const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
-  console.log(data);
   return data.publicUrl;
 }

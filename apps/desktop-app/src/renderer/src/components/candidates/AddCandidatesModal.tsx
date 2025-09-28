@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@renderer/components/ui/select";
 import { toast } from "sonner";
+import { UserRound, Loader2 } from "lucide-react";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -58,7 +59,7 @@ export const AddCandidatesModal = ({
 
   const { reset } = form;
 
-  const { addCandidate } = useCandidateStore();
+  const { addCandidate, loading } = useCandidateStore();
   const { elections, fetchElections } = useElectionStore();
 
   // Fetch Elections
@@ -130,20 +131,24 @@ export const AddCandidatesModal = ({
               <FormItem>
                 <FormLabel>Profile Image</FormLabel>
                 <FormControl>
-                  <div className="flex flex-col gap-2">
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => field.onChange(e.target.files?.[0])}
-                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 cursor-pointer border-1"
-                    />
-                    {field.value && field.value instanceof File && (
+                  <div className="flex flex-row items-center gap-2">
+                    {!field.value || !(field.value instanceof File) ? (
+                      <div className="bg-PRIMARY-800/50 dark:bg-PRIMARY-400/50 flex h-fit w-fit items-center justify-center rounded-full border object-cover p-2">
+                        <UserRound size={40} />
+                      </div>
+                    ) : (
                       <img
                         src={URL.createObjectURL(field.value)}
                         alt="Preview"
                         className="h-16 w-16 rounded-full border object-cover"
                       />
                     )}
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => field.onChange(e.target.files?.[0])}
+                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 cursor-pointer border-1"
+                    />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -242,9 +247,14 @@ export const AddCandidatesModal = ({
             <Button
               type="submit"
               variant="default"
+              disabled={loading}
               className="bg-PRIMARY-900 dark:bg-PRIMARY-200 text-TEXTlight hover:bg-PRIMARY-800 hover:dark:bg-PRIMARY-400 dark:text-TEXTdark border-PRIMARY-700 border"
             >
-              Submit
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Submit"
+              )}
             </Button>
           </div>
         </form>

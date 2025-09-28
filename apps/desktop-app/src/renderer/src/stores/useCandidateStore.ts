@@ -62,7 +62,6 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
       };
     });
 
-    console.log(candidatesData);
     set({ candidates: candidatesData, loading: false });
     return { data: candidatesData, error: null };
   },
