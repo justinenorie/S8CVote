@@ -74,6 +74,7 @@ const Elections = (): React.JSX.Element => {
         searchPlaceholder="Search Elections..."
         addButtonLabel="Add New Election"
         addModal={AddElectionModal}
+        defaultSorting={[{ id: "election", desc: false }]}
       />
 
       <EditElectionModal

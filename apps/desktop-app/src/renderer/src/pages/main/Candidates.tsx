@@ -87,6 +87,7 @@ const CandidatesPage = (): React.JSX.Element => {
         searchPlaceholder="Search Candidates...."
         addButtonLabel="Add New Candidates"
         addModal={AddCandidatesModal}
+        defaultSorting={[{ id: "name", desc: false }]}
       />
 
       {/* TODO: Change this into Candidates Modal */}
