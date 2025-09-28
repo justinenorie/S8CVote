@@ -3,7 +3,7 @@ import Typography from "@renderer/components/ui/Typography";
 import { useCandidatesColumns } from "@renderer/components/candidates/column";
 import { DataTable } from "@renderer/components/ui/DataTable";
 import { EditCandidatesModal } from "@renderer/components/candidates/EditCandidatesModal";
-import { ConfirmDeleteModal } from "@renderer/components/ui/ConfirmDeleteModal";
+import { ConfirmDialog } from "@renderer/components/ui/ConfirmDialog";
 import { AddCandidatesModal } from "@renderer/components/candidates/AddCandidatesModal";
 
 import { useCandidateStore } from "@renderer/stores/useCandidateStore";
@@ -97,12 +97,15 @@ const CandidatesPage = (): React.JSX.Element => {
         candidates={selectedCandidates}
       />
 
-      <ConfirmDeleteModal
+      <ConfirmDialog
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={handleDelete}
         // isLoading={loading}
-        itemName={selectedCandidates?.name ?? ""}
+        title={`Are you sure to delete ${selectedCandidates?.name ?? ""}?`}
+        description=" This action cannot be undone. All values associated with this field will be lost."
+        confirmLabel="Delete"
+        confirmVariant="destructive"
       />
     </div>
   );

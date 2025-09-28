@@ -18,12 +18,15 @@ import s8cvotelogo from "../../assets/S8CVote-TempLogo.png";
 import { useAuthStore } from "@renderer/stores/useAuthStore";
 import AppRoutes from "@renderer/routes/AppRoutes";
 import { toast } from "sonner";
+import { ConfirmDialog } from "../ui/ConfirmDialog";
 
 const SideNav = (): React.JSX.Element => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const [showConfirmLogout, setShowConfirmLogout] = React.useState(false);
+
   const location = useLocation();
 
-  const { signOut, error, user } = useAuthStore();
+  const { signOut, error, user, loading } = useAuthStore();
 
   // TODO: it also clear the tokens
   const logout = async (): Promise<void> => {
@@ -119,15 +122,29 @@ const SideNav = (): React.JSX.Element => {
               <Typography variant="p">Admin Admin</Typography>
               <Typography variant="small">example@gmail.com</Typography>
             </div>
-            <Button variant="ghost" onClick={logout}>
+            <Button variant="ghost" onClick={() => setShowConfirmLogout(true)}>
               <LogOut />
             </Button>
           </div>
         ) : (
-          <Button variant="ghost" onClick={logout}>
+          <Button variant="ghost" onClick={() => setShowConfirmLogout(true)}>
             <LogOut />
           </Button>
         )}
+
+        <ConfirmDialog
+          open={showConfirmLogout}
+          onClose={() => setShowConfirmLogout(false)}
+          onConfirm={() => {
+            setShowConfirmLogout(false);
+            logout();
+          }}
+          isLoading={loading}
+          title="Confirm Logout"
+          description="Are you sure you want to log out?"
+          confirmLabel="Logout"
+          confirmVariant="destructive"
+        />
       </div>
     </aside>
   );

@@ -2,17 +2,23 @@ import { Button } from "@renderer/components/ui/Button";
 import Typography from "./Typography";
 import { TriangleAlert, Loader2 } from "lucide-react";
 
-export function ConfirmDeleteModal({
+export function ConfirmDialog({
   open,
   onClose,
   onConfirm,
-  itemName,
+  title,
+  description,
+  confirmLabel = "Confirm",
+  confirmVariant = "destructive",
   isLoading,
 }: {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  itemName: string;
+  title: string;
+  description?: string;
+  confirmLabel?: string;
+  confirmVariant?: "default" | "destructive" | "ghost";
   isLoading?: boolean;
 }): React.ReactElement | null {
   if (!open) return null;
@@ -35,12 +41,9 @@ export function ConfirmDeleteModal({
 
         <div>
           <Typography variant="h3" className="font-bold">
-            Are you sure to delete {itemName}?
+            {title}
           </Typography>
-          <Typography variant="p">
-            This action cannot be undone. All values associated with this field
-            will be lost.
-          </Typography>
+          {description && <Typography variant="p">{description}</Typography>}
         </div>
 
         <div className="flex justify-center gap-4">
@@ -52,7 +55,7 @@ export function ConfirmDeleteModal({
             Cancel
           </Button>
           <Button
-            variant="destructive"
+            variant={confirmVariant}
             className="w-full"
             onClick={onConfirm}
             disabled={isLoading}
@@ -60,7 +63,7 @@ export function ConfirmDeleteModal({
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              "Delete"
+              confirmLabel
             )}
           </Button>
         </div>
