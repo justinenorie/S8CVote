@@ -103,20 +103,17 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
 
   // DELETE
   deleteCandidate: async (id) => {
-    const { data, error } = await supabase
+    const { data: candidate } = await supabase
       .from("candidates")
-      .delete()
+      .select("profile_path")
       .eq("id", id)
-      .select();
+      .single();
 
-    if (error) {
-      set({ error: error.message });
-      return { data: null, error: error.message };
-    }
+    const { error } = await supabase.from("candidates").delete().eq("id", id);
+    if (error) return { data: null, error: error.message };
 
-    if (!data || data.length === 0) {
-      console.warn("⚠️ No candidate deleted. Check id:", id);
-      return { data: null, error: "No candidate deleted" };
+    if (candidate?.profile_path) {
+      await supabase.storage.from("avatars").remove([candidate.profile_path]);
     }
 
     await get().fetchCandidates();

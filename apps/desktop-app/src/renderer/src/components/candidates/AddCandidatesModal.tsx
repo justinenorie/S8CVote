@@ -71,17 +71,21 @@ export const AddCandidatesModal = ({
 
   const onSubmit = async (values: AddCandidateForm): Promise<void> => {
     let profileUrl: string | null = null;
+    let profilePath: string | null = null;
 
     if (values.profile instanceof File) {
-      profileUrl = await uploadProfileImage(values.profile);
-      if (!profileUrl) {
+      const uploaded = await uploadProfileImage(values.profile);
+      if (!uploaded) {
         toast.error("Failed to upload profile image");
         return;
       }
+      profileUrl = uploaded.publicUrl;
+      profilePath = uploaded.path;
     }
 
     const payload = {
       profile: profileUrl,
+      profile_path: profilePath,
       name: values.name,
       election_id: values.election_id,
       description: values.description,

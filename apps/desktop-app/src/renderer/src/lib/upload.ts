@@ -1,6 +1,8 @@
 import { supabase } from "@renderer/lib/supabaseClient";
 
-export async function uploadProfileImage(file: File): Promise<string | null> {
+export async function uploadProfileImage(
+  file: File
+): Promise<{ publicUrl: string; path: string } | null> {
   if (!file) return null;
 
   const fileExt = file.name.split(".").pop();
@@ -22,5 +24,5 @@ export async function uploadProfileImage(file: File): Promise<string | null> {
 
   // Get public URL of uploaded file
   const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
-  return data.publicUrl;
+  return { publicUrl: data.publicUrl, path: filePath };
 }
