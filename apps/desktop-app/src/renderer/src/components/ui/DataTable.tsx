@@ -31,6 +31,7 @@ type DataTableProps<TData, TValue> = {
     open: boolean;
     onClose: () => void;
   }>;
+  defaultSorting?: SortingState;
 };
 
 export function DataTable<TData, TValue>({
@@ -40,12 +41,11 @@ export function DataTable<TData, TValue>({
   addButtonLabel,
   isLoading,
   addModal: AddModal,
+  defaultSorting = [],
 }: DataTableProps<TData, TValue>): React.ReactElement {
   const [filter, setFilter] = React.useState("");
 
-  const [sorting, setSorting] = React.useState<SortingState>([
-    { id: "election", desc: false },
-  ]);
+  const [sorting, setSorting] = React.useState<SortingState>(defaultSorting);
 
   const [addModalOpen, setAddModalOpen] = React.useState(false);
 
