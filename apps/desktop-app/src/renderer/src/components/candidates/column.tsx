@@ -24,11 +24,17 @@ export const useCandidatesColumns = ({
         const name = row.getValue("name") as string;
         const url = row.getValue("profile") as string;
         return (
-          <img
-            src={url}
-            alt={`${name} Profile`}
-            className="h-10 w-10 rounded-full object-cover"
-          />
+          <div>
+            {url ? (
+              <img
+                src={url}
+                alt={`${name} Profile`}
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="dark:bg-PRIMARY-200/80 bg-PRIMARY-900/80 h-10 w-10 rounded-full" />
+            )}
+          </div>
         );
       },
     },
