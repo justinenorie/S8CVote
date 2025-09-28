@@ -11,7 +11,7 @@
     default-src 'self';
     script-src 'self';
     style-src 'self' 'unsafe-inline';
-    img-src 'self' data: https://static.vecteezy.com/ https://*.supabase.co;
+    img-src 'self' data: blob: https://static.vecteezy.com/ https://*.supabase.co http://localhost:5173/*;
     connect-src 'self' http://localhost:5173 https://*.supabase.co https://*.supabase.in;"
     />
     <!-- https://*.supabase.in → needed if the project is hosted in Supabase’s India region. -->
