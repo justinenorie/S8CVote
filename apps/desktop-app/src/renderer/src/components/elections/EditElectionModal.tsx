@@ -72,11 +72,6 @@ export function EditElectionModal({
       form.setValue("date", new Date(`${election.end_date}`));
       form.setValue("time", `${election.end_time}`);
       form.setValue("description", election.description);
-
-      console.log("📅 End Date:", election.end_date);
-      console.log("⏰ End Time (clean):", election.end_time);
-      console.log("🆔 Election ID:", election.id);
-      console.log("Description:", election.description);
     }
   }, [election, form]);
 
