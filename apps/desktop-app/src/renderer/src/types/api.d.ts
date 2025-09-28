@@ -12,7 +12,7 @@ export interface Election {
 
 export interface Candidates {
   id: string;
-  profile: string;
+  profile: string | null;
   name: string;
   description?: string;
   election_id?: string;

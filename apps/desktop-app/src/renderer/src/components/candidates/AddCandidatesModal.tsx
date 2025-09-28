@@ -20,14 +20,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@renderer/components/ui/select";
+import { toast } from "sonner";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import { useCandidateStore } from "@renderer/stores/useCandidateStore";
+import { useElectionStore } from "@renderer/stores/useElectionStore";
+import { uploadProfileImage } from "@renderer/lib/upload";
 
+// Form Candidate Schema
 const formCandidateSchema = z.object({
   profile: z.any().optional(),
   name: z.string().min(1, { message: "Candidate name is required" }),
-  election_id: z.string().min(1, { message: "Election Position is required" }),
+  election_id: z.string({ message: "Election Position is required" }),
   description: z.string().optional(),
 });
 
@@ -42,13 +48,59 @@ export const AddCandidatesModal = ({
 }): React.ReactElement | null => {
   const form = useForm<AddCandidateForm>({
     resolver: zodResolver(formCandidateSchema),
-    // TODO: Add a Default value
+    defaultValues: {
+      profile: "",
+      name: "",
+      election_id: "",
+      description: "",
+    },
   });
+
+  const { reset } = form;
+
+  const { addCandidate } = useCandidateStore();
+  const { elections, fetchElections } = useElectionStore();
+
+  // Fetch Elections
+  React.useEffect(() => {
+    if (open) fetchElections();
+  }, [open, fetchElections]);
 
   if (!open) return null;
 
   const onSubmit = async (values: AddCandidateForm): Promise<void> => {
-    console.log("Form submitted:", values);
+    let profileUrl: string | null = null;
+
+    if (values.profile instanceof File) {
+      profileUrl = await uploadProfileImage(values.profile);
+      if (!profileUrl) {
+        toast.error("Failed to upload profile image");
+        return;
+      }
+    }
+
+    const payload = {
+      profile: profileUrl,
+      name: values.name,
+      election_id: values.election_id,
+      description: values.description,
+    };
+
+    const result = await addCandidate(payload);
+
+    if (result.error) {
+      console.error("Failed to add candidate:", result.error);
+      toast.error(result.error, {
+        description: "Invalid Request.....",
+      });
+    } else {
+      toast.success("New Candidates added successfully!", {
+        description: `${payload.name} has been added..`,
+      });
+      reset();
+      onClose();
+    }
+    reset();
     onClose();
   };
 
@@ -78,12 +130,21 @@ export const AddCandidatesModal = ({
               <FormItem>
                 <FormLabel>Profile Image</FormLabel>
                 <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => field.onChange(e.target.files?.[0])}
-                    className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 cursor-pointer border-1"
-                  />
+                  <div className="flex flex-col gap-2">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => field.onChange(e.target.files?.[0])}
+                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 cursor-pointer border-1"
+                    />
+                    {field.value && field.value instanceof File && (
+                      <img
+                        src={URL.createObjectURL(field.value)}
+                        alt="Preview"
+                        className="h-16 w-16 rounded-full border object-cover"
+                      />
+                    )}
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -118,20 +179,26 @@ export const AddCandidatesModal = ({
                 <FormLabel>Election Position</FormLabel>
                 <FormControl>
                   <div className="relative">
-                    <Select {...field}>
+                    <Select
+                      {...field}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border-1">
                         <SelectValue placeholder="Select Election Postion" />
                       </SelectTrigger>
                       <SelectContent className="bg-PRIMARY-100 dark:bg-PRIMARY-800 text-TEXTdark dark:text-TEXTlight">
                         <SelectGroup>
                           <SelectLabel>Election Positions</SelectLabel>
-                          {/* TODO: Render the item based on the current positions from db */}
-                          <SelectItem
-                            value="president"
-                            className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80 dark:focus:text-TEXTdark/80 focus:text-TEXTlight/80"
-                          >
-                            SSG President
-                          </SelectItem>
+                          {elections.map((election) => (
+                            <SelectItem
+                              key={election.id}
+                              value={election.id}
+                              className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80"
+                            >
+                              {election.election}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
