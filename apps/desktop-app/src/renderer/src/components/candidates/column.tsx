@@ -6,7 +6,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@renderer/components/ui/dropdown-menu";
-import { Delete, SquarePen } from "lucide-react";
+import {
+  ArrowUpDown,
+  ArrowDown,
+  ArrowUp,
+  Delete,
+  SquarePen,
+} from "lucide-react";
 import { Candidates } from "@renderer/types/api";
 
 export const useCandidatesColumns = ({
@@ -40,16 +46,68 @@ export const useCandidatesColumns = ({
     },
     {
       accessorKey: "name",
-      header: "Name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            className="flex items-center gap-1"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Name
+            {column.getIsSorted() === "asc" && <ArrowUp />}
+            {column.getIsSorted() === "desc" && <ArrowDown />}
+          </Button>
+        );
+      },
     },
     {
       accessorKey: "election",
-      header: "Election",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            className="flex items-center gap-1"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Elections
+            {column.getIsSorted() === "asc" && <ArrowUp />}
+            {column.getIsSorted() === "desc" && <ArrowDown />}
+          </Button>
+        );
+      },
       accessorFn: (row) => row.election?.election,
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: ({ column }) => {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-1">
+                Status
+                <ArrowUpDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              className="bg-PRIMARY-50 dark:bg-PRIMARY-950 text-TEXTdark dark:text-TEXTlight"
+            >
+              {/* Filtering */}
+              <DropdownMenuItem
+                onClick={() => column.setFilterValue(undefined)}
+              >
+                All
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => column.setFilterValue("active")}>
+                Active
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => column.setFilterValue("closed")}>
+                Closed
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
       accessorFn: (row) => row.election?.status,
       cell: ({ row }) => {
         const status = row.getValue("status") as "active" | "closed";
