@@ -5,6 +5,7 @@ import { DataTable } from "@renderer/components/ui/DataTable";
 import { EditCandidatesModal } from "@renderer/components/candidates/EditCandidatesModal";
 import { ConfirmDialog } from "@renderer/components/ui/ConfirmDialog";
 import { AddCandidatesModal } from "@renderer/components/candidates/AddCandidatesModal";
+import { toast } from "sonner";
 
 import { useCandidateStore } from "@renderer/stores/useCandidateStore";
 import { Candidates } from "@renderer/types/api";
@@ -39,7 +40,8 @@ import { Candidates } from "@renderer/types/api";
 
 const CandidatesPage = (): React.JSX.Element => {
   // TODO: Add Loading later
-  const { candidates, fetchCandidates, loading } = useCandidateStore();
+  const { candidates, loading, fetchCandidates, deleteCandidate } =
+    useCandidateStore();
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -62,8 +64,22 @@ const CandidatesPage = (): React.JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // TODO: Handle Deletes here
-  const handleDelete = async (): Promise<void> => {};
+  const handleDelete = async (): Promise<void> => {
+    if (!selectedCandidates) return;
+
+    const result = await deleteCandidate(selectedCandidates.id);
+
+    if (result.error) {
+      toast.error(`❌ Failed to delete: ${result.error}`);
+    } else {
+      toast.success("Delete SuccessFull!", {
+        description: `✅ ${selectedCandidates.name} deleted successfully..`,
+      });
+    }
+
+    setDeleteModalOpen(false);
+    setSelectedCandidates(null);
+  };
 
   return (
     <div className="text-TEXTdark dark:text-TEXTlight space-y-7">
@@ -101,7 +117,7 @@ const CandidatesPage = (): React.JSX.Element => {
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={handleDelete}
-        // isLoading={loading}
+        isLoading={loading}
         title={`Are you sure to delete ${selectedCandidates?.name ?? ""}?`}
         description=" This action cannot be undone. All values associated with this field will be lost."
         confirmLabel="Delete"
