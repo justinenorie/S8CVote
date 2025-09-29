@@ -103,7 +103,7 @@ export const EditCandidatesModal = ({
     let profilePath: string | null = null;
 
     if (values.profile instanceof File) {
-      const uploaded = await uploadProfileImage(values.profile);
+      const uploaded = await uploadProfileImage(values.profile, candidates.id);
       if (!uploaded) {
         toast.error("Failed to upload profile image");
         return;
@@ -132,8 +132,8 @@ export const EditCandidatesModal = ({
         description: "Invalid Request.....",
       });
     } else {
-      toast.success("New Candidates added successfully!", {
-        description: `${payload.name} has been added..`,
+      toast.success("Updated successfully!", {
+        description: `${payload.name}'s information updated successfully..`,
       });
       reset();
       onClose();
