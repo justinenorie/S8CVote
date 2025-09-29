@@ -20,9 +20,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@renderer/components/ui/select";
+import { toast } from "sonner";
+import { UserRound, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import { useCandidateStore } from "@renderer/stores/useCandidateStore";
+import { useElectionStore } from "@renderer/stores/useElectionStore";
+import { uploadProfileImage } from "@renderer/lib/upload";
 import { Candidates } from "@renderer/types/api";
 
 // Form Candidate Schema
@@ -46,27 +51,93 @@ export const EditCandidatesModal = ({
 }): React.ReactElement | null => {
   const form = useForm<EditCandidatesModal>({
     resolver: zodResolver(formCandidateSchema),
-    // TODO: Add a Default value
+    defaultValues: {
+      profile: "",
+      name: "",
+      election_id: "",
+      description: "",
+    },
   });
 
-  // Fetching the current data using the setValue
-  // useEffect(() => {
-  //   if (election) {
-  //     form.setValue("name", election.election);
-  //     form.setValue("status", election.status);
-  //     form.setValue("date", new Date(`${election.end_date}`));
-  //     form.setValue("time", `${election.end_time}`);
-  //     form.setValue("description", election.description);
+  const { reset } = form;
 
-  //   }
-  // }, [election, form]);
+  const { updateCandidate, loading } = useCandidateStore();
+  const { elections, fetchElections } = useElectionStore();
+  const [originalImageUrl, setOriginalImageUrl] = React.useState<string | null>(
+    null
+  );
+
+  // Fetching Elections for Select
+  React.useEffect(() => {
+    if (open) {
+      fetchElections();
+    }
+  }, [open, fetchElections]);
+
+  // Fetching Candidates Info
+  React.useEffect(() => {
+    if (open && candidates && elections.length > 0) {
+      setOriginalImageUrl(candidates.profile || null);
+
+      form.reset({
+        profile: candidates.profile || "",
+        name: candidates.name || "",
+        election_id: String(candidates.election_id),
+        description: candidates.description || "",
+      });
+    }
+  }, [open, candidates, elections, form]);
+
+  // Fetching the Image initially
+  React.useEffect(() => {
+    if (!open) {
+      setOriginalImageUrl(null);
+      form.reset();
+    }
+  }, [open, form]);
 
   if (!open || !candidates) return null;
 
-  // TODO: Submit data here
   const onSubmit = async (values: EditCandidatesModal): Promise<void> => {
-    console.log("Form submitted:", values);
-    onClose();
+    let profileUrl: string | null = originalImageUrl;
+    let profilePath: string | null = null;
+
+    if (values.profile instanceof File) {
+      const uploaded = await uploadProfileImage(values.profile);
+      if (!uploaded) {
+        toast.error("Failed to upload profile image");
+        return;
+      }
+      profileUrl = uploaded.publicUrl;
+      profilePath = uploaded.path;
+    } else if (typeof values.profile === "string" && values.profile) {
+      profileUrl = values.profile;
+    } else if (!values.profile && originalImageUrl) {
+      profileUrl = originalImageUrl;
+    }
+
+    const payload = {
+      profile: profileUrl,
+      profile_path: profilePath,
+      name: values.name,
+      election_id: values.election_id,
+      description: values.description,
+    };
+
+    const result = await updateCandidate(candidates.id, payload);
+
+    if (result.error) {
+      console.error("Failed to add candidate:", result.error);
+      toast.error(result.error, {
+        description: "Invalid Request.....",
+      });
+    } else {
+      toast.success("New Candidates added successfully!", {
+        description: `${payload.name} has been added..`,
+      });
+      reset();
+      onClose();
+    }
   };
 
   return (
@@ -95,12 +166,34 @@ export const EditCandidatesModal = ({
               <FormItem>
                 <FormLabel>Profile Image</FormLabel>
                 <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => field.onChange(e.target.files?.[0])}
-                    className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 cursor-pointer border-1"
-                  />
+                  <div className="flex flex-row items-center gap-2">
+                    {!field.value ? (
+                      <div className="bg-PRIMARY-800/50 flex h-16 w-16 items-center justify-center rounded-full">
+                        <UserRound size={40} />
+                      </div>
+                    ) : field.value instanceof File ? (
+                      <img
+                        src={URL.createObjectURL(field.value)}
+                        alt="Preview"
+                        className="h-16 w-16 rounded-full border object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={field.value}
+                        alt="Profile"
+                        className="h-16 w-16 rounded-full border object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    )}
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => field.onChange(e.target.files?.[0])}
+                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 cursor-pointer border-1"
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -135,20 +228,22 @@ export const EditCandidatesModal = ({
                 <FormLabel>Election Position</FormLabel>
                 <FormControl>
                   <div className="relative">
-                    <Select {...field}>
+                    <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border-1">
                         <SelectValue placeholder="Select Election Postion" />
                       </SelectTrigger>
                       <SelectContent className="bg-PRIMARY-100 dark:bg-PRIMARY-800 text-TEXTdark dark:text-TEXTlight">
                         <SelectGroup>
                           <SelectLabel>Election Positions</SelectLabel>
-                          {/* TODO: Render the item based on the current positions from db */}
-                          <SelectItem
-                            value="president"
-                            className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80 dark:focus:text-TEXTdark/80 focus:text-TEXTlight/80"
-                          >
-                            SSG President
-                          </SelectItem>
+                          {elections.map((election) => (
+                            <SelectItem
+                              key={election.id}
+                              value={String(election.id)}
+                              className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80"
+                            >
+                              {election.election}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -192,9 +287,14 @@ export const EditCandidatesModal = ({
             <Button
               type="submit"
               variant="default"
+              disabled={loading}
               className="bg-PRIMARY-900 dark:bg-PRIMARY-200 text-TEXTlight hover:bg-PRIMARY-800 hover:dark:bg-PRIMARY-400 dark:text-TEXTdark border-PRIMARY-700 border"
             >
-              Submit
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Save Changes"
+              )}
             </Button>
           </div>
         </form>
