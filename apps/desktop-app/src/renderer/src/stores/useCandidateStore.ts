@@ -84,7 +84,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
   },
 
   // UPDATE
-  updateCandidate: async (id, updates) => {
+  updateCandidate: async (id: string, updates: Partial<Candidates>) => {
     const { data, error } = await supabase
       .from("candidates")
       .update(updates)

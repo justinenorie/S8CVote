@@ -13,6 +13,7 @@ export interface Election {
 export interface Candidates {
   id: string;
   profile: string | null;
+  profile_path?: string | null;
   name: string;
   description?: string;
   election_id?: string;

@@ -59,7 +59,7 @@ export const AddCandidatesModal = ({
 
   const { reset } = form;
 
-  const { addCandidate, loading } = useCandidateStore();
+  const { addCandidate, updateCandidate, loading } = useCandidateStore();
   const { elections, fetchElections } = useElectionStore();
 
   // Fetch Elections
@@ -70,41 +70,53 @@ export const AddCandidatesModal = ({
   if (!open) return null;
 
   const onSubmit = async (values: AddCandidateForm): Promise<void> => {
+    const insertPayload = {
+      profile: "",
+      profile_path: "",
+      name: values.name,
+      election_id: values.election_id,
+      description: values.description,
+    };
+
+    const result = await addCandidate(insertPayload);
+
+    if (result.error || !result.data) {
+      console.error("Failed to add candidate:", result.error);
+      toast.error(result.error ?? "Failed to add candidate", {
+        description: "Invalid Request...",
+      });
+      return;
+    }
+
+    const candidateId = result.data.id;
+
     let profileUrl: string | null = null;
     let profilePath: string | null = null;
 
     if (values.profile instanceof File) {
-      const uploaded = await uploadProfileImage(values.profile);
+      const uploaded = await uploadProfileImage(values.profile, candidateId);
       if (!uploaded) {
         toast.error("Failed to upload profile image");
         return;
       }
       profileUrl = uploaded.publicUrl;
       profilePath = uploaded.path;
+
+      const updateResult = await updateCandidate(candidateId, {
+        profile: profileUrl,
+        profile_path: profilePath,
+      });
+
+      if (updateResult.error) {
+        toast.error("Failed to update candidate image");
+        return;
+      }
     }
 
-    const payload = {
-      profile: profileUrl,
-      profile_path: profilePath,
-      name: values.name,
-      election_id: values.election_id,
-      description: values.description,
-    };
+    toast.success("New Candidate added successfully!", {
+      description: `${values.name} has been added.`,
+    });
 
-    const result = await addCandidate(payload);
-
-    if (result.error) {
-      console.error("Failed to add candidate:", result.error);
-      toast.error(result.error, {
-        description: "Invalid Request.....",
-      });
-    } else {
-      toast.success("New Candidates added successfully!", {
-        description: `${payload.name} has been added..`,
-      });
-      reset();
-      onClose();
-    }
     reset();
     onClose();
   };
