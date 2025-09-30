@@ -67,11 +67,13 @@ export function EditElectionModal({
   // Fetching the current data using the setValue
   useEffect(() => {
     if (election) {
-      form.setValue("name", election.election);
-      form.setValue("status", election.status);
-      form.setValue("date", new Date(`${election.end_date}`));
-      form.setValue("time", `${election.end_time}`);
-      form.setValue("description", election.description);
+      form.reset({
+        name: election.election || "",
+        status: election.status || "",
+        date: new Date(`${election.end_date}`),
+        time: `${election.end_time}`,
+        description: election.description,
+      });
     }
   }, [election, form]);
 
