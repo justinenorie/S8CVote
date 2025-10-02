@@ -8,6 +8,10 @@ export interface Election {
   description?: string;
   candidates?: number;
   duration?: string;
+  synced?: boolean;
+  deletedAt?: string | null;
+  updatedAt?: string;
+  createdAt?: string;
 }
 
 export interface Candidates {
@@ -22,6 +26,31 @@ export interface Candidates {
     election: string;
     status: "active" | "closed";
   } | null;
+  synced?: boolean;
+  deletedAt?: string | null;
+  updatedAt?: string;
+  createdAt?: string;
 }
 
 // TODO: Add more api types here
+// // Students (voters)
+// export interface Student {
+//   id: string;
+//   fullname: string;
+//   student_id: string;
+//   email?: string;
+//   synced?: boolean;
+//   deletedAt?: string | null;
+//   updatedAt?: string;
+//   createdAt?: string;
+// }
+
+// // Settings
+// export interface Setting {
+//   id: string;
+//   key: string;
+//   value: string;
+//   synced?: boolean;
+//   updatedAt?: string;
+//   createdAt?: string;
+// }
