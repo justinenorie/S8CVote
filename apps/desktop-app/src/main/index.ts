@@ -1,9 +1,7 @@
-import path from "path";
-import dotenv from "dotenv";
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
-
 import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
+import { initDatabase } from "./db/sqliteDB";
+import { setupIpcHandlers } from "./ipcHandlers";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
 function createWindow(): void {
@@ -58,8 +56,11 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  // IPC HANDLER to communicate with the REST API
-  // ipc.handler
+  // Database
+  initDatabase();
+
+  // IPC HANDLER
+  setupIpcHandlers();
 
   createWindow();
 

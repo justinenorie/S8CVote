@@ -18,7 +18,6 @@ interface AuthState {
     email: string,
     password: string
   ) => Promise<SignInResult>;
-  signUp: (email: string, password: string, profile: null) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -61,44 +60,28 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
     }
 
+    // Save locally via IPC
+    await window.electronAPI.adminLogin({
+      id: data.user.id,
+      email: data.user.email!,
+      role: "admin",
+      access_token: data.session?.access_token,
+      refresh_token: data.session?.refresh_token,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+
     set({ user: data.user, session: data.session, loading: false });
     return { data, error: null };
   },
 
   // SIGN UP
   // TODO: set up the sign up properly
-  signUp: async (email, password, profile) => {
-    set({ loading: true, error: null });
-    const { data, error } = await supabase.auth.signUp({ email, password });
 
-    if (error) {
-      set({ error: error.message, loading: false });
-      return;
-    }
-
-    // TODO: Change this later on...
-    if (data.user) {
-      const { error: upsertError } = await supabase.from("profiles").upsert({
-        id: data.user.id,
-        // @ts-ignore
-        role: (profile?.role ?? "student") as "student" | "admin" | "faculty",
-        // @ts-ignore
-        fullname: profile?.fullname ?? null,
-        // @ts-ignore
-        student_id: profile?.student_id ?? null,
-      });
-
-      if (upsertError) {
-        console.error("Profile upsert failed:", upsertError);
-      }
-    }
-
-    set({ user: data.user, session: data.session, loading: false });
-  },
-
-  // SIGN OUT
+  // Sign out
   signOut: async () => {
     await supabase.auth.signOut();
+    await window.electronAPI.clearSession();
     set({ user: null, session: null });
   },
 }));
