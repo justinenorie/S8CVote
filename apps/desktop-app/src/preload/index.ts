@@ -4,10 +4,10 @@ import { electronAPI } from "@electron-toolkit/preload";
 // Save All the API methods here
 const api = {
   // Elections
-  getElections: () => ipcRenderer.invoke("get-elections"),
-  addElection: (data) => ipcRenderer.invoke("add-election", data),
-  updateElection: (data) => ipcRenderer.invoke("update-election", data),
-  deleteElection: (id) => ipcRenderer.invoke("delete-election", id),
+  getElections: () => ipcRenderer.invoke("elections:get"),
+  addElection: (data) => ipcRenderer.invoke("elections:add", data),
+  updateElection: (data) => ipcRenderer.invoke("elections:update", data),
+  deleteElection: (id) => ipcRenderer.invoke("elections:delete", id),
 
   // Auth
   adminLogin: (data: { id: string; email: string }) =>

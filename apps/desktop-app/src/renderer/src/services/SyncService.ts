@@ -5,6 +5,7 @@ import type { Election } from "../types/api";
 export class SyncService {
   private syncInProgress = false;
 
+  // Sync Elections
   async syncElections(
     userId: string
   ): Promise<{ success: boolean; error?: string }> {

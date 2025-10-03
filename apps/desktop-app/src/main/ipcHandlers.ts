@@ -19,12 +19,12 @@ let electionSyncQueue: {
 
 export function setupIpcHandlers(): void {
   // ELECTIONS
-  ipcMain.handle("get-elections", async () => {
+  ipcMain.handle("elections:get", async () => {
     const db = getDatabase();
     return db.select().from(elections);
   });
 
-  ipcMain.handle("add-election", async (_, electionData) => {
+  ipcMain.handle("elections:add", async (_, electionData) => {
     const db = getDatabase();
     await db.insert(elections).values({
       ...electionData,
@@ -39,7 +39,7 @@ export function setupIpcHandlers(): void {
     return { success: true };
   });
 
-  ipcMain.handle("update-election", async (_, { id, ...data }) => {
+  ipcMain.handle("elections:update", async (_, { id, ...data }) => {
     const db = getDatabase();
     await db
       .update(elections)
@@ -53,7 +53,7 @@ export function setupIpcHandlers(): void {
     return { success: true };
   });
 
-  ipcMain.handle("delete-election", async (_, id: string) => {
+  ipcMain.handle("elections:delete", async (_, id: string) => {
     const db = getDatabase();
     await db
       .update(elections)
