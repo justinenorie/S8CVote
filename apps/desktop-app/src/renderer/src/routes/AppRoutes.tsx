@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "@renderer/services/AuthProvider";
 
 const Layout = lazy(() => import("@renderer/components/sections/Layout"));
 const Login = lazy(() => import("@renderer/pages/account/Login"));
@@ -12,18 +13,19 @@ const Settings = lazy(() => import("@renderer/pages/main/Settings"));
 const NotFound = lazy(() => import("@renderer/pages/NotFound"));
 const ProtectedRoutes = lazy(() => import("./ProtectedRoutes"));
 
-const AppRoutes = ({
-  isAuthenticated,
-}: {
-  isAuthenticated: boolean;
-}): React.JSX.Element => {
+const AppRoutes = (): React.JSX.Element => {
+  const { user } = useAuth();
+
   return (
     <Routes>
       {/* Public routes (no layout) */}
-      <Route path="/" element={<Login />} />
+      <Route
+        path="/"
+        element={user ? <Navigate to="/dashboard" replace /> : <Login />}
+      />
 
       {/* Protected routes (with layout) */}
-      <Route element={<ProtectedRoutes isAuthenticated={isAuthenticated} />}>
+      <Route element={<ProtectedRoutes />}>
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/elections" element={<Elections />} />
@@ -35,10 +37,7 @@ const AppRoutes = ({
         </Route>
       </Route>
 
-      {/* If user isn’t logged in and hits random route */}
-      {!isAuthenticated && (
-        <Route path="*" element={<Navigate to="/" replace />} />
-      )}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };

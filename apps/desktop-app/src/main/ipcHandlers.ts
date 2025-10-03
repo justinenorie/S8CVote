@@ -100,7 +100,8 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("auth:getUser", async () => {
     const db = getDatabase();
-    return db.select().from(adminAuth);
+    const [user] = await db.select().from(adminAuth).limit(1);
+    return user ?? null;
   });
 
   ipcMain.handle("auth:clearSession", async () => {

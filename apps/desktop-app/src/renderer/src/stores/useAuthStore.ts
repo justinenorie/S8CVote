@@ -2,12 +2,12 @@ import { create } from "zustand";
 import { supabase } from "@renderer/lib/supabaseClient";
 import { Session, User } from "@supabase/supabase-js";
 
-type SignInResult =
+export type SignInResult =
   | { data: null; error: string }
   | { data: null; error: null }
   | { data: { user: User; session: Session }; error: null };
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   session: Session | null;
   loading: boolean;
@@ -58,18 +58,18 @@ export const useAuthStore = create<AuthState>((set) => ({
         set({ user: null, session: null, loading: false });
         return { data: null, error: "Only admins can log in here" };
       }
-    }
 
-    // Save locally via IPC
-    await window.electronAPI.adminLogin({
-      id: data.user.id,
-      email: data.user.email!,
-      role: "admin",
-      access_token: data.session?.access_token,
-      refresh_token: data.session?.refresh_token,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    });
+      // Save locally via IPC
+      await window.electronAPI.adminLogin({
+        id: data.user.id,
+        email: data.user.email!,
+        role: "admin",
+        access_token: data.session?.access_token,
+        refresh_token: data.session?.refresh_token,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+    }
 
     set({ user: data.user, session: data.session, loading: false });
     return { data, error: null };
