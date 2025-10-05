@@ -107,7 +107,7 @@
   --foreground: var(--color-TEXTdark);
 
   /* Surfaces */
-  --card: var(--color-BGlight);
+  --card: var(--color-PRIMARY-50);
   --card-foreground: var(--color-TEXTdark);
   --popover: var(--color-BGlight);
   --popover-foreground: var(--color-TEXTdark);
@@ -123,8 +123,8 @@
   --muted: var(--color-PRIMARY-100);
   --muted-foreground: var(--color-PRIMARY-700);
 
-  --accent: var(--color-SECONDARY-100);
-  --accent-foreground: var(--color-SECONDARY-900);
+  --accent: var(--color-PRIMARY-100);
+  --accent-foreground: var(--color-PRIMARY-900);
 
   --destructive: var(--color-ERRORlight);
   --destructive-foreground: var(--color-TEXTlight);
@@ -139,8 +139,8 @@
   --sidebar-foreground: var(--color-TEXTdark);
   --sidebar-primary: var(--color-PRIMARY-500);
   --sidebar-primary-foreground: var(--color-TEXTlight);
-  --sidebar-accent: var(--color-SECONDARY-100);
-  --sidebar-accent-foreground: var(--color-SECONDARY-900);
+  --sidebar-accent: var(--color-PRIMARY-100);
+  --sidebar-accent-foreground: var(--color-PRIMARY-900);
   --sidebar-border: var(--color-PRIMARY-200);
   --sidebar-ring: var(--color-PRIMARY-400);
 }
@@ -151,7 +151,7 @@
   --foreground: var(--color-TEXTlight);
 
   /* Surfaces */
-  --card: var(--color-BGdark);
+  --card: var(--color-PRIMARY-900);
   --card-foreground: var(--color-TEXTlight);
   --popover: var(--color-BGdark);
   --popover-foreground: var(--color-TEXTlight);
@@ -167,7 +167,7 @@
   --muted: var(--color-PRIMARY-800);
   --muted-foreground: var(--color-PRIMARY-200);
 
-  --accent: var(--color-SECONDARY-700);
+  --accent: var(--color-PRIMARY-700);
   --accent-foreground: var(--color-TEXTlight);
 
   --destructive: var(--color-ERRORlight);
