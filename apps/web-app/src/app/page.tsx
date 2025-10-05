@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 
 import {
   Form,
@@ -17,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/Typography";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -27,6 +30,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   // Form Schema
   const form = useForm<LoginFormValues>({
@@ -40,11 +44,13 @@ export default function LoginPage() {
   const onSubmit = (values: LoginFormValues) => {
     console.log("Form Data:", values);
     // TODO: Supabase submit value here
+    router.push("/dashboard");
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-BGlight dark:bg-BGdark">
-      <div className="flex w-[900px] overflow-hidden rounded-lg border bg-card shadow-lg">
+    <div className="bg-BGlight dark:bg-BGdark flex min-h-screen items-center justify-center px-5 sm:px-10">
+      <link rel="icon" href="/s8cvote.png" sizes="any" />
+      <div className="bg-PRIMARY-50 flex w-full max-w-[1050px] overflow-hidden rounded-lg border shadow-lg">
         {/* Left Side - Image */}
         <div className="hidden w-1/2 md:block">
           <Image
@@ -54,15 +60,16 @@ export default function LoginPage() {
             className="h-full w-full object-cover"
             width={150}
             height={150}
+            priority={true}
           />
         </div>
 
         {/* Right Side - Form */}
-        <div className="flex w-full flex-col items-center justify-center p-8 md:w-1/2">
-          <Typography variant="h2" className="mb-2">
+        <div className="bg-PRIMARY-50 flex w-full flex-col items-center justify-center p-8 md:w-1/2">
+          <Typography variant="h2" className="">
             Welcome back
           </Typography>
-          <Typography variant="p" className="mb-6 text-muted-foreground">
+          <Typography variant="p" className="text-muted-foreground mb-6">
             Login to your S8CVote account
           </Typography>
 
@@ -79,7 +86,17 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="email@example.com" {...field} />
+                      <div className="relative">
+                        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+                          <Mail className="h-5 w-5" />
+                        </span>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="email@example.com"
+                          className="px-10"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -92,20 +109,39 @@ export default function LoginPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <div className="flex justify-between">
+                      <FormLabel>Password</FormLabel>
+                      <Typography variant="small">
+                        <Link
+                          href="/forgot-password"
+                          className="text-primary hover:underline"
+                        >
+                          Forgot password?
+                        </Link>
+                      </Typography>
+                    </div>
+
                     <FormControl>
                       <div className="relative">
+                        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+                          <Lock className="h-5 w-5" />
+                        </span>
                         <Input
                           type={showPassword ? "text" : "password"}
                           placeholder="Password"
+                          className="px-10"
                           {...field}
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-2 text-sm text-muted-foreground"
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
                         >
-                          {showPassword ? "🙈" : "👁️"}
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
                         </button>
                       </div>
                     </FormControl>
@@ -114,28 +150,25 @@ export default function LoginPage() {
                 )}
               />
 
-              {/* Forgot Password */}
-              <div className="flex justify-end text-sm">
-                <a
-                  href="/forgot-password"
-                  className="text-primary hover:underline"
-                >
-                  Forgot password?
-                </a>
-              </div>
-
-              {/* Login Button */}
               <Button type="submit" className="w-full">
                 Login
               </Button>
 
               {/* Signup Link */}
-              <p className="text-center text-sm text-muted-foreground">
-                Don’t have an account?{" "}
-                <a href="/register" className="text-primary hover:underline">
-                  Sign up
-                </a>
-              </p>
+              <div className="grid w-full place-content-center justify-center">
+                <Typography
+                  variant="small"
+                  className="text-muted-foreground text-center"
+                >
+                  Don’t have an account?{" "}
+                  <Link
+                    href="/register"
+                    className="text-primary hover:underline"
+                  >
+                    Sign up
+                  </Link>
+                </Typography>
+              </div>
             </form>
           </Form>
         </div>

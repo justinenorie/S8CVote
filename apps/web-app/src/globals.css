@@ -113,7 +113,7 @@
   --popover-foreground: var(--color-TEXTdark);
 
   /* Brand colors */
-  --primary: var(--color-PRIMARY-500);
+  --primary: var(--color-PRIMARY-800);
   --primary-foreground: var(--color-TEXTlight);
 
   --secondary: var(--color-SECONDARY-500);
@@ -157,8 +157,8 @@
   --popover-foreground: var(--color-TEXTlight);
 
   /* Brand colors */
-  --primary: var(--color-PRIMARY-400);
-  --primary-foreground: var(--color-TEXTlight);
+  --primary: var(--color-PRIMARY-100);
+  --primary-foreground: var(--color-TEXTdark);
 
   --secondary: var(--color-SECONDARY-400);
   --secondary-foreground: var(--color-TEXTlight);
