@@ -21,6 +21,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetClose,
+  SheetDescription,
 } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
@@ -135,6 +136,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
                   {/* Nav Links */}
                   <div className="flex flex-col gap-2">
+                    <SheetDescription>Navigations</SheetDescription>
                     <Link href="/dashboard">
                       <SheetClose asChild>
                         <Button
