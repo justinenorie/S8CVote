@@ -49,7 +49,7 @@ export default function LoginPage() {
 
   return (
     <div className="bg-BGlight dark:bg-BGdark flex min-h-screen items-center justify-center px-5 sm:px-10">
-      <div className="bg-PRIMARY-50 flex w-full max-w-[1050px] overflow-hidden rounded-lg border shadow-lg">
+      <div className="bg-card flex w-full max-w-[1050px] overflow-hidden rounded-lg border shadow-lg">
         {/* Left Side - Image */}
         <div className="hidden w-1/2 md:block">
           <Image
@@ -64,7 +64,7 @@ export default function LoginPage() {
         </div>
 
         {/* Right Side - Form */}
-        <div className="bg-PRIMARY-50 flex w-full flex-col items-center justify-center p-8 md:w-1/2">
+        <div className="bg-card flex w-full flex-col items-center justify-center p-8 md:w-1/2">
           <Typography variant="h2" className="">
             Welcome back
           </Typography>
