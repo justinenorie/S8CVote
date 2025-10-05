@@ -124,9 +124,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Typography variant="h2" className="">
-        Active Elections
-      </Typography>
+      <Typography variant="h2">Active Elections</Typography>
       <Typography variant="p" className="text-muted-foreground mb-6">
         Click on an election to view candidates and cast your vote.
       </Typography>
