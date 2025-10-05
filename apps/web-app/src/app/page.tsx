@@ -49,7 +49,6 @@ export default function LoginPage() {
 
   return (
     <div className="bg-BGlight dark:bg-BGdark flex min-h-screen items-center justify-center px-5 sm:px-10">
-      <link rel="icon" href="/s8cvote.png" sizes="any" />
       <div className="bg-PRIMARY-50 flex w-full max-w-[1050px] overflow-hidden rounded-lg border shadow-lg">
         {/* Left Side - Image */}
         <div className="hidden w-1/2 md:block">

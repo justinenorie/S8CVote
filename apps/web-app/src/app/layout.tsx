@@ -28,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} ${inter.variable} antialiased`}>
+        <link rel="icon" href="/s8cvote.png" sizes="any" />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>
