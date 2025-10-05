@@ -2,10 +2,19 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/Typography";
-import { Home, BarChart2 } from "lucide-react";
+import { Home, ChartGantt, User, LogOut } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export default function DashboardLayout({
   children,
@@ -13,6 +22,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <div className="bg-BGlight dark:bg-BGdark min-h-screen">
@@ -49,7 +59,7 @@ export default function DashboardLayout({
                 variant={pathname === "/results" ? "default" : "outline"}
                 className="flex items-center gap-2"
               >
-                <BarChart2 size={16} />
+                <ChartGantt size={16} />
                 Results
               </Button>
             </Link>
@@ -58,12 +68,42 @@ export default function DashboardLayout({
           {/* Right Section (User Info) */}
           {/* TODO: Fetch User Data for Full Name and StudentID */}
           {/* TODO: Clickable to have dropdown menu of Profile and Logout Button */}
-          <div className="text-muted-foreground text-sm">
-            <Typography variant="small" className="font-medium">
-              Student D User
-            </Typography>
-            <p className="text-right text-xs">00-0000</p>
-          </div>
+          {/* Right Section (User Info + Dropdown) */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="cursor-pointer">
+                <div className="text-muted-foreground flex flex-col text-right text-sm">
+                  <Typography variant="p">Student D User</Typography>
+                  <Typography variant="small" className="text-right">
+                    00-0000
+                  </Typography>
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuItem>
+                <ThemeToggle />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="flex items-center gap-2"
+                onClick={() => router.push("/profile")}
+              >
+                <User size={16} />
+                Profile
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-red-500 focus:text-red-600"
+                onClick={() => console.log("Logout clicked")}
+              >
+                <LogOut size={16} />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
