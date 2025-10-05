@@ -52,7 +52,7 @@ const ResultsCard = ({ data }: { data: ResultsProps }) => {
           type="single"
           collapsible
           key={monthIndex}
-          className="bg-card rounded-2xl px-5 py-2"
+          className="bg-card rounded-2xl px-5 py-2 shadow-md transition hover:shadow-lg"
         >
           <AccordionItem value={`month-${monthIndex}`}>
             <AccordionTrigger className="items-center">
