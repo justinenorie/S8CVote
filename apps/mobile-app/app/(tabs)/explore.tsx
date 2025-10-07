@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, Text } from "react-native";
 
 import { Collapsible } from "@/components/Collapsible";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -7,6 +7,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { AppWindow } from "lucide-react-native";
 
 export default function TabTwoScreen() {
   return (
@@ -24,13 +25,23 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Explore?</ThemedText>
       </ThemedView>
-      <ThemedText>
+      <ThemedText className="text-red-500">
         This app includes example code to help you get started.
       </ThemedText>
+
+      <Text className="text-blue-500">Hello World!</Text>
+
+      <AppWindow />
+
       <Collapsible title="File-based routing">
         <ThemedText>
           This app has two screens:{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
+          <ThemedText
+            type="defaultSemiBold"
+            className="bg-red-500 text-red-500"
+          >
+            app/(tabs)/index.tsx
+          </ThemedText>{" "}
           and{" "}
           <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
         </ThemedText>
