@@ -1,57 +1,79 @@
 import { DarkTheme, DefaultTheme, type Theme } from "@react-navigation/native";
+import { COLORS } from "@/constants/Colors";
 
 export const THEME = {
   light: {
-    background: "hsl(0 0% 100%)",
-    foreground: "hsl(0 0% 3.9%)",
-    card: "hsl(0 0% 100%)",
-    cardForeground: "hsl(0 0% 3.9%)",
-    popover: "hsl(0 0% 100%)",
-    popoverForeground: "hsl(0 0% 3.9%)",
-    primary: "hsl(0 0% 9%)",
-    primaryForeground: "hsl(0 0% 98%)",
-    secondary: "hsl(0 0% 96.1%)",
-    secondaryForeground: "hsl(0 0% 9%)",
-    muted: "hsl(0 0% 96.1%)",
-    mutedForeground: "hsl(0 0% 45.1%)",
-    accent: "hsl(0 0% 96.1%)",
-    accentForeground: "hsl(0 0% 9%)",
-    destructive: "hsl(0 84.2% 60.2%)",
-    border: "hsl(0 0% 89.8%)",
-    input: "hsl(0 0% 89.8%)",
-    ring: "hsl(0 0% 63%)",
+    background: COLORS.BG.light,
+    foreground: COLORS.TEXT.dark,
+
+    card: COLORS.PRIMARY[50],
+    cardForeground: COLORS.TEXT.dark,
+
+    popover: COLORS.BG.light,
+    popoverForeground: COLORS.TEXT.dark,
+
+    primary: COLORS.PRIMARY[800],
+    primaryForeground: COLORS.TEXT.light,
+
+    secondary: COLORS.SECONDARY[500],
+    secondaryForeground: COLORS.TEXT.dark,
+
+    muted: COLORS.PRIMARY[100],
+    mutedForeground: COLORS.PRIMARY[800],
+
+    accent: COLORS.SECONDARY[100],
+    accentForeground: COLORS.SECONDARY[900],
+
+    destructive: COLORS.ALERTS.ERRORlight,
+    destructiveForeground: COLORS.TEXT.light,
+
+    border: COLORS.PRIMARY[200],
+    input: COLORS.PRIMARY[200],
+    ring: COLORS.PRIMARY[400],
     radius: "0.625rem",
-    chart1: "hsl(12 76% 61%)",
-    chart2: "hsl(173 58% 39%)",
-    chart3: "hsl(197 37% 24%)",
-    chart4: "hsl(43 74% 66%)",
-    chart5: "hsl(27 87% 67%)",
+
+    chart1: COLORS.PRIMARY[400],
+    chart2: COLORS.SECONDARY[300],
+    chart3: COLORS.SECONDARY[700],
+    chart4: COLORS.PRIMARY[200],
+    chart5: COLORS.PRIMARY[900],
   },
+
   dark: {
-    background: "hsl(0 0% 3.9%)",
-    foreground: "hsl(0 0% 98%)",
-    card: "hsl(0 0% 3.9%)",
-    cardForeground: "hsl(0 0% 98%)",
-    popover: "hsl(0 0% 3.9%)",
-    popoverForeground: "hsl(0 0% 98%)",
-    primary: "hsl(0 0% 98%)",
-    primaryForeground: "hsl(0 0% 9%)",
-    secondary: "hsl(0 0% 14.9%)",
-    secondaryForeground: "hsl(0 0% 98%)",
-    muted: "hsl(0 0% 14.9%)",
-    mutedForeground: "hsl(0 0% 63.9%)",
-    accent: "hsl(0 0% 14.9%)",
-    accentForeground: "hsl(0 0% 98%)",
-    destructive: "hsl(0 70.9% 59.4%)",
-    border: "hsl(0 0% 14.9%)",
-    input: "hsl(0 0% 14.9%)",
-    ring: "hsl(300 0% 45%)",
+    background: COLORS.BG.dark,
+    foreground: COLORS.TEXT.light, // #e9eefd
+
+    card: COLORS.BG.dark,
+    cardForeground: COLORS.TEXT.light,
+
+    popover: COLORS.BG.dark,
+    popoverForeground: COLORS.TEXT.light,
+
+    primary: COLORS.PRIMARY[100], // #dee2f3
+    primaryForeground: COLORS.TEXT.dark, // #020617
+
+    secondary: COLORS.SECONDARY[400], // #0ebfb9
+    secondaryForeground: COLORS.TEXT.dark, // #020617
+
+    muted: COLORS.PRIMARY[800], // #253458
+    mutedForeground: COLORS.PRIMARY[200], // #bfc8e9
+
+    accent: COLORS.SECONDARY[800], // #024341
+    accentForeground: COLORS.SECONDARY[50], // #c3fffc
+
+    destructive: COLORS.ALERTS.ERRORlight, // #b00121
+    destructiveForeground: COLORS.TEXT.light, // #e9eefd
+
+    border: COLORS.PRIMARY[800], // #253458
+    input: COLORS.PRIMARY[800],
+    ring: COLORS.PRIMARY[600], // #49619f
     radius: "0.625rem",
-    chart1: "hsl(220 70% 50%)",
-    chart2: "hsl(160 60% 45%)",
-    chart3: "hsl(30 80% 55%)",
-    chart4: "hsl(280 65% 60%)",
-    chart5: "hsl(340 75% 55%)",
+
+    chart1: COLORS.PRIMARY[400],
+    chart2: COLORS.SECONDARY[200],
+    chart3: COLORS.SECONDARY[700],
+    chart4: COLORS.PRIMARY[300],
+    chart5: COLORS.PRIMARY[950],
   },
 };
 

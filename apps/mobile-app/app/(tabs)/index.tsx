@@ -18,7 +18,7 @@ export default function HomeScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title" className="bg-red-500 text-white">
+        <ThemedText type="title" className="bg-BGlight text-white">
           asdaskdo
         </ThemedText>
         <HelloWave />

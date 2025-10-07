@@ -25,11 +25,11 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Explore?</ThemedText>
       </ThemedView>
-      <ThemedText className="text-red-500">
+      <ThemedText className="">
         This app includes example code to help you get started.
       </ThemedText>
 
-      <Text className="text-blue-500">Hello World!</Text>
+      <Text className="text-foreground bg-input">Hello World!</Text>
 
       <AppWindow />
 
