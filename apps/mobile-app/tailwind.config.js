@@ -78,6 +78,18 @@ module.exports = {
         SUCCEEDEDlight: "#00c851",
         SUCCEEDEDdark: "#017e32",
       },
+      fontFamily: {
+        poppins: ["Poppins-Regular"],
+        "poppins-medium": ["Poppins-Medium"],
+        "poppins-semibold": ["Poppins-SemiBold"],
+        "poppins-bold": ["Poppins-Bold"],
+        "poppins-italic": ["Poppins-Italic"],
+        inter: ["Inter-Regular"],
+        "inter-medium": ["Inter-Medium"],
+        "inter-semibold": ["Inter-SemiBold"],
+        "inter-bold": ["Inter-Bold"],
+        "inter-italic": ["Inter-Italic"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
