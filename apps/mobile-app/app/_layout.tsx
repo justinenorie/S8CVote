@@ -1,4 +1,3 @@
-// import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -6,11 +5,9 @@ import "react-native-reanimated";
 import "./../global.css";
 import { PortalHost } from "@rn-primitives/portal";
 
-// import { useColorScheme } from "@/hooks/useColorScheme";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 const RootLayout = () => {
-  // const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     "Poppins-Regular": require("../assets/fonts/Poppins-Regular.ttf"),

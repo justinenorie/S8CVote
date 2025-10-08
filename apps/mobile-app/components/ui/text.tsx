@@ -35,7 +35,7 @@ const textVariants = cva(
           "text-xl font-poppins-medium tracking-tight",
           Platform.select({ web: "scroll-m-20" })
         ),
-        p: "mt-3 leading-7 sm:mt-6 font-inter",
+        p: "leading-7 font-inter",
         blockquote: "mt-4 border-l-2 pl-3 italic sm:mt-6 sm:pl-6 font-inter",
         code: cn(
           "bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold font-inter"

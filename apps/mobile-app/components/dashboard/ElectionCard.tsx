@@ -1,17 +1,22 @@
+import { useState } from "react";
 import { View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Button } from "../ui/button";
 import { CandidateCard } from "./CandidateCard";
+import { VotingModal } from "./VotingModal";
 
-export function ElectionCard({ title, voted, candidates }: any) {
+// TODO: Add a proper type here
+export function ElectionCard({ elections }: any) {
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View className="bg-PRIMARY50 dark:bg-PRIMARY900 rounded-xl p-4 mb-4 shadow-md border border-border">
       <Text variant="h3" className="mb-3 text-TEXTdark dark:text-TEXTlight">
-        {title}
+        {elections.title}
       </Text>
 
       {/* TODO: Add a proper type here */}
-      {candidates.map((candidate: any, index: number) => (
+      {elections.candidates.map((candidate: any, index: number) => (
         <CandidateCard
           key={candidate.id}
           rank={`${index + 1}${index === 0 ? "st" : index === 1 ? "nd" : "th"}`}
@@ -24,13 +29,20 @@ export function ElectionCard({ title, voted, candidates }: any) {
 
       <Button
         variant="default"
-        disabled={voted}
+        disabled={elections.voted}
+        onPress={() => setModalVisible(true)}
         className="mt-3 dark:bg-PRIMARY50 bg-PRIMARY900"
       >
         <Text variant="h4" className="font-poppins-bold">
-          {voted ? "Voted" : "Vote Now"}
+          {elections.voted ? "Voted" : "Vote Now"}
         </Text>
       </Button>
+
+      <VotingModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        election={elections}
+      />
     </View>
   );
 }

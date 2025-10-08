@@ -2,6 +2,7 @@ import { ScrollView, View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { ElectionCard } from "@/components/dashboard/ElectionCard";
 
+// Sample Data
 const elections = [
   {
     title: "SSG President",
@@ -10,28 +11,56 @@ const elections = [
       {
         id: 1,
         name: "Candidate A",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 600,
         percentage: 50.12,
       },
       {
         id: 2,
         name: "Candidate B",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 400,
         percentage: 33.4,
       },
       {
         id: 3,
         name: "Candidate C",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 200,
         percentage: 16.48,
       },
       {
         id: 4,
         name: "Candidate D",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
+        votes: 200,
+        percentage: 16.48,
+      },
+      {
+        id: 5,
+        name: "Candidate D",
+        image: "https://picsum.photos/200",
+        votes: 200,
+        percentage: 16.48,
+      },
+      {
+        id: 6,
+        name: "Candidate D",
+        image: "https://picsum.photos/200",
+        votes: 200,
+        percentage: 16.48,
+      },
+      {
+        id: 7,
+        name: "Candidate D",
+        image: "https://picsum.photos/200",
+        votes: 200,
+        percentage: 16.48,
+      },
+      {
+        id: 8,
+        name: "Candidate D",
+        image: "https://picsum.photos/200",
         votes: 200,
         percentage: 16.48,
       },
@@ -44,21 +73,21 @@ const elections = [
       {
         id: 1,
         name: "Candidate A",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 700,
         percentage: 60.1,
       },
       {
         id: 2,
         name: "Candidate B",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 300,
         percentage: 25.3,
       },
       {
         id: 3,
         name: "Candidate C",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 200,
         percentage: 14.6,
       },
@@ -71,21 +100,21 @@ const elections = [
       {
         id: 1,
         name: "Candidate A",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 500,
         percentage: 45.1,
       },
       {
         id: 2,
         name: "Candidate B",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 400,
         percentage: 36.2,
       },
       {
         id: 3,
         name: "Candidate C",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 200,
         percentage: 18.7,
       },
@@ -98,21 +127,21 @@ const elections = [
       {
         id: 1,
         name: "Candidate A",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 500,
         percentage: 45.1,
       },
       {
         id: 2,
         name: "Candidate B",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 400,
         percentage: 36.2,
       },
       {
         id: 3,
         name: "Candidate C",
-        image: "/s8cvote.png",
+        image: "https://picsum.photos/200",
         votes: 200,
         percentage: 18.7,
       },
@@ -124,7 +153,7 @@ export default function Dashboard() {
   return (
     <ScrollView className="py-10 px-3 bg-BGlight dark:bg-BGdark">
       <Text
-        className="text-TEXTdark dark:text-TEXTlight text-left -mb-3"
+        className="text-TEXTdark dark:text-TEXTlight text-left"
         variant="h1"
       >
         Active Elections
@@ -138,12 +167,7 @@ export default function Dashboard() {
 
       <View className="mt-3 mb-10">
         {elections.map((item, index) => (
-          <ElectionCard
-            key={index}
-            title={item.title}
-            voted={item.voted}
-            candidates={item.candidates}
-          />
+          <ElectionCard key={index} elections={item} />
         ))}
       </View>
     </ScrollView>
