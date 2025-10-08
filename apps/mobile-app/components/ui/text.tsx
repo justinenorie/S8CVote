@@ -10,7 +10,7 @@ type TextComponent = React.ComponentType<any> & {
 
 const textVariants = cva(
   cn(
-    "text-foreground text-base",
+    "text-base",
     Platform.select({
       web: "select-text",
     })

@@ -1,29 +1,37 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
-import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import TabBarBackground from "@/components/ui/TabBarBackground";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
+
+import { LayoutDashboard, ChartGantt } from "lucide-react-native";
+import { useTheme } from "@/components/ThemeProvider";
+import { COLORS } from "@/constants/Colors";
 
 export default function TabsLayout() {
-  const colorScheme = useColorScheme();
+  const { theme } = useTheme();
+
+  const isDark = theme === "dark";
+  const backgroundColor = isDark ? COLORS.PRIMARY[950] : COLORS.PRIMARY[50];
+  const activeColor = isDark ? COLORS.PRIMARY[200] : COLORS.PRIMARY[500];
+  const inactiveColor = isDark
+    ? "rgba(156, 163, 160, 0.8)"
+    : "rgba(107, 114, 96, 0.8)";
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
-          },
-          default: {},
-        }),
+        tabBarStyle: {
+          backgroundColor,
+          borderTopWidth: 1,
+          borderTopColor: isDark ? "#1f2937" : "#d1d5db",
+          position: Platform.OS === "ios" ? "absolute" : "relative",
+        },
+        tabBarActiveTintColor: activeColor,
+        tabBarInactiveTintColor: inactiveColor,
+        tabBarLabelStyle: {
+          fontFamily: "Inter-Bold",
+          fontSize: 12,
+        },
       }}
     >
       <Tabs.Screen
@@ -31,17 +39,15 @@ export default function TabsLayout() {
         options={{
           title: "Dashboard",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <LayoutDashboard size={30} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
-          ),
+          title: "Results",
+          tabBarIcon: ({ color }) => <ChartGantt size={30} color={color} />,
         }}
       />
     </Tabs>

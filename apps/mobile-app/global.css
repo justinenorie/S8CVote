@@ -5,45 +5,45 @@
 @layer base {
   :root {
     /* BACKGROUND & TEXT */
-    --color-BGlight: #e8ebfd;
-    --color-BGdark: #020617;
-    --color-TEXTlight: #e9eefd;
-    --color-TEXTdark: #020617;
+    --color-BGlight: hsl(231.4 84% 95.1%);
+    --color-BGdark: hsl(228.6 84% 4.9%);
+    --color-TEXTlight: hsl(225 83.3% 95.3%);
+    --color-TEXTdark: hsl(228.6 84% 4.9%);
 
     /* PRIMARY THEME */
-    --color-PRIMARY-50: #eef0f9;
-    --color-PRIMARY-100: #dee2f3;
-    --color-PRIMARY-200: #bfc8e9;
-    --color-PRIMARY-300: #9dacde;
-    --color-PRIMARY-400: #7b91d3;
-    --color-PRIMARY-500: #5a77c1;
-    --color-PRIMARY-600: #49619f;
-    --color-PRIMARY-700: #364a7b;
-    --color-PRIMARY-800: #253458;
-    --color-PRIMARY-900: #151f38;
-    --color-PRIMARY-950: #0e162a;
+    --color-PRIMARY-50: hsl(229.1 47.8% 95.5%);
+    --color-PRIMARY-100: hsl(228.6 46.7% 91.2%);
+    --color-PRIMARY-200: hsl(227.1 48.8% 83.1%);
+    --color-PRIMARY-300: hsl(226.2 49.6% 74.3%);
+    --color-PRIMARY-400: hsl(225 50% 65.5%);
+    --color-PRIMARY-500: hsl(223.1 45.4% 55.5%);
+    --color-PRIMARY-600: hsl(223.3 37.1% 45.5%);
+    --color-PRIMARY-700: hsl(222.6 39% 34.7%);
+    --color-PRIMARY-800: hsl(222.4 40.8% 24.5%);
+    --color-PRIMARY-900: hsl(222.9 45.5% 15.1%);
+    --color-PRIMARY-950: hsl(222.9 50% 11%);
 
     /* SECONDARY THEME */
-    --color-SECONDARY-50: #c3fffc;
-    --color-SECONDARY-100: #61fff8;
-    --color-SECONDARY-200: #14ece5;
-    --color-SECONDARY-300: #11d4ce;
-    --color-SECONDARY-400: #0ebfb9;
-    --color-SECONDARY-500: #0ba8a3;
-    --color-SECONDARY-600: #078581;
-    --color-SECONDARY-700: #03625f;
-    --color-SECONDARY-800: #024341;
-    --color-SECONDARY-900: #012423;
-    --color-SECONDARY-950: #001716;
+    --color-SECONDARY-50: hsl(177 100% 88.2%);
+    --color-SECONDARY-100: hsl(177.3 100% 69%);
+    --color-SECONDARY-200: hsl(178.1 85% 50.2%);
+    --color-SECONDARY-300: hsl(178.2 85.2% 44.9%);
+    --color-SECONDARY-400: hsl(178 86.3% 40.2%);
+    --color-SECONDARY-500: hsl(178.1 87.7% 35.1%);
+    --color-SECONDARY-600: hsl(178.1 90% 27.5%);
+    --color-SECONDARY-700: hsl(178.1 94.1% 19.8%);
+    --color-SECONDARY-800: hsl(178.2 94.2% 13.5%);
+    --color-SECONDARY-900: hsl(178.3 94.6% 7.3%);
+    --color-SECONDARY-950: hsl(177.4 100% 4.5%);
 
     /* ALERTS */
-    --color-ERRORlight: #b00121;
-    --color-WARNlight: #febb32;
-    --color-WARNdark: #fe8801;
-    --color-INFOlight: #33b5e5;
-    --color-INFOdark: #0099cc;
-    --color-SUCCESSlight: #00c851;
-    --color-SUCCESSdark: #017e32;
+    --color-ERRORlight: hsl(349 98.9% 34.7%);
+    --color-WARNlight: hsl(40.3 99% 59.6%);
+    --color-WARNdark: hsl(32 99.2% 50%);
+    --color-INFOlight: hsl(196.2 77.4% 54.9%);
+    --color-INFOdark: hsl(195 100% 40%);
+    --color-SUCCESSlight: hsl(144.3 100% 39.2%);
+    --color-SUCCESSdark: hsl(143.5 98.4% 24.9%);
 
     /* ======== ReactNativeReusable/Tailwind Tokens ======== */
 
