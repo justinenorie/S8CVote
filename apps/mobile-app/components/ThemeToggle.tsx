@@ -6,6 +6,7 @@ import { useTheme } from "./ThemeProvider";
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
+  // TODO: Change the design ThemeToggler button
   return (
     <Pressable
       onPress={toggleTheme}

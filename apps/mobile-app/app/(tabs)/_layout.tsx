@@ -44,7 +44,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="results"
         options={{
           title: "Results",
           tabBarIcon: ({ color }) => <ChartGantt size={30} color={color} />,
