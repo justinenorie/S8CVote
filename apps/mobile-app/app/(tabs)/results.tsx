@@ -99,9 +99,6 @@ export default function Results() {
     (y) => String(y.year) === selectedYear?.value
   );
 
-  console.log(selectedData);
-  console.log(selectedYear);
-
   return (
     <ScrollView className="py-10 px-3 bg-BGlight dark:bg-BGdark">
       <View className="flex flex-row justify-between items-center mb-6">

@@ -14,6 +14,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Label } from "../ui/label";
 
 interface Candidate {
   id: number;
@@ -44,13 +45,19 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
   }>({});
 
   return (
-    <View className="mt-4 gap-4">
+    <View className="mt-4 gap-4 mb-20">
       {data?.months.map((month, monthIndex) => (
         <Accordion key={monthIndex} type="single" collapsible>
-          <AccordionItem value={`month-${monthIndex}`}>
+          <AccordionItem
+            value={`month-${monthIndex}`}
+            className="bg-PRIMARY50 dark:bg-PRIMARY900 rounded-lg border border-border"
+          >
             <AccordionTrigger>
               <View className="px-4 py-3">
-                <Text variant="h2" className="font-bold">
+                <Text
+                  variant="h1"
+                  className="text-TEXTdark dark:text-TEXTlight"
+                >
                   {month.date}
                 </Text>
                 <Text
@@ -65,6 +72,7 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
             {/* Election Content */}
             <AccordionContent>
               <View className="px-4 pb-4">
+                <Label>Elections:</Label>
                 <Select
                   onValueChange={(option) => {
                     if (option !== undefined) {
@@ -121,8 +129,8 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
                               key={c.id}
                               className={`flex-row items-center p-3 rounded-xl border ${
                                 isWinner
-                                  ? "bg-yellow-100 border-yellow-400"
-                                  : "bg-neutral-100 dark:bg-neutral-800 border-border"
+                                  ? "bg-green-100 dark:bg-green-300/30 border-green-400"
+                                  : "bg-PRIMARY100 dark:bg-PRIMARY900 border-border"
                               }`}
                             >
                               {/* Circle placeholder */}
@@ -131,13 +139,16 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
                               {/* Candidate Info */}
                               <View className="flex-1">
                                 <View className="flex-row justify-between mb-1">
-                                  <Text className="font-semibold">
+                                  <Text
+                                    variant="h3"
+                                    className="text-TEXTdark dark:text-TEXTlight"
+                                  >
                                     {c.name}
                                   </Text>
                                   <Text
-                                    className={`px-2 rounded-full text-xs ${
+                                    className={`px-2 rounded-full text-xs  ${
                                       isWinner
-                                        ? "bg-yellow-400 text-black"
+                                        ? "bg-green-400 text-black"
                                         : "bg-gray-300 dark:bg-gray-700 text-white"
                                     }`}
                                   >
@@ -146,10 +157,15 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
                                 </View>
 
                                 <View className="flex-row justify-between mb-2">
-                                  <Text className="text-green-600 font-bold">
+                                  <Text variant="h4" className="text-green-600">
                                     {c.votes} Votes
                                   </Text>
-                                  <Text>{c.percentage}%</Text>
+                                  <Text
+                                    variant="small"
+                                    className="text-TEXTdark dark:text-TEXTlight"
+                                  >
+                                    {c.percentage}%
+                                  </Text>
                                 </View>
 
                                 {/* Progress bar */}

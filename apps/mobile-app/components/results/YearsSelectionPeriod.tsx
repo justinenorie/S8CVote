@@ -20,7 +20,7 @@ export default function YearsSelectionPeriod({
     theme === "dark" ? "hsl(225 83.3% 95.3%)" : "hsl(228.6 84% 4.9%)"; // or use your custom color tokens
 
   return (
-    <View className="mb-4 p-4 bg-white dark:bg-PRIMARY950 rounded-2xl shadow-sm border border-border">
+    <View className="mb-4 p-4 bg-PRIMARY50 dark:bg-PRIMARY900 rounded-2xl shadow-sm border border-border">
       <View className="flex-row items-center mb-2 gap-2">
         <Calendar color={iconColor} size={20} />
         <Text variant="h4" className="text-TEXTdark dark:text-TEXTlight">
