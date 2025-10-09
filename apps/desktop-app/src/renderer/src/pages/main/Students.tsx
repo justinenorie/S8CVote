@@ -1,4 +1,5 @@
 import Typography from "@renderer/components/ui/Typography";
+import FileUpload from "@renderer/components/students/FileUpload";
 
 const Students = (): React.JSX.Element => {
   return (
@@ -14,6 +15,9 @@ const Students = (): React.JSX.Element => {
           View and manage the list of students for voter verification
         </Typography>
       </header>
+      <div>
+        <FileUpload />
+      </div>
     </div>
   );
 };
