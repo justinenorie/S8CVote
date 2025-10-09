@@ -1,19 +1,73 @@
+import { useState } from "react";
 import Typography from "@renderer/components/ui/Typography";
+import ResultsCard from "@renderer/components/reports/ResultsCard";
+import YearSelectionCard from "@renderer/components/reports/YearSelectionCard";
 
-const Reports = (): React.JSX.Element => {
+const electionData = [
+  {
+    year: 2025,
+    months: [
+      {
+        date: "January 2025",
+        elections: [
+          {
+            position: "SSG President",
+            totalVotes: 500,
+            candidates: [
+              { id: 1, name: "Ninomo Binovoto", votes: 600, percentage: 50.12 },
+              { id: 2, name: "Ninomo Binovoto", votes: 600, percentage: 50.12 },
+            ],
+          },
+          {
+            position: "SSG Vice President",
+            totalVotes: 400,
+            candidates: [
+              { id: 1, name: "Mimi Lala", votes: 250, percentage: 62.5 },
+              { id: 2, name: "Toto Lino", votes: 150, percentage: 37.5 },
+            ],
+          },
+        ],
+      },
+      {
+        date: "March 2025",
+        elections: [
+          {
+            position: "SSG Secretary",
+            totalVotes: 320,
+            candidates: [
+              { id: 1, name: "Anna Dela Cruz", votes: 180, percentage: 56.25 },
+              { id: 2, name: "Lino Carpio", votes: 140, percentage: 43.75 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const Reports = (): React.ReactElement => {
+  const [selectedYear, setSelectedYear] = useState(2025);
+  const years = electionData.map((y) => y.year);
+
+  // To render data of the selected year
+  const selectedData = electionData.find((y) => y.year === selectedYear)!;
+
   return (
-    <div className="text-TEXTdark dark:text-TEXTlight space-y-7">
-      <header>
-        <Typography variant="h1" className="font-normal">
-          Reports
+    <div className="text-TEXTdark dark:text-TEXTlight space-y-5">
+      <div>
+        <Typography variant="h2">Election Results</Typography>
+        <Typography variant="p" className="text-muted-foreground">
+          View detailed results from the elections
         </Typography>
-        <Typography
-          variant="p"
-          className="text-TEXTdark/60 dark:text-TEXTlight/60"
-        >
-          View and manage election reports here
-        </Typography>
-      </header>
+      </div>
+
+      <YearSelectionCard
+        years={years}
+        selectedYear={selectedYear}
+        onSelectYear={setSelectedYear}
+      />
+
+      <ResultsCard data={selectedData} />
     </div>
   );
 };
