@@ -32,18 +32,20 @@ export interface Candidates {
   createdAt?: string;
 }
 
+export interface Student {
+  id?: string;
+  fullname: string;
+  student_id: string;
+  email?: string;
+  isRegistered: boolean;
+  synced?: boolean;
+  deletedAt?: string | null;
+  updatedAt?: string;
+  createdAt?: string;
+}
+
 // TODO: Add more api types here
 // // Students (voters)
-// export interface Student {
-//   id: string;
-//   fullname: string;
-//   student_id: string;
-//   email?: string;
-//   synced?: boolean;
-//   deletedAt?: string | null;
-//   updatedAt?: string;
-//   createdAt?: string;
-// }
 
 // // Settings
 // export interface Setting {
