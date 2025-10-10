@@ -55,7 +55,9 @@ const Reports = (): React.ReactElement => {
   return (
     <div className="text-TEXTdark dark:text-TEXTlight space-y-5">
       <div>
-        <Typography variant="h2">Election Results</Typography>
+        <Typography variant="h1" className="font-normal">
+          Election Results
+        </Typography>
         <Typography variant="p" className="text-muted-foreground">
           View detailed results from the elections
         </Typography>

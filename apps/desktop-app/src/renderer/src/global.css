@@ -150,7 +150,7 @@ section {
   --popover-foreground: var(--color-TEXTdark);
 
   /* Brand colors */
-  --primary: var(--color-PRIMARY-800);
+  --primary: var(--color-PRIMARY-900);
   --primary-foreground: var(--color-TEXTlight);
 
   --secondary: var(--color-SECONDARY-500);
@@ -194,7 +194,7 @@ section {
   --popover-foreground: var(--color-TEXTlight);
 
   /* Brand colors */
-  --primary: var(--color-PRIMARY-100);
+  --primary: var(--color-PRIMARY-50);
   --primary-foreground: var(--color-TEXTdark);
 
   --secondary: var(--color-SECONDARY-400);
