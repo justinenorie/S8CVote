@@ -36,7 +36,7 @@ const SideNav = (): React.JSX.Element => {
       toast.success("Logout Success!", {
         description: "Clearing out your tokens...",
       });
-      <AppRoutes isAuthenticated={!!user} />;
+      <AppRoutes />;
     } else {
       toast.error(error, {
         description: `Please check: ${error}`,
@@ -120,7 +120,7 @@ const SideNav = (): React.JSX.Element => {
             {/* TODO: Change this based on the what user admin logged in */}
             <div className="row-span-2 grid">
               <Typography variant="p">Admin Admin</Typography>
-              <Typography variant="small">example@gmail.com</Typography>
+              <Typography variant="small">{user?.email}</Typography>
             </div>
             <Button variant="ghost" onClick={() => setShowConfirmLogout(true)}>
               <LogOut />
