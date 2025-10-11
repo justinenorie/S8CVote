@@ -68,7 +68,7 @@ export function AddElectionModal({
       election: values.name,
       status: values.status,
       end_date: values.date.toISOString().split("T")[0],
-      end_time: values.time,
+      end_time: values.time.toString(),
       description: values.description ?? "",
     };
 

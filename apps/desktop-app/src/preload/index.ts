@@ -6,19 +6,24 @@ const api = {
   // Elections
   getElections: () => ipcRenderer.invoke("elections:get"),
   addElection: (data) => ipcRenderer.invoke("elections:add", data),
-  updateElection: (data) => ipcRenderer.invoke("elections:update", data),
+  updateElection: (id, updates) =>
+    ipcRenderer.invoke("elections:update", id, updates),
   deleteElection: (id) => ipcRenderer.invoke("elections:delete", id),
+
+  // Sync helpers
+  getElectionSyncQueue: () =>
+    ipcRenderer.invoke("elections:get-election-sync-queue"),
+  clearElectionSyncQueue: (ids: string[]) =>
+    ipcRenderer.invoke("elections:clear-election-sync-queue", ids),
+  getUnsyncedElections: () => ipcRenderer.invoke("elections:getUnsynced"),
+  markElectionsSynced: (ids: string[]) =>
+    ipcRenderer.invoke("elections:markSynced", ids),
 
   // Auth
   adminLogin: (data: { id: string; email: string }) =>
     ipcRenderer.invoke("auth:admin", data),
   getAdminUser: () => ipcRenderer.invoke("auth:getUser"),
   clearSession: () => ipcRenderer.invoke("auth:clearSession"),
-
-  // Sync helpers
-  getElectionSyncQueue: () => ipcRenderer.invoke("get-election-sync-queue"),
-  clearElectionSyncQueue: (ids: string[]) =>
-    ipcRenderer.invoke("clear-election-sync-queue", ids),
 };
 
 if (process.contextIsolated) {

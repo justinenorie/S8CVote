@@ -1,5 +1,5 @@
 import { ElectronAPI } from "@electron-toolkit/preload";
-import type { Election } from "../types/api";
+import type { Election } from "@renderer/types/api";
 
 declare global {
   interface Window {
@@ -9,9 +9,9 @@ declare global {
     electronAPI: {
       // Elections
       getElections: () => Promise<Election>;
-      addElection: (data: Election) => Promise<{ success: boolean }>;
-      updateElection: (data: Election) => Promise<{ success: boolean }>;
-      deleteElection: (id: string) => Promise<{ success: boolean }>;
+      addElection: (data: Election) => Promise<void>;
+      updateElection: (id, updates: Election) => Promise<void>;
+      deleteElection: (id: string) => Promise<void>;
 
       // // Logins
       adminLogin: (data: {

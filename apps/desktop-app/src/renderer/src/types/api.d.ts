@@ -1,8 +1,8 @@
 // Elections
 export interface Election {
-  id: string;
-  election: string;
-  status: "active" | "closed";
+  id?: string;
+  election?: string;
+  status?: "active" | "closed";
   end_date?: string;
   end_time?: string;
   description?: string;
@@ -38,6 +38,17 @@ export interface Student {
   student_id: string;
   email?: string;
   isRegistered: boolean;
+  synced?: boolean;
+  deletedAt?: string | null;
+  updatedAt?: string;
+  createdAt?: string;
+}
+
+export interface Admin {
+  id?: string;
+  fullname: string;
+  email?: string;
+  status: string;
   synced?: boolean;
   deletedAt?: string | null;
   updatedAt?: string;

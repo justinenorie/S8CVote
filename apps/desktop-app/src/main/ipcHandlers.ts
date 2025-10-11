@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 import { getDatabase } from "./db/sqliteDB";
 import { elections, adminAuth } from "./db/drizzle/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql, inArray } from "drizzle-orm";
 
 // TODO: Add more ipc Handler here:
 /* 
@@ -19,18 +19,61 @@ let electionSyncQueue: {
 
 export function setupIpcHandlers(): void {
   // ELECTIONS
+  // SYNC HELPERS FOR ELECTIONS
+  ipcMain.handle("elections:get-election-sync-queue", async () => {
+    return electionSyncQueue;
+  });
+
+  ipcMain.handle(
+    "elections:clear-election-sync-queue",
+    async (_, ids: string[]) => {
+      electionSyncQueue = electionSyncQueue.filter(
+        (q) => !ids.includes(q.electionId)
+      );
+      return { success: true };
+    }
+  );
+
+  // Get unsynced elections (not yet synced to Supabase)
+  ipcMain.handle("elections:getUnsynced", async () => {
+    const db = getDatabase();
+    const unsynced = await db
+      .select()
+      .from(elections)
+      .where(sql`synced_at IS NULL OR updated_at > synced_at`);
+    return unsynced;
+  });
+
+  // Mark elections as synced
+  ipcMain.handle("elections:markSynced", async (_, ids: string[]) => {
+    const db = getDatabase();
+    const now = new Date().toISOString();
+    await db
+      .update(elections)
+      .set({ syncedAt: now })
+      .where(inArray(elections.id, ids));
+    return { success: true };
+  });
+
+  // ELECTIONS CRUD
   ipcMain.handle("elections:get", async () => {
     const db = getDatabase();
-    return db.select().from(elections);
+    return db
+      .select()
+      .from(elections)
+      .where(sql`deleted_at IS NULL`);
   });
 
   ipcMain.handle("elections:add", async (_, electionData) => {
+    console.log("Incoming electionData:", electionData);
+
     const db = getDatabase();
-    await db.insert(elections).values({
+    const data = {
       ...electionData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    await db.insert(elections).values(data);
 
     electionSyncQueue.push({
       electionId: electionData.id,
@@ -39,13 +82,13 @@ export function setupIpcHandlers(): void {
     return { success: true };
   });
 
-  ipcMain.handle("elections:update", async (_, { id, ...data }) => {
+  ipcMain.handle("elections:update", async (_, id, updates) => {
     const db = getDatabase();
     await db
       .update(elections)
       .set({
-        ...data,
-        updatedAt: new Date(),
+        ...updates,
+        updatedAt: new Date().toISOString(),
       })
       .where(eq(elections.id, id));
 
@@ -108,17 +151,5 @@ export function setupIpcHandlers(): void {
     const db = getDatabase();
     db.delete(adminAuth).run();
     return true;
-  });
-
-  // SYNC HELPERS
-  ipcMain.handle("get-election-sync-queue", async () => {
-    return electionSyncQueue;
-  });
-
-  ipcMain.handle("clear-election-sync-queue", async (_, ids: string[]) => {
-    electionSyncQueue = electionSyncQueue.filter(
-      (q) => !ids.includes(q.electionId)
-    );
-    return { success: true };
   });
 }

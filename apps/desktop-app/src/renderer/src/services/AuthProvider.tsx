@@ -1,4 +1,3 @@
-// contexts/AuthContext.tsx
 import { createContext, useContext, ReactNode } from "react";
 import { useAuthStore, AuthState } from "@renderer/stores/useAuthStore";
 

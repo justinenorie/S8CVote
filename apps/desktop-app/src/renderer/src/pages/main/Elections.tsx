@@ -36,7 +36,7 @@ const Elections = (): React.JSX.Element => {
   }, []);
 
   const handleDelete = async (): Promise<void> => {
-    if (!selectedElection) return;
+    if (!selectedElection || !selectedElection.id) return;
 
     const result = await deleteElection(selectedElection.id);
 
