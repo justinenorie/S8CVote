@@ -13,7 +13,7 @@ declare global {
       updateElection: (id, updates: Election) => Promise<void>;
       deleteElection: (id: string) => Promise<void>;
 
-      // // Logins
+      // Logins
       adminLogin: (data: {
         id: string;
         email: string;
@@ -26,11 +26,14 @@ declare global {
       getAdminUser: () => Promise<void>;
       clearSession: () => Promise<void>;
 
-      // Syncs
+      // Syncs for elections
       getElectionSyncQueue: () => Promise<
         { electionId: string; operation: "create" | "update" | "delete" }[]
       >;
       clearElectionSyncQueue: (ids: string[]) => Promise<{ success: boolean }>;
+      getUnsyncedElections: () => Promise<Election[]>;
+      markElectionsSynced: (ids: string[]) => Promise<{ success: boolean }>;
+      bulkUpsertElections: (records) => Promise<{ success: boolean }>;
     };
   }
 }

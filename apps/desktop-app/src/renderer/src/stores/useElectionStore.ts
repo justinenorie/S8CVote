@@ -12,6 +12,10 @@ interface ElectionState {
   loading: boolean;
   error: string | null;
 
+  syncing: boolean;
+  syncError: string | null;
+  lastSyncedAt: string | null;
+
   fetchElections: () => Promise<Result<Election[]>>;
   addElection: (election: Omit<Election, "id">) => Promise<Result<Election>>;
   updateElection: (
@@ -19,12 +23,20 @@ interface ElectionState {
     updates: Partial<Election>
   ) => Promise<Result<Election>>;
   deleteElection: (id: string) => Promise<Result<null>>;
+
+  syncToServer: () => Promise<Result<null>>;
+  syncFromServer: () => Promise<Result<null>>;
+  fullSync: () => Promise<Result<null>>;
 }
 
 export const useElectionStore = create<ElectionState>((set, get) => ({
   elections: [],
   loading: false,
   error: null,
+
+  syncing: false,
+  syncError: null,
+  lastSyncedAt: null,
 
   // TODO: Loading is kinda glitchy fix the logic later.
 
@@ -85,76 +97,74 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
         };
       });
 
-      set({ elections: transformed, loading: false });
-
       // if connected to internet it will show the supabase database instead
-      try {
-        const { data, error } = await supabase
-          .from("elections")
-          .select(
-            `
-              id,
-              election,
-              status,
-              end_time,
-              end_date,
-              candidates:candidates(id),
-              description
-            `
-          )
-          .is("deleted_at", null);
+      // try {
+      //   const { data, error } = await supabase
+      //     .from("elections")
+      //     .select(
+      //       `
+      //         id,
+      //         election,
+      //         status,
+      //         end_time,
+      //         end_date,
+      //         candidates:candidates(id),
+      //         description
+      //       `
+      //     )
+      //     .is("deleted_at", null);
 
-        if (error) {
-          console.error("Error fetching elections:", error);
-          set({ error: error.message, loading: false });
-          return { data: null, error: error.message };
-        }
+      //   if (error) {
+      //     console.error("Error fetching elections:", error);
+      //     set({ error: error.message, loading: false });
+      //     return { data: null, error: error.message };
+      //   }
 
-        const transformed: Election[] = data.map((e) => {
-          let duration = "Not set";
+      //   const transformed: Election[] = data.map((e) => {
+      //     let duration = "Not set";
 
-          if (e.end_date && e.end_time) {
-            // Combine date + time into a single Date
-            const endDateTime = new Date(`${e.end_date}T${e.end_time}`);
-            const now = new Date();
+      //     if (e.end_date && e.end_time) {
+      //       // Combine date + time into a single Date
+      //       const endDateTime = new Date(`${e.end_date}T${e.end_time}`);
+      //       const now = new Date();
 
-            // Difference in ms
-            const diffMs = endDateTime.getTime() - now.getTime();
+      //       // Difference in ms
+      //       const diffMs = endDateTime.getTime() - now.getTime();
 
-            if (diffMs > 0) {
-              const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-              const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
-              const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
+      //       if (diffMs > 0) {
+      //         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      //         const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+      //         const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
 
-              duration = "";
-              if (diffDays > 0) duration += `${diffDays}d `;
-              if (diffHours > 0) duration += `${diffHours}h `;
-              if (diffMinutes > 0 && diffDays === 0)
-                duration += `${diffMinutes}m`;
-              if (!duration) duration = "Less than 1m";
-            } else {
-              duration = "Done";
-            }
-          }
+      //         duration = "";
+      //         if (diffDays > 0) duration += `${diffDays}d `;
+      //         if (diffHours > 0) duration += `${diffHours}h `;
+      //         if (diffMinutes > 0 && diffDays === 0)
+      //           duration += `${diffMinutes}m`;
+      //         if (!duration) duration = "Less than 1m";
+      //       } else {
+      //         duration = "Done";
+      //       }
+      //     }
 
-          return {
-            id: e.id,
-            election: e.election,
-            status: e.status,
-            candidates: e.candidates?.length ?? 0,
-            end_date: e.end_date,
-            end_time: e.end_time,
-            duration,
-            description: e.description,
-          };
-        });
+      //     return {
+      //       id: e.id,
+      //       election: e.election,
+      //       status: e.status,
+      //       candidates: e.candidates?.length ?? 0,
+      //       end_date: e.end_date,
+      //       end_time: e.end_time,
+      //       duration,
+      //       description: e.description,
+      //     };
+      //   });
 
-        set({ elections: transformed, loading: false });
-        return { data: transformed, error: null };
-      } catch (errorOnline) {
-        console.error(errorOnline);
-      }
-
+      //   set({ elections: transformed, loading: false });
+      //   return { data: transformed, error: null };
+      // } catch (errorOnline) {
+      //   console.error(errorOnline);
+      // }
+      set({ elections: transformed, loading: false });
       return { data: transformed, error: null };
     } catch (error: unknown) {
       console.error("Fetch elections error:", error);
@@ -287,6 +297,65 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
       return { data: null, error: null };
     } catch (error) {
       console.error("Delete election error:", error);
+    }
+
+    return { data: null, error: "" };
+  },
+
+  // SYNC METHODS HERE FOR ELECTIONS
+  // Check if Online then proceed
+  // syncToServer: All data that has not exist in the server will sync from sqlite to supabase
+  syncToServer: async () => {
+    try {
+      const unsynced: Election[] =
+        await window.electronAPI.getUnsyncedElections();
+      if (!unsynced || unsynced.length === 0) {
+        return { data: null, error: null };
+      }
+
+      const { error } = await supabase.from("elections").upsert(unsynced);
+      if (error) throw error;
+      const ids: string[] = unsynced
+        .map((e) => e.id)
+        .filter((id): id is string => id !== undefined);
+
+      await window.electronAPI.markElectionsSynced(ids);
+      return { data: null, error: "" };
+    } catch (error: unknown) {
+      console.error("Fetch elections error:", error);
+      set({ error: error as string, loading: false });
+    }
+
+    return { data: null, error: "" };
+  },
+
+  // syncFromServer: Get all updated data from the supabase and pass to sqlite
+  syncFromServer: async () => {
+    try {
+      const { data, error } = await supabase.from("elections").select("*");
+      if (error) throw error;
+
+      await window.electronAPI.bulkUpsertElections(data);
+      await get().fetchElections();
+    } catch (error: unknown) {
+      console.error("Fetch elections error:", error);
+      set({ error: error as string, loading: false });
+    }
+    return { data: null, error: "" };
+  },
+
+  // fullSync:
+  fullSync: async () => {
+    set({ syncing: true, syncError: null });
+    try {
+      await get().syncToServer();
+      await get().syncFromServer();
+      set({ lastSyncedAt: new Date().toISOString() });
+    } catch (error: unknown) {
+      console.error("Fetch elections error:", error);
+      set({ error: error as string, loading: false });
+    } finally {
+      set({ syncing: false });
     }
 
     return { data: null, error: "" };

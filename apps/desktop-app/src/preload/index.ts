@@ -18,6 +18,8 @@ const api = {
   getUnsyncedElections: () => ipcRenderer.invoke("elections:getUnsynced"),
   markElectionsSynced: (ids: string[]) =>
     ipcRenderer.invoke("elections:markSynced", ids),
+  bulkUpsertElections: (records) =>
+    ipcRenderer.invoke("elections:bulkUpsert", records),
 
   // Auth
   adminLogin: (data: { id: string; email: string }) =>

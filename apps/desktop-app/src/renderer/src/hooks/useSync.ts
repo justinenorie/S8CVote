@@ -1,31 +1,23 @@
-// import { useEffect } from "react";
-// import { useSyncStore } from "@renderer/stores/syncStore";
+import { useEffect } from "react";
+import { useElectionStore } from "@renderer/stores/useElectionStore";
 
-// export function useSync() {
-//   const { fullSync, setOnline, syncToServer } = useSyncStore();
+// TODO: Instead of interval it should detect if online or offline sync
+// TODO: Interval Syncing is bad because it is too much request
+export function useSyncElections(interval = 10000): void {
+  const { fullSync } = useElectionStore();
 
-//   useEffect(() => {
-//     // Initial sync on mount
-//     fullSync();
+  useEffect(() => {
+    const sync = async (): Promise<void> => {
+      if (navigator.onLine) {
+        await fullSync();
+      }
+    };
 
-//     const handleOnline = () => {
-//       setOnline(true);
-//       fullSync();
-//     };
+    // initial sync
+    sync();
 
-//     const handleOffline = () => setOnline(false);
-
-//     window.addEventListener("online", handleOnline);
-//     window.addEventListener("offline", handleOffline);
-
-//     const syncInterval = setInterval(() => {
-//       if (navigator.onLine) syncToServer();
-//     }, 30000);
-
-//     return () => {
-//       window.removeEventListener("online", handleOnline);
-//       window.removeEventListener("offline", handleOffline);
-//       clearInterval(syncInterval);
-//     };
-//   }, [fullSync, setOnline, syncToServer]);
-// }
+    // interval background sync
+    const timer = setInterval(sync, interval);
+    return () => clearInterval(timer);
+  }, [fullSync, interval]);
+}

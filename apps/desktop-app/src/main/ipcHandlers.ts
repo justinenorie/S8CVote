@@ -20,6 +20,42 @@ let electionSyncQueue: {
 export function setupIpcHandlers(): void {
   // ELECTIONS
   // SYNC HELPERS FOR ELECTIONS
+  // Get unsynced elections (not yet synced to Supabase)
+  ipcMain.handle("elections:getUnsynced", async () => {
+    const db = getDatabase();
+    const unsynced = await db
+      .select()
+      .from(elections)
+      .where(sql`synced_at IS NULL OR updated_at > synced_at`);
+    return unsynced;
+    // TODO: Double check how does the synced_at work here
+  });
+
+  // Mark elections as synced
+  ipcMain.handle("elections:markSynced", async (_, ids: string[]) => {
+    const db = getDatabase();
+    const now = new Date().toISOString();
+    await db
+      .update(elections)
+      .set({ synced_at: now })
+      .where(inArray(elections.id, ids));
+    return { success: true };
+  });
+
+  // Upsert all the changes
+  ipcMain.handle("elections:bulkUpsert", async (_, records) => {
+    const db = getDatabase();
+
+    for (const record of records) {
+      await db.insert(elections).values(record).onConflictDoUpdate({
+        target: elections.id,
+        set: record,
+      });
+    }
+
+    return { success: true };
+  });
+
   ipcMain.handle("elections:get-election-sync-queue", async () => {
     return electionSyncQueue;
   });
@@ -33,27 +69,6 @@ export function setupIpcHandlers(): void {
       return { success: true };
     }
   );
-
-  // Get unsynced elections (not yet synced to Supabase)
-  ipcMain.handle("elections:getUnsynced", async () => {
-    const db = getDatabase();
-    const unsynced = await db
-      .select()
-      .from(elections)
-      .where(sql`synced_at IS NULL OR updated_at > synced_at`);
-    return unsynced;
-  });
-
-  // Mark elections as synced
-  ipcMain.handle("elections:markSynced", async (_, ids: string[]) => {
-    const db = getDatabase();
-    const now = new Date().toISOString();
-    await db
-      .update(elections)
-      .set({ syncedAt: now })
-      .where(inArray(elections.id, ids));
-    return { success: true };
-  });
 
   // ELECTIONS CRUD
   ipcMain.handle("elections:get", async () => {
@@ -101,8 +116,8 @@ export function setupIpcHandlers(): void {
     await db
       .update(elections)
       .set({
-        deletedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        deleted_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       })
       .where(eq(elections.id, id));
 
@@ -123,8 +138,8 @@ export function setupIpcHandlers(): void {
           role,
           access_token: access_token,
           refresh_token: refresh_token,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         })
         .onConflictDoUpdate({
           target: adminAuth.id,
@@ -133,7 +148,7 @@ export function setupIpcHandlers(): void {
             role,
             access_token: access_token,
             refresh_token: refresh_token,
-            updatedAt: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           },
         });
 

@@ -7,10 +7,11 @@ export const adminAuth = sqliteTable("adminAuth", {
   role: text("role"),
   access_token: text("access_token"),
   refresh_token: text("refresh_token"),
-  createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
-  updatedAt: text("updated_at"),
-  deletedAt: text("deleted_at"),
-  syncedAt: text("synced_at"),
+
+  created_at: text("created_at").default(new Date().toISOString()),
+  updated_at: text("updated_at"),
+  deleted_at: text("deleted_at"),
+  synced_at: text("synced_at"),
 });
 
 // ELECTIONS
@@ -18,13 +19,13 @@ export const elections = sqliteTable("elections", {
   id: text("id").primaryKey(),
   election: text("election").notNull(),
   description: text("description"),
-  maxVotesAllowed: integer("max_votes_allowed").default(1).notNull(),
+  max_votes_allowed: integer("max_votes_allowed").default(1).notNull(),
   status: text("status").default("active").notNull(),
-  endTime: text("end_time"),
-  endDate: text("end_date"),
+  end_time: text("end_time"),
+  end_date: text("end_date"),
 
-  createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
-  updatedAt: text("updated_at"),
-  deletedAt: text("deleted_at"),
-  syncedAt: text("synced_at"),
+  created_at: text("created_at").default(new Date().toISOString()),
+  updated_at: text("updated_at"),
+  deleted_at: text("deleted_at"),
+  synced_at: text("synced_at"),
 });

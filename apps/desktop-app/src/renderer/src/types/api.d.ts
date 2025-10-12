@@ -6,12 +6,13 @@ export interface Election {
   end_date?: string;
   end_time?: string;
   description?: string;
+  max_votes_allowed?: number;
   candidates?: number;
   duration?: string;
-  synced?: boolean;
-  deletedAt?: string | null;
-  updatedAt?: string;
-  createdAt?: string;
+  synced_at?: string;
+  deleted_at?: string | null;
+  updated_at?: string;
+  created_at?: string;
 }
 
 export interface Candidates {
@@ -26,10 +27,10 @@ export interface Candidates {
     election: string;
     status: "active" | "closed";
   } | null;
-  synced?: boolean;
-  deletedAt?: string | null;
-  updatedAt?: string;
-  createdAt?: string;
+  synced_at?: string;
+  deleted_at?: string | null;
+  updated_at?: string;
+  created_at?: string;
 }
 
 export interface Student {
@@ -38,10 +39,10 @@ export interface Student {
   student_id: string;
   email?: string;
   isRegistered: boolean;
-  synced?: boolean;
-  deletedAt?: string | null;
-  updatedAt?: string;
-  createdAt?: string;
+  synced_at?: string;
+  deleted_at?: string | null;
+  updated_at?: string;
+  created_at?: string;
 }
 
 export interface Admin {
@@ -49,10 +50,10 @@ export interface Admin {
   fullname: string;
   email?: string;
   status: string;
-  synced?: boolean;
-  deletedAt?: string | null;
-  updatedAt?: string;
-  createdAt?: string;
+  synced_at?: string;
+  deleted_at?: string | null;
+  updated_at?: string;
+  created_at?: string;
 }
 
 // TODO: Add more api types here
