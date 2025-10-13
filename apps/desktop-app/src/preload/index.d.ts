@@ -27,10 +27,6 @@ declare global {
       clearSession: () => Promise<void>;
 
       // Syncs for elections
-      getElectionSyncQueue: () => Promise<
-        { electionId: string; operation: "create" | "update" | "delete" }[]
-      >;
-      clearElectionSyncQueue: (ids: string[]) => Promise<{ success: boolean }>;
       getUnsyncedElections: () => Promise<Election[]>;
       markElectionsSynced: (ids) => Promise<{ success: boolean }>;
       bulkUpsertElections: (records) => Promise<{ success: boolean }>;

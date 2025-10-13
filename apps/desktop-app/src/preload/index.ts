@@ -11,10 +11,6 @@ const api = {
   deleteElection: (id) => ipcRenderer.invoke("elections:delete", id),
 
   // Sync helpers
-  getElectionSyncQueue: () =>
-    ipcRenderer.invoke("elections:get-election-sync-queue"),
-  clearElectionSyncQueue: (ids: string[]) =>
-    ipcRenderer.invoke("elections:clear-election-sync-queue", ids),
   getUnsyncedElections: () => ipcRenderer.invoke("elections:getUnsynced"),
   markElectionsSynced: (ids: string[]) =>
     ipcRenderer.invoke("elections:markSynced", ids),
