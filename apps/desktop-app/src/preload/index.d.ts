@@ -32,7 +32,7 @@ declare global {
       >;
       clearElectionSyncQueue: (ids: string[]) => Promise<{ success: boolean }>;
       getUnsyncedElections: () => Promise<Election[]>;
-      markElectionsSynced: (ids: string[]) => Promise<{ success: boolean }>;
+      markElectionsSynced: (ids) => Promise<{ success: boolean }>;
       bulkUpsertElections: (records) => Promise<{ success: boolean }>;
     };
   }

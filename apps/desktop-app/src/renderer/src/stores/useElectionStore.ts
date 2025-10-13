@@ -42,6 +42,11 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
 
   // TODO: Handle the Error Properly for offline-first structure.
 
+  /* TODO: Remove the online here it means:
+    - All online proccess must be go through sync only.
+    - This way we can prevent so many request happens.
+  */
+
   // FETCH
   fetchElections: async (): Promise<Result<Election[]>> => {
     set({ loading: true, error: null });
@@ -309,17 +314,23 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     try {
       const unsynced: Election[] =
         await window.electronAPI.getUnsyncedElections();
+
       if (!unsynced || unsynced.length === 0) {
         return { data: null, error: null };
       }
 
-      const { error } = await supabase.from("elections").upsert(unsynced);
+      const ids = unsynced.map((e) => e.id);
+
+      const payload = unsynced.map((e) => ({
+        ...e,
+        synced_at: 1,
+      }));
+
+      const { error } = await supabase.from("elections").upsert(payload);
       if (error) throw error;
-      const ids: string[] = unsynced
-        .map((e) => e.id)
-        .filter((id): id is string => id !== undefined);
 
       await window.electronAPI.markElectionsSynced(ids);
+
       return { data: null, error: "" };
     } catch (error: unknown) {
       console.error("Fetch elections error:", error);
@@ -344,7 +355,6 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     return { data: null, error: "" };
   },
 
-  // fullSync:
   fullSync: async () => {
     set({ syncing: true, syncError: null });
     try {

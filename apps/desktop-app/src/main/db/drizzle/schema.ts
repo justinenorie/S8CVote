@@ -27,5 +27,5 @@ export const elections = sqliteTable("elections", {
   created_at: text("created_at").default(new Date().toISOString()),
   updated_at: text("updated_at"),
   deleted_at: text("deleted_at"),
-  synced_at: text("synced_at"),
+  synced_at: integer("synced_at").default(0),
 });

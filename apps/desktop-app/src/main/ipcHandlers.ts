@@ -26,19 +26,28 @@ export function setupIpcHandlers(): void {
     const unsynced = await db
       .select()
       .from(elections)
-      .where(sql`synced_at IS NULL OR updated_at > synced_at`);
+      .where(sql`synced_at = 0 OR synced_at IS NULL`);
+
+    const unsyncedString = unsynced
+      .map((election) => `${election.id} - ${election.election}`)
+      .join("\n ");
+    console.log(`Unsynced data: ${unsyncedString}`);
+
     return unsynced;
     // TODO: Double check how does the synced_at work here
   });
 
   // Mark elections as synced
-  ipcMain.handle("elections:markSynced", async (_, ids: string[]) => {
+  ipcMain.handle("elections:markSynced", async (_, ids) => {
     const db = getDatabase();
-    const now = new Date().toISOString();
+
     await db
       .update(elections)
-      .set({ synced_at: now })
-      .where(inArray(elections.id, ids));
+      .set({ synced_at: 1 })
+      .where(inArray(elections.id, ids))
+      .returning();
+
+    console.log(ids);
     return { success: true };
   });
 
@@ -85,8 +94,8 @@ export function setupIpcHandlers(): void {
     const db = getDatabase();
     const data = {
       ...electionData,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
     await db.insert(elections).values(data);
 
@@ -103,7 +112,8 @@ export function setupIpcHandlers(): void {
       .update(elections)
       .set({
         ...updates,
-        updatedAt: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        synced_at: 0,
       })
       .where(eq(elections.id, id));
 
