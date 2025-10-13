@@ -24,9 +24,9 @@ interface ElectionState {
   ) => Promise<Result<Election>>;
   deleteElection: (id: string) => Promise<Result<null>>;
 
-  syncToServer: () => Promise<Result<null>>;
-  syncFromServer: () => Promise<Result<null>>;
-  fullSync: () => Promise<Result<null>>;
+  syncToServerElection: () => Promise<Result<null>>;
+  syncFromServerElection: () => Promise<Result<null>>;
+  fullSyncElection: () => Promise<Result<null>>;
 }
 
 export const useElectionStore = create<ElectionState>((set, get) => ({
@@ -310,7 +310,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
   // SYNC METHODS HERE FOR ELECTIONS
   // Check if Online then proceed
   // syncToServer: All data that has not exist in the server will sync from sqlite to supabase
-  syncToServer: async () => {
+  syncToServerElection: async () => {
     try {
       const unsynced: Election[] =
         await window.electronAPI.getUnsyncedElections();
@@ -341,7 +341,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
   },
 
   // syncFromServer: Get all updated data from the supabase and pass to sqlite
-  syncFromServer: async () => {
+  syncFromServerElection: async () => {
     try {
       const { data, error } = await supabase.from("elections").select("*");
       if (error) throw error;
@@ -355,11 +355,11 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     return { data: null, error: "" };
   },
 
-  fullSync: async () => {
+  fullSyncElection: async () => {
     set({ syncing: true, syncError: null });
     try {
-      await get().syncToServer();
-      await get().syncFromServer();
+      await get().syncToServerElection();
+      await get().syncFromServerElection();
       set({ lastSyncedAt: new Date().toISOString() });
     } catch (error: unknown) {
       console.error("Fetch elections error:", error);

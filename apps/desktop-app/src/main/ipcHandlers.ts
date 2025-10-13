@@ -12,11 +12,6 @@ import { eq, sql, inArray } from "drizzle-orm";
   - settings
 */
 
-let electionSyncQueue: {
-  electionId: string;
-  operation: "create" | "update" | "delete";
-}[] = [];
-
 export function setupIpcHandlers(): void {
   // ELECTIONS
   // SYNC HELPERS FOR ELECTIONS
@@ -65,20 +60,6 @@ export function setupIpcHandlers(): void {
     return { success: true };
   });
 
-  ipcMain.handle("elections:get-election-sync-queue", async () => {
-    return electionSyncQueue;
-  });
-
-  ipcMain.handle(
-    "elections:clear-election-sync-queue",
-    async (_, ids: string[]) => {
-      electionSyncQueue = electionSyncQueue.filter(
-        (q) => !ids.includes(q.electionId)
-      );
-      return { success: true };
-    }
-  );
-
   // ELECTIONS CRUD
   ipcMain.handle("elections:get", async () => {
     const db = getDatabase();
@@ -96,13 +77,10 @@ export function setupIpcHandlers(): void {
       ...electionData,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      synced_at: 0,
     };
     await db.insert(elections).values(data);
 
-    electionSyncQueue.push({
-      electionId: electionData.id,
-      operation: "create",
-    });
     return { success: true };
   });
 
@@ -116,9 +94,6 @@ export function setupIpcHandlers(): void {
         synced_at: 0,
       })
       .where(eq(elections.id, id));
-
-    electionSyncQueue.push({ electionId: id, operation: "update" });
-    return { success: true };
   });
 
   ipcMain.handle("elections:delete", async (_, id: string) => {
@@ -128,10 +103,10 @@ export function setupIpcHandlers(): void {
       .set({
         deleted_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        synced_at: 0,
       })
       .where(eq(elections.id, id));
 
-    electionSyncQueue.push({ electionId: id, operation: "delete" });
     return { success: true };
   });
 
