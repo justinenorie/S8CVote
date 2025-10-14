@@ -119,4 +119,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
     await get().fetchCandidates();
     return { data: null, error: null };
   },
+  // SYNC METHODS HERE FOR CANDIDATES
+  // syncToServerCandidates
+  // syncFromServerCandidates
 }));

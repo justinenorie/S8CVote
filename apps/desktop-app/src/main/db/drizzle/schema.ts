@@ -29,3 +29,18 @@ export const elections = sqliteTable("elections", {
   deleted_at: text("deleted_at"),
   synced_at: integer("synced_at").default(0),
 });
+
+// CANDIDATES
+export const candidates = sqliteTable("candidates", {
+  id: text("id").primaryKey(),
+  name: text("election").notNull(),
+  description: text("description"),
+  profile: text("profile"),
+  profile_path: text("profile_path"),
+  election_id: text("election_id"),
+
+  created_at: text("created_at").default(new Date().toISOString()),
+  updated_at: text("updated_at"),
+  deleted_at: text("deleted_at"),
+  synced_at: integer("synced_at").default(0),
+});

@@ -12,6 +12,8 @@ import { eq, sql, inArray } from "drizzle-orm";
   - settings
 */
 
+// TODO: Make a separation ipc for different module
+
 export function setupIpcHandlers(): void {
   // ELECTIONS
   // SYNC HELPERS FOR ELECTIONS
@@ -56,16 +58,16 @@ export function setupIpcHandlers(): void {
         .from(elections)
         .where(eq(elections.id, record.id));
 
-      // ✅ If record doesn’t exist locally, insert it
+      // If record doesn’t exist locally, insert it
       if (!local) {
         await db.insert(elections).values({
           ...record,
-          synced_at: 1, // because this came from Supabase
+          synced_at: 1,
         });
         continue;
       }
 
-      // ✅ Safely compare updated_at timestamps
+      // Safely compare updated_at timestamps
       const localUpdated = local.updated_at
         ? new Date(local.updated_at).getTime()
         : 0;
@@ -73,23 +75,15 @@ export function setupIpcHandlers(): void {
         ? new Date(record.updated_at).getTime()
         : 0;
 
-      // 🧩 Only update local if Supabase has newer record
+      // Only update local if Supabase has newer record
       if (serverUpdated > localUpdated) {
         await db
           .update(elections)
           .set({
             ...record,
-            synced_at: 1, // mark synced since it came from Supabase
+            synced_at: 1,
           })
           .where(eq(elections.id, record.id));
-
-        console.log(
-          `✅ Updated local election (${record.id}) — Supabase is newer`
-        );
-      } else {
-        console.log(
-          `⏭️ Skipped election (${record.id}) — Local is newer or same timestamp`
-        );
       }
     }
 
