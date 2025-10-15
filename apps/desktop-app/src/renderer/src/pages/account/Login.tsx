@@ -82,11 +82,11 @@ const Login = (): React.JSX.Element => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="border-TEXTdark bg-BGlight grid w-full gap-5 rounded-2xl border-1 p-8 py-20 shadow-lg"
+            className="border-TEXTdark text-TEXTdark dark:text-TEXTlight bg-PRIMARY-100 dark:bg-PRIMARY-800/40 grid w-full gap-5 rounded-2xl border-1 p-8 py-20 shadow-lg"
           >
             <Typography
               variant="h4"
-              className="text-TEXTdark block text-center font-semibold"
+              className="text-TEXTdark dark:text-TEXTlight block text-center font-semibold"
             >
               Sign in to Admin Panel
             </Typography>
@@ -162,7 +162,10 @@ const Login = (): React.JSX.Element => {
                   Forgot password?{" "}
                 </Typography>
                 <a href="#" className="underline">
-                  <Typography variant="small" className="text-PRIMARY-900">
+                  <Typography
+                    variant="small"
+                    className="text-PRIMARY-900 dark:text-PRIMARY-200"
+                  >
                     Click here
                   </Typography>
                 </a>

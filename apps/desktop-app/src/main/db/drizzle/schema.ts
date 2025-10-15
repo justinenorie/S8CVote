@@ -3,6 +3,7 @@ import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 // ADMIN AUTH
 export const adminAuth = sqliteTable("adminAuth", {
   id: text("id").primaryKey(),
+  fullname: text("fullname"),
   email: text("email").notNull(),
   role: text("role"),
   access_token: text("access_token"),

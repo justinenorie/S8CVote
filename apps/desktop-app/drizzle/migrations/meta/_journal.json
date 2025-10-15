@@ -5,57 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1759421343922,
-      "tag": "0000_clumsy_devos",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1760228519441,
-      "tag": "0001_fast_marten_broadcloak",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1760235695566,
-      "tag": "0002_unknown_triton",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1760308954212,
-      "tag": "0003_purple_silverclaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1760313420126,
-      "tag": "0004_puzzling_tyrannus",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1760314235467,
-      "tag": "0005_sharp_moondragon",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1760314677036,
-      "tag": "0006_swift_blizzard",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "6",
-      "when": 1760315635903,
-      "tag": "0007_same_rogue",
+      "when": 1760483282833,
+      "tag": "0000_last_william_stryker",
       "breakpoints": true
     }
   ]

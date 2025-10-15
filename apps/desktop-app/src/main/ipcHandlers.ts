@@ -143,13 +143,14 @@ export function setupIpcHandlers(): void {
   // AUTH (simple offline cache)
   ipcMain.handle(
     "auth:admin",
-    async (_, { id, email, role, access_token, refresh_token }) => {
+    async (_, { id, email, fullname, role, access_token, refresh_token }) => {
       const db = getDatabase();
       await db
         .insert(adminAuth)
         .values({
           id,
           email,
+          fullname,
           role,
           access_token: access_token,
           refresh_token: refresh_token,

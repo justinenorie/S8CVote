@@ -26,7 +26,13 @@ const SideNav = (): React.JSX.Element => {
 
   const location = useLocation();
 
-  const { signOut, error, user, loading } = useAuthStore();
+  const { signOut, error, loading, loadAdminData, adminData } = useAuthStore();
+
+  React.useEffect(() => {
+    loadAdminData();
+  }, []);
+
+  console.log(loadAdminData);
 
   // TODO: it also clear the tokens
   const logout = async (): Promise<void> => {
@@ -119,8 +125,8 @@ const SideNav = (): React.JSX.Element => {
             <img src={s8cvotelogo} alt="s8cvotelogo" className="h-10 w-10" />
             {/* TODO: Change this based on the what user admin logged in */}
             <div className="row-span-2 grid">
-              <Typography variant="p">Admin Admin</Typography>
-              <Typography variant="small">{user?.email}</Typography>
+              <Typography variant="p">{adminData?.fullname}</Typography>
+              <Typography variant="small">{adminData?.email}</Typography>
             </div>
             <Button variant="ghost" onClick={() => setShowConfirmLogout(true)}>
               <LogOut />

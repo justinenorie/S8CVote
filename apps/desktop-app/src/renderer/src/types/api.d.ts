@@ -49,7 +49,8 @@ export interface Admin {
   id?: string;
   fullname: string;
   email?: string;
-  status: string;
+  role: string;
+  status?: string;
   synced_at?: string;
   deleted_at?: string | null;
   updated_at?: string;

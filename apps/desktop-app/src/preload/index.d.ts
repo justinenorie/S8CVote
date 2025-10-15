@@ -18,6 +18,7 @@ declare global {
         id: string;
         email: string;
         role: string;
+        fullname: string;
         access_token: string | null;
         refresh_token: string | null;
         created_at: string;
