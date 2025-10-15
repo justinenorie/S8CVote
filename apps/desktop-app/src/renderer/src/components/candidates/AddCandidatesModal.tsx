@@ -214,7 +214,7 @@ export const AddCandidatesModal = ({
                           {elections.map((election) => (
                             <SelectItem
                               key={election.id}
-                              value={election.id}
+                              value={election.id ?? ""}
                               className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80"
                             >
                               {election.election}

@@ -25,7 +25,6 @@ export function candidatesApiHandlers(): void {
       .where(inArray(candidates.id, ids))
       .returning();
 
-    console.log(ids);
     return { success: true };
   });
 
@@ -35,8 +34,6 @@ export function candidatesApiHandlers(): void {
 
     for (const record of records) {
       const { election, ...cleanRecord } = record;
-
-      console.log(record);
 
       // Ensure election_id exists (foreign key)
       if (!cleanRecord.election_id && election?.id) {
@@ -115,12 +112,10 @@ export function candidatesApiHandlers(): void {
   });
 
   // POST
-  ipcMain.handle("candidates:add", async (_, electionData) => {
-    console.log("Incoming electionData:", electionData);
-
+  ipcMain.handle("candidates:add", async (_, candidatesData) => {
     const db = getDatabase();
     const data = {
-      ...electionData,
+      ...candidatesData,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       synced_at: 0,

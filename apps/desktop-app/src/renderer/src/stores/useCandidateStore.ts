@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { supabase } from "@renderer/lib/supabaseClient";
+import { useAuthStore } from "./useAuthStore";
 import { Candidates } from "@renderer/types/api";
 
 type Result<T = void> =
@@ -42,13 +43,20 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
   fetchCandidates: async () => {
     set({ loading: true, error: null });
 
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     try {
+      set({ loading: true });
       const data = await window.electronAPI.candidatesGet();
 
       set({ candidates: data, loading: false });
       return { data: data, error: null };
     } catch (error: unknown) {
-      console.error("Fetch elections error:", error);
+      console.error("Fetch candidates error:", error);
       set({ error: error as string, loading: false });
     }
     return { data: null, error: "" };
@@ -56,55 +64,72 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
 
   // ADD
   addCandidate: async (candidate) => {
-    const { data, error } = await supabase
-      .from("candidates")
-      .insert([candidate])
-      .select()
-      .single();
-
-    if (error) {
-      set({ error: error.message });
-      return { data: null, error: error.message };
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
     }
 
-    await get().fetchCandidates();
-    return { data, error: null };
+    const newCandidates = {
+      id: crypto.randomUUID(),
+      ...candidate,
+    };
+
+    try {
+      set({ loading: true });
+      await window.electronAPI.candidatesAdd(newCandidates);
+      await get().fetchCandidates();
+
+      return { data: newCandidates, error: null };
+    } catch (error: unknown) {
+      console.error("Adding candidates error:", error);
+      set({ error: error as string, loading: false });
+    }
+
+    return { data: null, error: "" };
   },
 
   // UPDATE
   updateCandidate: async (id: string, updates: Partial<Candidates>) => {
-    const { data, error } = await supabase
-      .from("candidates")
-      .update(updates)
-      .eq("id", id)
-      .select()
-      .maybeSingle();
-
-    if (error) {
-      set({ error: error.message });
-      return { data: null, error: error.message };
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
     }
 
-    await get().fetchCandidates();
-    return { data, error: null };
+    try {
+      set({ loading: true });
+      await window.electronAPI.candidatesUpdate(id, updates);
+      await get().fetchCandidates();
+
+      return { data: updates as Candidates, error: null };
+    } catch (error: unknown) {
+      console.error("Updating candidates error:", error);
+      set({ error: error as string, loading: false });
+    }
+
+    return { data: null, error: "" };
   },
 
   // DELETE
   deleteCandidate: async (id) => {
-    const { data: candidate } = await supabase
-      .from("candidates")
-      .select("profile_path")
-      .eq("id", id)
-      .single();
-
-    const { error } = await supabase.from("candidates").delete().eq("id", id);
-    if (error) return { data: null, error: error.message };
-
-    if (candidate?.profile_path) {
-      await supabase.storage.from("avatars").remove([candidate.profile_path]);
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
     }
 
-    await get().fetchCandidates();
+    try {
+      set({ loading: true });
+      await window.electronAPI.candidatesDelete(id);
+      get().fetchCandidates();
+
+      return { data: null, error: null };
+    } catch (error: unknown) {
+      console.error("Deleting candidates error:", error);
+      set({ error: error as string, loading: false });
+    }
+
     return { data: null, error: null };
   },
 
@@ -126,7 +151,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
 
       return { data: null, error: null };
     } catch (error: unknown) {
-      console.error("Fetch elections error:", error);
+      console.error("Sync candidates error:", error);
       set({ error: error as string, loading: false });
     }
     return { data: null, error: "" };
@@ -141,7 +166,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
       await window.electronAPI.candidatesBulkUpsert(data);
       await get().fetchCandidates();
     } catch (error: unknown) {
-      console.error("Fetch elections error:", error);
+      console.error("Sync Candidates error:", error);
       set({ error: error as string, loading: false });
     }
     return { data: null, error: "" };
@@ -154,7 +179,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
       await get().syncFromServerCandidates();
       set({ lastSyncedAt: new Date().toISOString() });
     } catch (error: unknown) {
-      console.error("Fetch elections error:", error);
+      console.error("Sync candidates error:", error);
       set({ error: error as string, loading: false });
     } finally {
       set({ syncing: false });
