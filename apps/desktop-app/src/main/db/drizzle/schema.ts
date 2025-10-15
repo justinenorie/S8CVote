@@ -34,11 +34,13 @@ export const elections = sqliteTable("elections", {
 // CANDIDATES
 export const candidates = sqliteTable("candidates", {
   id: text("id").primaryKey(),
-  name: text("election").notNull(),
+  name: text("name").notNull(),
   description: text("description"),
   profile: text("profile"),
   profile_path: text("profile_path"),
-  election_id: text("election_id"),
+  election_id: text("election_id")
+    .notNull()
+    .references(() => elections.id, { onDelete: "cascade" }),
 
   created_at: text("created_at").default(new Date().toISOString()),
   updated_at: text("updated_at"),

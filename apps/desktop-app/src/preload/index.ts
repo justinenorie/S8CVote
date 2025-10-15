@@ -3,25 +3,38 @@ import { electronAPI } from "@electron-toolkit/preload";
 
 // Save All the API methods here
 const api = {
-  // Elections
+  // CANDIDATES
+  candidatesGet: () => ipcRenderer.invoke("candidates:get"),
+  candidatesAdd: (data) => ipcRenderer.invoke("candidates:add", data),
+  candidatesUpdate: (id, updates) =>
+    ipcRenderer.invoke("candidates:update", id, updates),
+  candidatesDelete: (id) => ipcRenderer.invoke("candidates:delete", id),
+  candidatesGetUnsynced: () => ipcRenderer.invoke("candidates:getUnsynced"),
+  candidatesMarkSynced: (ids: string[]) =>
+    ipcRenderer.invoke("candidates:markSynced", ids),
+  candidatesBulkUpsert: (records) =>
+    ipcRenderer.invoke("candidates:bulkUpsert", records),
+
+  // ELECTIONS
   getElections: () => ipcRenderer.invoke("elections:get"),
   addElection: (data) => ipcRenderer.invoke("elections:add", data),
   updateElection: (id, updates) =>
     ipcRenderer.invoke("elections:update", id, updates),
   deleteElection: (id) => ipcRenderer.invoke("elections:delete", id),
-
-  // Sync helpers
   getUnsyncedElections: () => ipcRenderer.invoke("elections:getUnsynced"),
   markElectionsSynced: (ids: string[]) =>
     ipcRenderer.invoke("elections:markSynced", ids),
   bulkUpsertElections: (records) =>
     ipcRenderer.invoke("elections:bulkUpsert", records),
 
-  // Auth
+  // AUTH
   adminLogin: (data: { id: string; email: string }) =>
     ipcRenderer.invoke("auth:admin", data),
   getAdminUser: () => ipcRenderer.invoke("auth:getUser"),
   clearSession: () => ipcRenderer.invoke("auth:clearSession"),
+
+  // REGISTRATION
+  // TODO: add the registration method here later on.
 };
 
 if (process.contextIsolated) {

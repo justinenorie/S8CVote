@@ -7,11 +7,25 @@ declare global {
 
     // Tandaan mo toh: Use for type safes for calling api (sige)
     electronAPI: {
+      // Candidates
+      candidatesGet: () => Promise<Candidate[]>;
+      candidatesAdd: (data: Candidate) => Promise<void>;
+      candidatesUpdate: (id: string, updates: Candidate) => Promise<void>;
+      candidatesDelete: (id: string) => Promise<void>;
+      candidatesGetUnsynced: () => Promise<Candidate[]>;
+      candidatesMarkSynced: (ids: string[]) => Promise<{ success: boolean }>;
+      candidatesBulkUpsert: (
+        records: Candidate[]
+      ) => Promise<{ success: boolean }>;
+
       // Elections
       getElections: () => Promise<Election>;
       addElection: (data: Election) => Promise<void>;
       updateElection: (id, updates: Election) => Promise<void>;
       deleteElection: (id: string) => Promise<void>;
+      getUnsyncedElections: () => Promise<Election[]>;
+      markElectionsSynced: (ids) => Promise<{ success: boolean }>;
+      bulkUpsertElections: (records) => Promise<{ success: boolean }>;
 
       // Logins
       adminLogin: (data: {
@@ -26,11 +40,6 @@ declare global {
       }) => Promise<void>;
       getAdminUser: () => Promise<void>;
       clearSession: () => Promise<void>;
-
-      // Syncs for elections
-      getUnsyncedElections: () => Promise<Election[]>;
-      markElectionsSynced: (ids) => Promise<{ success: boolean }>;
-      bulkUpsertElections: (records) => Promise<{ success: boolean }>;
     };
   }
 }
