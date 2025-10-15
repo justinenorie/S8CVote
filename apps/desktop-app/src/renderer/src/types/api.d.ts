@@ -7,7 +7,7 @@ export interface Election {
   end_time?: string;
   description?: string;
   max_votes_allowed?: number;
-  candidates?: number;
+  candidate_count?: number;
   duration?: string;
   synced_at?: string;
   deleted_at?: string | null;
@@ -22,7 +22,7 @@ export interface Candidates {
   name: string;
   description?: string;
   election_id?: string;
-  election: {
+  election?: {
     id: string;
     election: string;
     status: "active" | "closed";

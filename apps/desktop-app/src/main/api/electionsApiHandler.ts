@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import { getDatabase } from "../db/sqliteDB";
-import { elections } from "../db/drizzle/schema";
+import { elections, candidates } from "../db/drizzle/schema";
 import { eq, sql, inArray } from "drizzle-orm";
 
 export function electionsApiHandlers(): void {
@@ -31,7 +31,6 @@ export function electionsApiHandlers(): void {
       .where(inArray(elections.id, ids))
       .returning();
 
-    console.log(ids);
     return { success: true };
   });
 
@@ -80,15 +79,34 @@ export function electionsApiHandlers(): void {
   // ELECTIONS CRUD
   ipcMain.handle("elections:get", async () => {
     const db = getDatabase();
-    return db
-      .select()
+    const results = await db
+      .select({
+        id: elections.id,
+        election: elections.election,
+        status: elections.status,
+        end_time: elections.end_time,
+        end_date: elections.end_date,
+        description: elections.description,
+        candidate_count: sql<number>`COUNT(${candidates.id})`.as(
+          "candidate_count"
+        ),
+      })
       .from(elections)
-      .where(sql`deleted_at IS NULL`);
+      .leftJoin(candidates, eq(candidates.election_id, elections.id))
+      .where(sql`${elections.deleted_at} IS NULL`)
+      .groupBy(elections.id);
+
+    console.log(results);
+
+    return results;
+
+    // return db
+    //   .select()
+    //   .from(elections)
+    //   .where(sql`deleted_at IS NULL`);
   });
 
   ipcMain.handle("elections:add", async (_, electionData) => {
-    console.log("Incoming electionData:", electionData);
-
     const db = getDatabase();
     const data = {
       ...electionData,
