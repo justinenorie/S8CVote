@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import { getDatabase } from "../db/sqliteDB";
-import { candidates } from "../db/drizzle/schema";
+import { candidates, elections } from "../db/drizzle/schema";
 import { eq, sql, inArray } from "drizzle-orm";
 
 export function candidatesApiHandlers(): void {
@@ -80,10 +80,38 @@ export function candidatesApiHandlers(): void {
   // GET
   ipcMain.handle("candidates:get", async () => {
     const db = getDatabase();
-    return db
-      .select()
+
+    // Join candidates with elections on election_id
+    const results = await db
+      .select({
+        id: candidates.id,
+        name: candidates.name,
+        description: candidates.description,
+        profile: candidates.profile,
+        election_id: candidates.election_id,
+        // election details from joined table
+        election: elections.election,
+        election_status: elections.status,
+      })
       .from(candidates)
-      .where(sql`deleted_at IS NULL`);
+      .leftJoin(elections, eq(candidates.election_id, elections.id))
+      .where(sql`${candidates.deleted_at} IS NULL`);
+
+    // ✅ Transform to match your frontend type
+    return results.map((row) => ({
+      id: row.id,
+      name: row.name,
+      description: row.description,
+      profile: row.profile,
+      election_id: row.election_id,
+      election: row.election
+        ? {
+            id: row.election_id,
+            election: row.election,
+            status: row.election_status,
+          }
+        : null,
+    }));
   });
 
   // POST

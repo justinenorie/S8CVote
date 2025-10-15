@@ -45,39 +45,8 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
     try {
       const data = await window.electronAPI.candidatesGet();
 
-      // const { data, error } = await supabase.from("candidates").select(
-      //   `
-      //     id,
-      //     name,
-      //     description,
-      //     profile,
-      //     election_id,
-      //     election:election_id (
-      //       id,
-      //       election,
-      //       status
-      //     )
-      //   `
-      // );
-      // if (error) {
-      //   console.error("Error fetching candidates:", error);
-      //   set({ error: error.message, loading: false });
-      //   return { data: null, error: error.message };
-      // }
-
-      const candidatesData: Candidates[] = data.map((c) => {
-        return {
-          id: c.id,
-          name: c.name,
-          description: c.description,
-          profile: c.profile,
-          election_id: c.election_id,
-          election: Array.isArray(c.election) ? c.election[0] : c.election,
-        };
-      });
-
-      set({ candidates: candidatesData, loading: false });
-      return { data: candidatesData, error: null };
+      set({ candidates: data, loading: false });
+      return { data: data, error: null };
     } catch (error: unknown) {
       console.error("Fetch elections error:", error);
       set({ error: error as string, loading: false });

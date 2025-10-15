@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "ae186deb-cf6c-4588-bd92-37c7928aefc2",
+  "id": "da1d3158-4cff-42d7-82dc-20f84df1b1a6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "adminAuth": {
@@ -55,7 +55,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-14T23:08:02.795Z'"
+          "default": "'2025-10-15T04:11:35.197Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -95,8 +95,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "election": {
-          "name": "election",
+        "name": {
+          "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -127,7 +127,7 @@
           "name": "election_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "created_at": {
@@ -136,7 +136,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-14T23:08:02.797Z'"
+          "default": "'2025-10-15T04:11:35.199Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -162,7 +162,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "candidates_election_id_elections_id_fk": {
+          "name": "candidates_election_id_elections_id_fk",
+          "tableFrom": "candidates",
+          "tableTo": "elections",
+          "columnsFrom": [
+            "election_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -227,7 +241,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-14T23:08:02.797Z'"
+          "default": "'2025-10-15T04:11:35.198Z'"
         },
         "updated_at": {
           "name": "updated_at",
