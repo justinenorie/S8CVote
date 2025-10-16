@@ -1,4 +1,17 @@
-// Elections
+// ADMINS
+export interface Admin {
+  id?: string;
+  fullname: string;
+  email?: string;
+  role: string;
+  status?: string;
+  synced_at?: string;
+  deleted_at?: string | null;
+  updated_at?: string;
+  created_at?: string;
+}
+
+// ELECTIONS
 export interface Election {
   id?: string;
   election?: string;
@@ -15,6 +28,7 @@ export interface Election {
   created_at?: string;
 }
 
+// CANDIDATES
 export interface Candidates {
   id: string;
   profile: string | null;
@@ -33,25 +47,14 @@ export interface Candidates {
   created_at?: string;
 }
 
+// STUDENTS
 export interface Student {
-  id?: string;
-  fullname: string;
+  id: string;
   student_id: string;
-  email?: string;
-  isRegistered: boolean;
-  synced_at?: string;
-  deleted_at?: string | null;
-  updated_at?: string;
-  created_at?: string;
-}
-
-export interface Admin {
-  id?: string;
   fullname: string;
   email?: string;
-  role: string;
-  status?: string;
-  synced_at?: string;
+  isRegistered: number;
+  synced_at?: number;
   deleted_at?: string | null;
   updated_at?: string;
   created_at?: string;

@@ -1,10 +1,33 @@
+import React, { ReactNode } from "react";
 import { Upload, File } from "lucide-react";
 import Typography from "../ui/Typography";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { useStudentStore } from "@renderer/stores/useStudentStore";
+import { toast } from "sonner";
 
 // TODO: Add the upload data logic later on...
 const FileUpload = (): React.ReactElement => {
+  const { handleExcelUpload, loading } = useStudentStore();
+
+  const handleFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const result = await handleExcelUpload(file);
+      if (!result.error) {
+        toast.success("Student data uploaded successfully!");
+      } else {
+        toast.error("Upload failed", { description: result.error });
+      }
+    } catch (error: unknown) {
+      toast.error("Unexpected error", { description: error as ReactNode });
+    }
+  };
+
   return (
     <div className="bg-PRIMARY-50 dark:bg-PRIMARY-900 border-PRIMARY-200 dark:border-PRIMARY-700 w-full rounded-lg border p-4 shadow-md">
       <div className="mb-3 flex items-center gap-2">
@@ -55,6 +78,8 @@ const FileUpload = (): React.ReactElement => {
           type="file"
           accept=".xls,.xlsx"
           className="hidden"
+          onChange={handleFileChange}
+          disabled={loading}
         />
       </Label>
     </div>

@@ -10,34 +10,6 @@ import { toast } from "sonner";
 import { useCandidateStore } from "@renderer/stores/useCandidateStore";
 import { Candidates } from "@renderer/types/api";
 
-// TODO: Remove this later
-// const sampleData: Candidates[] = [
-//   {
-//     id: "1",
-//     profile:
-//       "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small_2x/profile-icon-design-free-vector.jpg",
-//     name: "John Doe",
-//     election: {
-//       id: "1",
-//       election: "President",
-//       status: "active",
-//     },
-//     description: "A very nice person",
-//   },
-//   {
-//     id: "2",
-//     profile:
-//       "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small_2x/profile-icon-design-free-vector.jpg",
-//     name: "Jane Doe",
-//     election: {
-//       id: "2",
-//       election: "Vice President",
-//       status: "active",
-//     },
-//     description: "A very nice person too",
-//   },
-// ];
-
 const CandidatesPage = (): React.JSX.Element => {
   // TODO: Add Loading later
   const { candidates, loading, fetchCandidates, deleteCandidate } =

@@ -24,6 +24,7 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
+    "@e965/xlsx": "^0.20.3",
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "@libsql/client": "^0.15.15",
