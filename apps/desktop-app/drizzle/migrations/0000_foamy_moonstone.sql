@@ -5,7 +5,7 @@ CREATE TABLE `adminAuth` (
 	`role` text,
 	`access_token` text,
 	`refresh_token` text,
-	`created_at` text DEFAULT '2025-10-15T04:11:35.197Z',
+	`created_at` text DEFAULT '2025-10-16T11:08:30.146Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` text
@@ -18,7 +18,7 @@ CREATE TABLE `candidates` (
 	`profile` text,
 	`profile_path` text,
 	`election_id` text NOT NULL,
-	`created_at` text DEFAULT '2025-10-15T04:11:35.199Z',
+	`created_at` text DEFAULT '2025-10-16T11:08:30.148Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0,
@@ -33,8 +33,22 @@ CREATE TABLE `elections` (
 	`status` text DEFAULT 'active' NOT NULL,
 	`end_time` text,
 	`end_date` text,
-	`created_at` text DEFAULT '2025-10-15T04:11:35.198Z',
+	`created_at` text DEFAULT '2025-10-16T11:08:30.148Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
 );
+--> statement-breakpoint
+CREATE TABLE `students` (
+	`id` text PRIMARY KEY NOT NULL,
+	`student_id` text NOT NULL,
+	`fullname` text NOT NULL,
+	`email` text,
+	`isRegistered` integer DEFAULT 0,
+	`created_at` text DEFAULT '2025-10-16T11:08:30.148Z',
+	`updated_at` text,
+	`deleted_at` text,
+	`synced_at` integer DEFAULT 0
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `students_student_id_unique` ON `students` (`student_id`);

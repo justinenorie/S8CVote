@@ -47,3 +47,17 @@ export const candidates = sqliteTable("candidates", {
   deleted_at: text("deleted_at"),
   synced_at: integer("synced_at").default(0),
 });
+
+// STUDENT DATA
+export const students = sqliteTable("students", {
+  id: text("id").primaryKey(),
+  student_id: text("student_id").notNull().unique(),
+  fullname: text("fullname").notNull(),
+  email: text("email"),
+  isRegistered: integer("isRegistered").default(0),
+
+  created_at: text("created_at").default(new Date().toISOString()),
+  updated_at: text("updated_at"),
+  deleted_at: text("deleted_at"),
+  synced_at: integer("synced_at").default(0),
+});

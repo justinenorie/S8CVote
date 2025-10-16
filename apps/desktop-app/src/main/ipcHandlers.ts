@@ -3,6 +3,7 @@ import { getDatabase } from "./db/sqliteDB";
 import { adminAuth } from "./db/drizzle/schema";
 import { electionsApiHandlers } from "./api/electionsApiHandler";
 import { candidatesApiHandlers } from "./api/candidatesApiHandler";
+import { studentsApiHandlers } from "./api/studentsApiHandler";
 
 // TODO: Add more ipc Handler here:
 /* 
@@ -19,6 +20,8 @@ export function setupIpcHandlers(): void {
   electionsApiHandlers();
 
   candidatesApiHandlers();
+
+  studentsApiHandlers();
 
   // AUTH (simple offline cache)
   ipcMain.handle(

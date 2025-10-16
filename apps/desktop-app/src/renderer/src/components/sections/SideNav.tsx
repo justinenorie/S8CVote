@@ -32,7 +32,6 @@ const SideNav = (): React.JSX.Element => {
     loadAdminData();
   }, []);
 
-  // TODO: it also clear the tokens
   const logout = async (): Promise<void> => {
     await signOut();
 

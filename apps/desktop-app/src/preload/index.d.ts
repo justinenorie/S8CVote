@@ -1,5 +1,5 @@
 import { ElectronAPI } from "@electron-toolkit/preload";
-import type { Election } from "@renderer/types/api";
+import type { Election, Candidates, Student } from "@renderer/types/api";
 
 declare global {
   interface Window {
@@ -7,15 +7,22 @@ declare global {
 
     // Tandaan mo toh: Use for type safes for calling api (sige)
     electronAPI: {
+      // Students
+      studentsGet: () => Promise<Student[]>;
+      studentsBulkInsert: (records: Student[]) => Promise<{ success: boolean }>;
+      studentsGetUnsynced: () => Promise<Student[]>;
+      studentsMarkSynced: (ids: string[]) => Promise<{ success: boolean }>;
+      studentsBulkUpsert: (records: Student[]) => Promise<{ success: boolean }>;
+
       // Candidates
-      candidatesGet: () => Promise<Candidate[]>;
-      candidatesAdd: (data: Candidate) => Promise<void>;
-      candidatesUpdate: (id: string, updates: Candidate) => Promise<void>;
+      candidatesGet: () => Promise<Candidates[]>;
+      candidatesAdd: (data: Candidates) => Promise<void>;
+      candidatesUpdate: (id: string, updates: Candidates) => Promise<void>;
       candidatesDelete: (id: string) => Promise<void>;
-      candidatesGetUnsynced: () => Promise<Candidate[]>;
+      candidatesGetUnsynced: () => Promise<Candidates[]>;
       candidatesMarkSynced: (ids: string[]) => Promise<{ success: boolean }>;
       candidatesBulkUpsert: (
-        records: Candidate[]
+        records: Candidates[]
       ) => Promise<{ success: boolean }>;
 
       // Elections

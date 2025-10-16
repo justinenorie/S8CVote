@@ -3,6 +3,15 @@ import { electronAPI } from "@electron-toolkit/preload";
 
 // Save All the API methods here
 const api = {
+  // STUDENTS
+  studentsGet: () => ipcRenderer.invoke("students:get"),
+  studentsBulkInsert: (records) =>
+    ipcRenderer.invoke("students:bulkInsert", records),
+  studentsGetUnsynced: () => ipcRenderer.invoke("students:getUnsynced"),
+  studentsMarkSynced: (ids) => ipcRenderer.invoke("students:markSynced", ids),
+  studentsBulkUpsert: (records) =>
+    ipcRenderer.invoke("students:bulkUpsert", records),
+
   // CANDIDATES
   candidatesGet: () => ipcRenderer.invoke("candidates:get"),
   candidatesAdd: (data) => ipcRenderer.invoke("candidates:add", data),
