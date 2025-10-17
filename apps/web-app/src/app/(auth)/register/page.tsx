@@ -63,8 +63,6 @@ export default function RegisterPage() {
   };
 
   const onSubmit = async (values: RegisterFormValues) => {
-    console.log("Form Data:", values);
-
     const { error } = await registerStudent(
       values.student_id,
       values.email,

@@ -7,6 +7,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "@/stores/useAuthStores";
+import { toast } from "sonner";
 
 import {
   Form,
@@ -31,6 +33,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { signInWithPassword, loading } = useAuthStore();
 
   // Form Schema
   const form = useForm<LoginFormValues>({
@@ -41,10 +44,20 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (values: LoginFormValues) => {
-    console.log("Form Data:", values);
-    // TODO: Supabase submit value here
-    router.push("/dashboard");
+  const onSubmit = async (values: LoginFormValues) => {
+    // console.log("Form Data:", values);
+    const result = await signInWithPassword(values.email, values.password);
+
+    if (result.error) {
+      toast.error(result.error, {
+        description: "Please check your credentials and try again.",
+      });
+    } else {
+      toast.success("Welcome Back!", {
+        description: `Logged in as ${values.email}`,
+      });
+      router.push("/dashboard");
+    }
   };
 
   return (
@@ -149,8 +162,13 @@ export default function LoginPage() {
                 )}
               />
 
-              <Button type="submit" className="w-full">
-                Login
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loading}
+                variant="default"
+              >
+                {loading ? "Logging in..." : "Login"}
               </Button>
 
               {/* Signup Link */}
