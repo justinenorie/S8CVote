@@ -14,9 +14,11 @@ export function AuthProvider({
   const value: AuthState = {
     user,
     session,
+    adminData: null,
     loading,
     error,
     signInWithPassword,
+    loadAdminData: () => Promise.resolve({ data: null, error: null }),
     signOut,
   };
 

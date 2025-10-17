@@ -12,7 +12,7 @@ export type SignInResult<T = void> =
       error: null;
     };
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   session: Session | null;
   adminData: Admin | null;
