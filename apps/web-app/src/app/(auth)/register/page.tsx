@@ -7,6 +7,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "@/stores/useAuthStores";
+import { toast } from "sonner";
 
 import {
   Form,
@@ -23,7 +25,7 @@ import { UserRound, Lock, Eye, EyeOff, Mail, IdCard } from "lucide-react";
 
 const registerSchema = z.object({
   email: z.string().email("Enter a valid email address"),
-  name: z.string().min(1, "Enter your full name"),
+  name: z.string(),
   student_id: z.string().min(1, "Enter your Student ID"),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
@@ -33,6 +35,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { registerStudent, verifyStudent, loading, error } = useAuthStore();
 
   // Form Schema
   const form = useForm<RegisterFormValues>({
@@ -45,9 +48,35 @@ export default function RegisterPage() {
     },
   });
 
-  const onSubmit = (values: RegisterFormValues) => {
+  const handleVerifyStudent = async (student_id: string) => {
+    const { data, error } = await verifyStudent(student_id);
+
+    if (error) {
+      form.setError("student_id", { type: "manual", message: error });
+      form.setValue("name", error as string);
+      return;
+    }
+
+    form.clearErrors("student_id");
+    form.setValue("name", (data as { fullname: string }).fullname);
+    toast.success("Student verified!");
+  };
+
+  const onSubmit = async (values: RegisterFormValues) => {
     console.log("Form Data:", values);
-    // TODO: Supabase submit value here
+
+    const { error } = await registerStudent(
+      values.student_id,
+      values.email,
+      values.password
+    );
+
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
+    toast.success("Registration successful!");
     router.push("/dashboard");
   };
 
@@ -101,7 +130,19 @@ export default function RegisterPage() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>
+                      <div className="flex flex-col gap-1">
+                        Full Name{" "}
+                        <Typography
+                          variant="small"
+                          className="text-TEXTdark/50 dark:text-TEXTlight/50 text-xs"
+                        >
+                          {
+                            "(Input your Student ID to automatically fill out your name)"
+                          }
+                        </Typography>
+                      </div>
+                    </FormLabel>
                     <FormControl>
                       <div className="relative">
                         <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
@@ -110,8 +151,9 @@ export default function RegisterPage() {
                         <Input
                           {...field}
                           type="name"
-                          placeholder="eg. Juan D. Dela Cruz"
+                          placeholder="Auto-filled after verifying Student ID"
                           className="px-10"
+                          disabled
                         />
                       </div>
                     </FormControl>
@@ -137,6 +179,7 @@ export default function RegisterPage() {
                           type="name"
                           placeholder="eg. 20-0001"
                           className="px-10"
+                          onBlur={(e) => handleVerifyStudent(e.target.value)}
                         />
                       </div>
                     </FormControl>
@@ -181,8 +224,17 @@ export default function RegisterPage() {
                 )}
               />
 
-              <Button type="submit" className="w-full">
-                Create an account
+              {error && (
+                <Typography
+                  variant="small"
+                  className="text-center text-red-500"
+                >
+                  {error}
+                </Typography>
+              )}
+
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Creating Account..." : "Create an account"}
               </Button>
 
               {/* Signup Link */}
