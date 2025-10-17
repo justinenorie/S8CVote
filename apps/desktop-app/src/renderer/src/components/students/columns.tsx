@@ -82,10 +82,10 @@ export const useStudentColumns = (): ColumnDef<Student>[] => {
               >
                 All
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => column.setFilterValue(true)}>
+              <DropdownMenuItem onClick={() => column.setFilterValue("1")}>
                 Registered
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => column.setFilterValue(false)}>
+              <DropdownMenuItem onClick={() => column.setFilterValue("0")}>
                 Not Registered
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -97,10 +97,10 @@ export const useStudentColumns = (): ColumnDef<Student>[] => {
         return (
           <span
             className={
-              status === true ? "font-semibold text-green-600" : "text-gray-500"
+              status === 1 ? "font-semibold text-green-600" : "text-gray-500"
             }
           >
-            {status === true ? "Registered" : "Not Registered"}
+            {status === 1 ? "Registered" : "Not Registered"}
           </span>
         );
       },

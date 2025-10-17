@@ -96,14 +96,7 @@ export function electionsApiHandlers(): void {
       .where(sql`${elections.deleted_at} IS NULL`)
       .groupBy(elections.id);
 
-    console.log(results);
-
     return results;
-
-    // return db
-    //   .select()
-    //   .from(elections)
-    //   .where(sql`deleted_at IS NULL`);
   });
 
   ipcMain.handle("elections:add", async (_, electionData) => {

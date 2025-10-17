@@ -77,6 +77,7 @@ export const useCandidatesColumns = ({
       },
       accessorFn: (row) => row.election?.election,
     },
+    // TODO: Add a total votes results here for transparency
     {
       accessorKey: "status",
       header: ({ column }) => {
