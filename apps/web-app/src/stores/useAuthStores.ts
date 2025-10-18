@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase/client";
 import { Session, User } from "@supabase/supabase-js";
-// import { StudentCredentials } from "@/types/api";
 
 type SignInResult<T = void> =
   | { data: null; error: string }
