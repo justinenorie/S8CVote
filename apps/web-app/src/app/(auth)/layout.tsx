@@ -1,8 +1,11 @@
 import { redirect } from "next/navigation";
 import { createServerClientInstance } from "@/lib/supabase/server";
-import LoginForm from "@/components/auth/LoginForm";
 
-export default async function LoginPage() {
+export default async function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const supabase = await createServerClientInstance();
   const {
     data: { user },
@@ -12,5 +15,5 @@ export default async function LoginPage() {
     redirect("/dashboard");
   }
 
-  return <LoginForm />;
+  return <>{children}</>;
 }
