@@ -31,8 +31,7 @@ interface AuthState {
     student_id: string
   ) => Promise<SignInResult<{ fullname: string }>>;
 
-  // loadAdminData: () => Promise<SignInResult>;
-  // signOut: () => Promise<void>;
+  signOutStudent: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -177,5 +176,11 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
 
     return { data: { fullname: student.fullname }, error: null };
+  },
+
+  // Sign out
+  signOutStudent: async () => {
+    await supabase.auth.signOut();
+    set({ user: null, session: null });
   },
 }));

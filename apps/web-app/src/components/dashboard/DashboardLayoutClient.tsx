@@ -24,10 +24,29 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { toast } from "sonner";
+import { useAuthStore } from "@/stores/useAuthStores";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
+
+  const { signOutStudent, error } = useAuthStore();
+
+  const signOut = async () => {
+    await signOutStudent();
+
+    if (!useAuthStore.getState().user) {
+      toast.success("Logout Success!", {
+        description: "Clearing out your tokens...",
+      });
+      router.push("/");
+    } else {
+      toast.error(error, {
+        description: `Please check: ${error}`,
+      });
+    }
+  };
 
   return (
     <div className="bg-BGlight dark:bg-BGdark min-h-screen">
@@ -101,7 +120,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
                 <DropdownMenuItem
                   className="flex items-center gap-2 text-red-500 focus:text-red-600"
-                  onClick={() => console.log("Logout clicked")}
+                  // TODO: Add a confirmation dialog here instead of directly signing out....
+                  onClick={() => signOut()}
                 >
                   <LogOut size={16} />
                   Logout
