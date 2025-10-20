@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -31,7 +32,12 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { signOutStudent, error } = useAuthStore();
+  const { signOutStudent, getCurrentUser, error, profile, loading } =
+    useAuthStore();
+
+  useEffect(() => {
+    getCurrentUser();
+  }, [getCurrentUser]);
 
   const signOut = async () => {
     await signOutStudent();
@@ -97,10 +103,16 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="cursor-pointer">
                   <div className="text-muted-foreground flex flex-col text-right text-sm">
-                    <Typography variant="p">Student D User</Typography>
-                    <Typography variant="small" className="text-right">
-                      00-0000
-                    </Typography>
+                    {loading ? (
+                      <Typography variant="small">Loading.....</Typography>
+                    ) : (
+                      <div>
+                        <Typography variant="p">{profile?.fullname}</Typography>
+                        <Typography variant="small" className="text-right">
+                          {profile?.student_id}
+                        </Typography>
+                      </div>
+                    )}
                   </div>
                 </Button>
               </DropdownMenuTrigger>
@@ -200,15 +212,18 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                       onClick={() => router.push("/profile")}
                     >
                       <div className="flex flex-col items-start">
-                        <Typography variant="p" className="font-medium">
-                          Student D User
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          className="text-muted-foreground"
-                        >
-                          00-0000
-                        </Typography>
+                        {loading ? (
+                          <Typography variant="small">Loading.....</Typography>
+                        ) : (
+                          <div>
+                            <Typography variant="p">
+                              {profile?.fullname}
+                            </Typography>
+                            <Typography variant="small" className="text-right">
+                              {profile?.student_id}
+                            </Typography>
+                          </div>
+                        )}
                       </div>
                     </Button>
                   </SheetClose>

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "@/lib/supabase/client";
 import { Session, User } from "@supabase/supabase-js";
+import { Profile } from "@/types/api";
 
 type SignInResult<T = void> =
   | { data: null; error: string }
@@ -14,6 +15,7 @@ type SignInResult<T = void> =
 interface AuthState {
   user: User | null;
   session: Session | null;
+  profile?: Profile | null;
   loading: boolean;
   error: string | null;
 
@@ -30,6 +32,7 @@ interface AuthState {
   verifyStudent: (
     student_id: string
   ) => Promise<SignInResult<{ fullname: string }>>;
+  getCurrentUser: () => Promise<SignInResult<void>>;
 
   signOutStudent: () => Promise<void>;
 }
@@ -149,6 +152,40 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     set({ loading: false });
     return { data: null, error: null };
+  },
+
+  getCurrentUser: async () => {
+    set({ loading: true, error: null });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      set({ user: null, session: null, profile: null, loading: false });
+      return { data: null, error: "No user found" };
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("fullname, student_id, role")
+      .eq("id", user.id)
+      .single();
+
+    set({
+      user,
+      profile: profile ?? null,
+      loading: false,
+    });
+
+    return {
+      data: {
+        user: null,
+        session: null,
+        profile: profile,
+      },
+      error: null,
+    };
   },
 
   // Verify Student ID

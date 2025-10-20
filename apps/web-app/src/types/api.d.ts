@@ -26,3 +26,9 @@ export interface Election {
   has_voted: boolean;
   candidates: CandidateResult[];
 }
+
+export interface Profile {
+  fullname: string;
+  student_id: string;
+  role: string;
+}
