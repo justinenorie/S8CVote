@@ -22,21 +22,23 @@ export default function DashboardElectionList() {
         </Typography>
       )}
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
         {elections.map((elec) => (
-          <ElectionsCard
-            key={elec.id}
-            electionId={elec.id}
-            electionTitle={elec.title}
-            voted={elec.has_voted}
-            candidates={elec.candidates.map((candi) => ({
-              id: candi.candidate_id,
-              name: candi.candidate_name,
-              votes: candi.votes_count,
-              percentage: candi.percentage,
-              image: candi.candidate_profile ?? null,
-            }))}
-          />
+          <div key={elec.id} className="mb-6 break-inside-avoid">
+            <ElectionsCard
+              key={elec.id}
+              electionId={elec.id}
+              electionTitle={elec.title}
+              voted={elec.has_voted}
+              candidates={elec.candidates.map((candi) => ({
+                id: candi.candidate_id,
+                name: candi.candidate_name,
+                votes: candi.votes_count,
+                percentage: candi.percentage,
+                image: candi.candidate_profile ?? null,
+              }))}
+            />
+          </div>
         ))}
       </div>
     </div>
