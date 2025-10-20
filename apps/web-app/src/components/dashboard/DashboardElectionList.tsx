@@ -1,46 +1,51 @@
 "use client";
 
-import { useEffect } from "react";
-import Typography from "@/components/ui/Typography";
+import { useState, useEffect } from "react";
+import LoadingElections from "./LoadingElections";
+import Typography from "../ui/Typography";
 import ElectionsCard from "@/components/dashboard/ElectionsCard";
 import { useVoteStore } from "@/stores/useVoteStore";
 
 export default function DashboardElectionList() {
-  const { elections, loadElections, loading, error } = useVoteStore();
+  const { elections, loadElections, error } = useVoteStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadElections();
+    setTimeout(() => setIsLoading(false), 1000);
   }, [loadElections]);
 
-  // TODO: add a skeleton loading here later on
   return (
     <div>
-      {loading && <Typography variant="p">Loading…</Typography>}
       {error && (
         <Typography variant="p" className="text-red-500">
           {error}
         </Typography>
       )}
 
-      <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
-        {elections.map((elec) => (
-          <div key={elec.id} className="mb-6 break-inside-avoid">
-            <ElectionsCard
-              key={elec.id}
-              electionId={elec.id}
-              electionTitle={elec.title}
-              voted={elec.has_voted}
-              candidates={elec.candidates.map((candi) => ({
-                id: candi.candidate_id,
-                name: candi.candidate_name,
-                votes: candi.votes_count,
-                percentage: candi.percentage,
-                image: candi.candidate_profile ?? null,
-              }))}
-            />
-          </div>
-        ))}
-      </div>
+      {isLoading ? (
+        <LoadingElections />
+      ) : (
+        <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
+          {elections.map((elec) => (
+            <div key={elec.id} className="mb-6 break-inside-avoid">
+              <ElectionsCard
+                key={elec.id}
+                electionId={elec.id}
+                electionTitle={elec.title}
+                voted={elec.has_voted}
+                candidates={elec.candidates.map((candi) => ({
+                  id: candi.candidate_id,
+                  name: candi.candidate_name,
+                  votes: candi.votes_count,
+                  percentage: candi.percentage,
+                  image: candi.candidate_profile ?? null,
+                }))}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/Typography";
 import Image from "next/image";
+import { toast } from "sonner";
+import { useVoteStore } from "@/stores/useVoteStore";
 
 type Candidate = {
   id: number | string;
@@ -12,19 +14,32 @@ type Candidate = {
 };
 
 interface CandidatesModalProps {
+  electionId: string;
   candidates: Candidate[];
   onClose: () => void;
 }
 
 // TODO: Add RHK and zod schema here
 
-const CandidatesModal = ({ candidates, onClose }: CandidatesModalProps) => {
-  const onSubmit = () => {
-    // TODO: Supabase submit value here
-    console.log("Vote is now submitted");
-  };
+const CandidatesModal = ({
+  electionId,
+  candidates,
+  onClose,
+}: CandidatesModalProps) => {
+  const [selected, setSelected] = useState<number | string>("");
+  const { castVote } = useVoteStore();
 
-  const [selected, setSelected] = useState<number | string | null>(null);
+  const onSubmit = async () => {
+    const { error } = await castVote(electionId, selected.toString());
+
+    if (!selected) return;
+    if (error) {
+      toast.error(error);
+    } else {
+      toast.success("Vote submitted!");
+      onClose();
+    }
+  };
 
   return (
     <div className="space-y-4">

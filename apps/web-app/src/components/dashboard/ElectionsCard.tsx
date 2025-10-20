@@ -36,6 +36,7 @@ const getOrdinalNumber = (n: number): string => {
 };
 
 const ElectionCard = ({
+  electionId,
   electionTitle,
   voted,
   candidates,
@@ -108,6 +109,7 @@ const ElectionCard = ({
             </DialogDescription>
           </DialogHeader>
           <CandidatesModal
+            electionId={electionId}
             candidates={candidates}
             onClose={() => setOpen(false)}
           />
