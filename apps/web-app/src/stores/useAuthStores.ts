@@ -37,7 +37,6 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   session: null,
-  adminData: null,
   loading: false,
   error: null,
 
@@ -45,7 +44,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   signInWithPassword: async (email, password) => {
     set({ loading: true, error: null });
 
-    // Login
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,

@@ -11,3 +11,18 @@ export interface StudentCredentials {
   updated_at?: string;
   created_at?: string;
 }
+
+export interface CandidateResult {
+  candidate_id: string;
+  candidate_name: string;
+  votes_count: number;
+  percentage: number;
+  // Image is missing here
+}
+
+export interface Election {
+  id: string;
+  title: string;
+  has_voted: boolean;
+  candidates: CandidateResult[];
+}

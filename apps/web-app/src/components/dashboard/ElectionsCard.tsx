@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/Typography";
@@ -11,16 +12,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import CandidatesModal from "./CandidatesCard";
+import { useVoteStore } from "@/stores/useVoteStore";
 
-interface Candidate {
-  id: number;
+type Candidate = {
+  id: string;
   name: string;
-  image: string;
   votes: number;
   percentage: number;
-}
+  image?: string;
+};
 
 interface ElectionCardProps {
+  electionId: string;
   electionTitle: string;
   voted: boolean;
   candidates: Candidate[];
@@ -38,6 +41,12 @@ const ElectionCard = ({
   candidates,
 }: ElectionCardProps) => {
   const [open, setOpen] = useState(false);
+
+  const { loadElections } = useVoteStore();
+
+  useEffect(() => {
+    loadElections();
+  }, [loadElections]);
 
   return (
     <div>

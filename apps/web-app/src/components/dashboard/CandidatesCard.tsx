@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/Typography";
 import Image from "next/image";
 
-interface Candidate {
+type Candidate = {
   id: number | string;
   name: string;
-  image: string;
-}
+  image?: string;
+};
 
 interface CandidatesModalProps {
   candidates: Candidate[];
@@ -36,7 +36,7 @@ const CandidatesModal = ({ candidates, onClose }: CandidatesModalProps) => {
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-gray-200">
               <Image
-                src={c.image}
+                src={c.image || ""}
                 alt={c.name}
                 width={40}
                 height={40}
