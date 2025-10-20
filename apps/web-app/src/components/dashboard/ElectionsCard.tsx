@@ -19,7 +19,7 @@ type Candidate = {
   name: string;
   votes: number;
   percentage: number;
-  image?: string;
+  image: string | null;
 };
 
 interface ElectionCardProps {

@@ -17,7 +17,7 @@ export interface CandidateResult {
   candidate_name: string;
   votes_count: number;
   percentage: number;
-  // Image is missing here
+  candidate_profile: string | null;
 }
 
 export interface Election {

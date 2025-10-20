@@ -56,7 +56,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     const { data: resultsRaw, error: e2 } = await supabase
       .from("election_results_with_percent")
       .select(
-        "election_id, candidate_id, candidate_name, votes_count, percentage"
+        "election_id, candidate_id, candidate_name, votes_count, percentage, candidate_profile"
       )
       .in("election_id", ids);
 
@@ -74,6 +74,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
         candidate_name: row.candidate_name,
         votes_count: row.votes_count,
         percentage: Number(row.percentage),
+        candidate_profile: row.candidate_profile || null,
       });
       byElection[row.election_id] = arr;
     }
@@ -110,7 +111,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     const { data: cRaw, error: e2 } = await supabase
       .from("election_results_with_percent")
       .select(
-        "election_id, candidate_id, candidate_name, votes_count, percentage"
+        "election_id, candidate_id, candidate_name, votes_count, percentage, candidate_profile"
       )
       .eq("election_id", electionId);
 
@@ -128,6 +129,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
           candidate_name: row.candidate_name,
           votes_count: row.votes_count,
           percentage: Number(row.percentage),
+          candidate_profile: row.candidate_profile || null,
         }))
         .sort((a, b) => b.votes_count - a.votes_count),
     };

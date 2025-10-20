@@ -8,7 +8,7 @@ import Image from "next/image";
 type Candidate = {
   id: number | string;
   name: string;
-  image?: string;
+  image: string | null;
 };
 
 interface CandidatesModalProps {
@@ -34,14 +34,21 @@ const CandidatesModal = ({ candidates, onClose }: CandidatesModalProps) => {
           className="bg-card hover:bg-muted/40 flex items-center justify-between rounded-lg border p-3 transition"
         >
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gray-200">
-              <Image
-                src={c.image || ""}
-                alt={c.name}
-                width={40}
-                height={40}
-                className="rounded-full object-cover"
-              />
+            <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
+              {c.image ? (
+                <Image
+                  src={c.image}
+                  alt={c.name}
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 rounded-full object-cover"
+                />
+              ) : (
+                // simple fallback if no image
+                <div className="text-muted-foreground grid h-full w-full place-content-center text-xs">
+                  N/A
+                </div>
+              )}
             </div>
             <Typography variant="p">{c.name}</Typography>
           </div>

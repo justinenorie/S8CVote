@@ -12,7 +12,7 @@ export default function DashboardElectionList() {
     loadElections();
   }, [loadElections]);
 
-  // TODO: add a skeleton loading here
+  // TODO: add a skeleton loading here later on
   return (
     <div>
       {loading && <Typography variant="p">Loading…</Typography>}
@@ -34,6 +34,7 @@ export default function DashboardElectionList() {
               name: candi.candidate_name,
               votes: candi.votes_count,
               percentage: candi.percentage,
+              image: candi.candidate_profile ?? null,
             }))}
           />
         ))}
