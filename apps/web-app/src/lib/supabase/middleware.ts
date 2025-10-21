@@ -56,8 +56,16 @@ export async function updateSession(request: NextRequest) {
 
   const user = await supabase.auth.getUser();
 
+  // Protected /dashboard routes if not authenticated
   if (request.nextUrl.pathname.startsWith("/dashboard") && user.error) {
     return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // Redirect away from auth pages after log in
+  const authPaths = ["/", "/register", "/forgot-password"];
+  const isAuthPath = authPaths.includes(request.nextUrl.pathname);
+  if (isAuthPath && user) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;
