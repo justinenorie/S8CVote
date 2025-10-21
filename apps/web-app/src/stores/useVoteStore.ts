@@ -164,6 +164,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     return { data: null, error: null };
   },
 
+  // TODO: Apply this to real-time updates
   subscribeToElection: async (electionId) => {
     if (channels[electionId]) return; // already subscribed
 
