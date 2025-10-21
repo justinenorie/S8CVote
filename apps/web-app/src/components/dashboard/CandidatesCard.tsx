@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/Typography";
 import Image from "next/image";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import { useVoteStore } from "@/stores/useVoteStore";
 
 type Candidate = {
@@ -27,9 +28,11 @@ const CandidatesModal = ({
   onClose,
 }: CandidatesModalProps) => {
   const [selected, setSelected] = useState<number | string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const { castVote } = useVoteStore();
 
   const onSubmit = async () => {
+    setIsLoading(true);
     const { error } = await castVote(electionId, selected.toString());
 
     if (!selected) return;
@@ -81,8 +84,19 @@ const CandidatesModal = ({
           Cancel
         </Button>
 
-        <Button disabled={selected === null} onClick={onSubmit}>
-          Submit
+        <Button
+          type="submit"
+          variant="default"
+          disabled={selected === null || isLoading}
+          onClick={onSubmit}
+        >
+          {isLoading ? (
+            <div className="flex flex-row items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" /> Submit
+            </div>
+          ) : (
+            "Submit"
+          )}
         </Button>
       </div>
     </div>
