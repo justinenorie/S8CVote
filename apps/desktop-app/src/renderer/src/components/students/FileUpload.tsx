@@ -16,6 +16,18 @@ const FileUpload = (): React.ReactElement => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const MAX_FILE_SIZE_MB = 5;
+    const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
+
+    // Check file size before upload
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("File too large", {
+        description: `Maximum allowed size is ${MAX_FILE_SIZE_MB} MB.`,
+      });
+      e.target.value = "";
+      return;
+    }
+
     try {
       const result = await handleExcelUpload(file);
       if (!result.error) {
