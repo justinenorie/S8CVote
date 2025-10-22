@@ -54,18 +54,26 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const user = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  // Protected /dashboard routes if not authenticated
-  if (request.nextUrl.pathname.startsWith("/dashboard") && user.error) {
-    return NextResponse.redirect(new URL("/", request.url));
+  // Protected routes
+  const protectedPaths = ["/dashboard"];
+  const isProtectedPath = protectedPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path)
+  );
+
+  if (isProtectedPath && !user) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Redirect away from auth pages after log in
-  const authPaths = ["/", "/register", "/forgot-password"];
+  // Redirect logged-in users away from auth pages
+  const authPaths = ["/", "/register", "forgot-password"];
   const isAuthPath = authPaths.includes(request.nextUrl.pathname);
+
   if (isAuthPath && user) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/elections", request.url));
   }
 
   return response;
