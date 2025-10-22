@@ -66,6 +66,7 @@ export const EditCandidatesModal = ({
   const [originalImageUrl, setOriginalImageUrl] = React.useState<string | null>(
     null
   );
+  const [uploading, setUploading] = React.useState(false);
 
   // Fetching Elections for Select
   React.useEffect(() => {
@@ -99,17 +100,34 @@ export const EditCandidatesModal = ({
   if (!open || !candidates) return null;
 
   const onSubmit = async (values: EditCandidatesModal): Promise<void> => {
+    onClose();
+    reset();
+
     let profileUrl: string | null = originalImageUrl;
     let profilePath: string | null = null;
 
+    const loadingToast = toast.loading("Uploading image...", {
+      description: `Uploading profile picture for ${values.name}...`,
+    });
+
     if (values.profile instanceof File) {
+      setUploading(true);
+
       const uploaded = await uploadProfileImage(values.profile, candidates.id);
       if (!uploaded) {
+        toast.dismiss(loadingToast);
         toast.error("Failed to upload profile image");
+        setUploading(false);
         return;
       }
       profileUrl = uploaded.publicUrl;
       profilePath = uploaded.path;
+
+      if (!uploading) {
+        toast.success("Image is Uploaded.", {
+          description: `Profile Picture for ${values.name} is uploaded.`,
+        });
+      }
     } else if (typeof values.profile === "string" && values.profile) {
       profileUrl = values.profile;
     } else if (!values.profile && originalImageUrl) {
@@ -127,17 +145,21 @@ export const EditCandidatesModal = ({
     const result = await updateCandidate(candidates.id, payload);
 
     if (result.error) {
+      toast.dismiss(loadingToast);
       console.error("Failed to add candidate:", result.error);
       toast.error(result.error, {
         description: "Invalid Request.....",
       });
-    } else {
-      toast.success("Updated successfully!", {
-        description: `${payload.name}'s information updated successfully..`,
-      });
-      reset();
-      onClose();
+      setUploading(false);
+      return;
     }
+
+    toast.success("Updated successfully!", {
+      description: `${payload.name}'s information updated successfully..`,
+    });
+
+    toast.dismiss(loadingToast);
+    setUploading(false);
   };
 
   return (

@@ -90,7 +90,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
   },
 
   // UPDATE
-  updateCandidate: async (id: string, updates: Partial<Candidates>) => {
+  updateCandidate: async (id, updates) => {
     const userID = useAuthStore.getState().user?.id;
     if (!userID) {
       set({ loading: false, error: "No user logged in" });
@@ -99,7 +99,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
 
     try {
       set({ loading: true });
-      await window.electronAPI.candidatesUpdate(id, updates);
+      await window.electronAPI.candidatesUpdate(id, updates as Candidates);
       await get().fetchCandidates();
 
       return { data: updates as Candidates, error: null };

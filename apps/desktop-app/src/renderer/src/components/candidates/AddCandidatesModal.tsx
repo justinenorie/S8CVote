@@ -61,6 +61,7 @@ export const AddCandidatesModal = ({
 
   const { addCandidate, updateCandidate, loading } = useCandidateStore();
   const { elections, fetchElections } = useElectionStore();
+  const [uploading, setUploading] = React.useState(false);
 
   // Fetch Elections
   React.useEffect(() => {
@@ -89,14 +90,24 @@ export const AddCandidatesModal = ({
     }
 
     const candidateId = result.data.id;
+    onClose();
+    reset();
 
     let profileUrl: string | null = null;
     let profilePath: string | null = null;
 
     if (values.profile instanceof File) {
+      setUploading(true);
+
+      const loadingToast = toast.loading("Uploading image...", {
+        description: `Uploading profile picture for ${values.name}...`,
+      });
+
       const uploaded = await uploadProfileImage(values.profile, candidateId);
       if (!uploaded) {
+        toast.dismiss(loadingToast);
         toast.error("Failed to upload profile image");
+        setUploading(false);
         return;
       }
       profileUrl = uploaded.publicUrl;
@@ -108,17 +119,24 @@ export const AddCandidatesModal = ({
       });
 
       if (updateResult.error) {
+        toast.dismiss(loadingToast);
         toast.error("Failed to update candidate image");
+        setUploading(false);
         return;
       }
+      toast.dismiss(loadingToast);
+      setUploading(false);
+    }
+
+    if (!uploading) {
+      toast.success("Image is Uploaded.", {
+        description: `Profile Picture for ${values.name} is uploaded.`,
+      });
     }
 
     toast.success("New Candidate added successfully!", {
       description: `${values.name} has been added.`,
     });
-
-    reset();
-    onClose();
   };
 
   return (

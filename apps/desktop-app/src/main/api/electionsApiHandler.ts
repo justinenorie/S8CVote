@@ -87,9 +87,10 @@ export function electionsApiHandlers(): void {
         end_time: elections.end_time,
         end_date: elections.end_date,
         description: elections.description,
-        candidate_count: sql<number>`COUNT(${candidates.id})`.as(
-          "candidate_count"
-        ),
+        candidate_count:
+          sql<number>`COUNT(CASE WHEN ${candidates.deleted_at} IS NULL THEN ${candidates.id} ELSE NULL END)`.as(
+            "candidate_count"
+          ),
       })
       .from(elections)
       .leftJoin(candidates, eq(candidates.election_id, elections.id))
