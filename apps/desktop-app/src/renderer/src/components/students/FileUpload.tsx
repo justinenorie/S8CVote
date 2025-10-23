@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { Upload, File } from "lucide-react";
 import Typography from "../ui/Typography";
 import { Input } from "../ui/input";
@@ -36,7 +36,7 @@ const FileUpload = (): React.ReactElement => {
         toast.error("Upload failed", { description: result.error });
       }
     } catch (error: unknown) {
-      toast.error("Unexpected error", { description: error as ReactNode });
+      toast.error(`${error}`);
     }
   };
 

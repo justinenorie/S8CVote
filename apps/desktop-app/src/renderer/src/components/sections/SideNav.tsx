@@ -30,6 +30,7 @@ const SideNav = (): React.JSX.Element => {
 
   React.useEffect(() => {
     loadAdminData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const logout = async (): Promise<void> => {
