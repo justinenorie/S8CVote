@@ -1,33 +1,33 @@
-import { UserRound } from "lucide-react";
+// import { UserRound } from "lucide-react";
 import Typography from "../ui/Typography";
 
-const adminSampleData = [
-  {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    status: "Pending",
-  },
-  {
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    status: "Pending",
-  },
-  {
-    name: "Peter Jones",
-    email: "peter.jones@example.com",
-    status: "Pending",
-  },
-  {
-    name: "Alice Johnson",
-    email: "alice.johnson@example.com",
-    status: "Approved",
-  },
-  {
-    name: "Bob Williams",
-    email: "bob.williams@example.com",
-    status: "Approved",
-  },
-];
+// const adminSampleData = [
+//   {
+//     name: "John Doe",
+//     email: "john.doe@example.com",
+//     status: "Pending",
+//   },
+//   {
+//     name: "Jane Smith",
+//     email: "jane.smith@example.com",
+//     status: "Pending",
+//   },
+//   {
+//     name: "Peter Jones",
+//     email: "peter.jones@example.com",
+//     status: "Pending",
+//   },
+//   {
+//     name: "Alice Johnson",
+//     email: "alice.johnson@example.com",
+//     status: "Approved",
+//   },
+//   {
+//     name: "Bob Williams",
+//     email: "bob.williams@example.com",
+//     status: "Approved",
+//   },
+// ];
 
 const AdminsTab = (): React.ReactElement => {
   return (

@@ -23,6 +23,8 @@ const api = {
     ipcRenderer.invoke("candidates:markSynced", ids),
   candidatesBulkUpsert: (records) =>
     ipcRenderer.invoke("candidates:bulkUpsert", records),
+  talliesReplaceForElections: (records) =>
+    ipcRenderer.invoke("tallies:replaceForElections", records),
 
   // ELECTIONS
   getElections: () => ipcRenderer.invoke("elections:get"),

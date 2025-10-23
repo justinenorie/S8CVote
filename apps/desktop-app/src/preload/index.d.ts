@@ -1,5 +1,10 @@
 import { ElectronAPI } from "@electron-toolkit/preload";
-import type { Election, Candidates, Student } from "@renderer/types/api";
+import type {
+  Election,
+  Candidates,
+  Student,
+  CandidateResult,
+} from "@renderer/types/api";
 
 declare global {
   interface Window {
@@ -23,6 +28,9 @@ declare global {
       candidatesMarkSynced: (ids: string[]) => Promise<{ success: boolean }>;
       candidatesBulkUpsert: (
         records: Candidates[]
+      ) => Promise<{ success: boolean }>;
+      talliesReplaceForElections: (
+        records: CandidateResult[]
       ) => Promise<{ success: boolean }>;
 
       // Elections

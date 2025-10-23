@@ -35,10 +35,10 @@ export const useCandidatesColumns = ({
               <img
                 src={url}
                 alt={`${name} Profile`}
-                className="h-10 w-10 rounded-full object-cover"
+                className="h-15 w-15 rounded-full object-cover"
               />
             ) : (
-              <div className="dark:bg-PRIMARY-200/80 bg-PRIMARY-900/80 h-10 w-10 rounded-full" />
+              <div className="dark:bg-PRIMARY-200/80 bg-PRIMARY-900/80 h-15 w-15 rounded-full" />
             )}
           </div>
         );
@@ -79,12 +79,31 @@ export const useCandidatesColumns = ({
     },
     // TODO: Add a total votes results here for transparency
     {
+      accessorKey: "votes_count",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            className="flex items-center gap-1 text-left"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Vote Counts
+            {column.getIsSorted() === "asc" && <ArrowUp />}
+            {column.getIsSorted() === "desc" && <ArrowDown />}
+          </Button>
+        );
+      },
+    },
+    {
       accessorKey: "status",
       header: ({ column }) => {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                className="flex items-center gap-1 text-left"
+              >
                 Status
                 <ArrowUpDown />
               </Button>

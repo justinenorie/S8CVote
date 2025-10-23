@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, numeric } from "drizzle-orm/sqlite-core";
 
 // ADMIN AUTH
 export const adminAuth = sqliteTable("adminAuth", {
@@ -60,4 +60,17 @@ export const students = sqliteTable("students", {
   updated_at: text("updated_at"),
   deleted_at: text("deleted_at"),
   synced_at: integer("synced_at").default(0),
+});
+
+// drizzle (sqlite)
+export const candidateTallies = sqliteTable("candidate_tallies", {
+  election_id: text("election_id")
+    .notNull()
+    .references(() => elections.id),
+  candidate_id: text("candidate_id")
+    .notNull()
+    .references(() => candidates.id),
+  votes_count: integer("votes_count").notNull(),
+  percentage: numeric("percentage").notNull(),
+  updated_at: text("updated_at"),
 });

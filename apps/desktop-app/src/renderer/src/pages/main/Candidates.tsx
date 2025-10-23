@@ -11,9 +11,13 @@ import { useCandidateStore } from "@renderer/stores/useCandidateStore";
 import { Candidates } from "@renderer/types/api";
 
 const CandidatesPage = (): React.JSX.Element => {
-  // TODO: Add Loading later
-  const { candidates, loading, fetchCandidates, deleteCandidate } =
-    useCandidateStore();
+  const {
+    candidates,
+    loading,
+    fetchCandidates,
+    deleteCandidate,
+    refreshTalliesFor,
+  } = useCandidateStore();
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -32,7 +36,15 @@ const CandidatesPage = (): React.JSX.Element => {
   });
 
   useEffect(() => {
-    fetchCandidates();
+    const loadData = async (): Promise<void> => {
+      await fetchCandidates();
+      // Optional: refresh tallies for active elections
+      const electionIds = candidates.map((c) => c.election_id);
+      await refreshTalliesFor(electionIds as string[]);
+      await fetchCandidates(); // refresh after syncing tallies
+    };
+
+    loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

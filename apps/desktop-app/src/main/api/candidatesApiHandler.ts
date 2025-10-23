@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import { getDatabase } from "../db/sqliteDB";
-import { candidates, elections } from "../db/drizzle/schema";
+import { candidates, elections, candidateTallies } from "../db/drizzle/schema";
 import { eq, sql, inArray } from "drizzle-orm";
 
 export function candidatesApiHandlers(): void {
@@ -89,9 +89,16 @@ export function candidatesApiHandlers(): void {
         // election details from joined table
         election: elections.election,
         election_status: elections.status,
+
+        votes_count: candidateTallies.votes_count,
+        percentage: candidateTallies.percentage,
       })
       .from(candidates)
       .leftJoin(elections, eq(candidates.election_id, elections.id))
+      .leftJoin(
+        candidateTallies,
+        eq(candidateTallies.candidate_id, candidates.id)
+      )
       .where(sql`${candidates.deleted_at} IS NULL`);
 
     // ✅ Transform to match your frontend type
@@ -108,6 +115,8 @@ export function candidatesApiHandlers(): void {
             status: row.election_status,
           }
         : null,
+      votes_count: row.votes_count ?? 0,
+      percentage: row.percentage ?? 0,
     }));
   });
 
@@ -149,6 +158,39 @@ export function candidatesApiHandlers(): void {
         synced_at: 0,
       })
       .where(eq(candidates.id, id));
+
+    return { success: true };
+  });
+
+  // FETCH VOTE COUNTS
+  ipcMain.handle("tallies:replaceForElections", async (_, rows) => {
+    const db = getDatabase();
+    // const electionIds = [...new Set(rows.map((r) => r.election_id))];
+
+    // wipe old tallies for these elections
+    await db.delete(candidateTallies).where(
+      inArray(
+        candidateTallies.election_id,
+        rows.map((r) => r.election_id)
+      )
+    );
+
+    // .where(inArray(candidates.id, ids))
+
+    // insert fresh rows
+    const now = new Date().toISOString();
+    if (rows.length) {
+      await db.insert(candidateTallies).values(
+        rows.map((r) => ({
+          election_id: r.election_id,
+          candidate_id: r.candidate_id,
+          votes_count: r.votes_count ?? 0,
+          percentage: r.percentage ?? 0,
+          candidate_profile: r.candidate_profile ?? null,
+          updated_at: now,
+        }))
+      );
+    }
 
     return { success: true };
   });

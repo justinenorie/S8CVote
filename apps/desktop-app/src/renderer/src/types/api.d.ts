@@ -47,6 +47,14 @@ export interface Candidates {
   created_at?: string;
 }
 
+interface CandidateResult {
+  election_id: string;
+  candidate_id: string;
+  votes_count: number;
+  percentage: number;
+  updated?: string;
+}
+
 // STUDENTS
 export interface Student {
   id: string;

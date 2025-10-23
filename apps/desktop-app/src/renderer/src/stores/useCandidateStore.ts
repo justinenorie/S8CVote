@@ -28,6 +28,7 @@ interface CandidateState {
   syncToServerCandidates: () => Promise<Result<null>>;
   syncFromServerCandidates: () => Promise<Result<null>>;
   fullSyncCandidates: () => Promise<Result<null>>;
+  refreshTalliesFor: (electionIds: string[]) => Promise<Result<null>>;
 }
 
 export const useCandidateStore = create<CandidateState>((set, get) => ({
@@ -170,6 +171,23 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
       set({ error: error as string, loading: false });
     }
     return { data: null, error: "" };
+  },
+
+  // in your zustand vote store
+  refreshTalliesFor: async (electionIds: string[]) => {
+    if (!electionIds.length) return { data: null, error: null };
+
+    const { data, error } = await supabase
+      .from("election_results_with_percent")
+      .select(
+        "election_id, candidate_id, votes_count, percentage, candidate_profile"
+      )
+      .in("election_id", electionIds);
+
+    if (error) return { data: null, error: error.message };
+
+    await window.electronAPI.talliesReplaceForElections(data ?? []);
+    return { data: null, error: null };
   },
 
   fullSyncCandidates: async () => {

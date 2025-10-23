@@ -69,7 +69,7 @@ export function EditElectionModal({
     if (election) {
       form.reset({
         name: election.election || "",
-        status: election.status || "",
+        status: election.status || "active",
         date: new Date(`${election.end_date}`),
         time: `${election.end_time}`,
         description: election.description,
@@ -89,7 +89,7 @@ export function EditElectionModal({
       description: values.description ?? "",
     };
 
-    const result = await updateElection(election.id, payload);
+    const result = await updateElection(election?.id ?? "", payload);
 
     if (result.error) {
       console.error("Failed to update election:", result.error);
