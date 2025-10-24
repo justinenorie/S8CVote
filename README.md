@@ -1,187 +1,124 @@
 # 🗳️ S8CVote: Voting Management System
 
-**S8CVote** is a cross-platform Voting Management System developed as a capstone project for **Southville 8C National High School**. It focuses on administrators to organize elections, manage candidates, and tally results, while allowing the students to vote securely from web and mobile platforms — both online and offline.
+**S8CVote** is a cross-platform Voting Management System developed as a capstone project for **Southville 8C National High School**. It enables administrators to organize elections, manage candidates, and tally results, while allowing students to vote securely via web, mobile, and desktop platforms — supporting both online and offline modes.
 
 ---
 
 ## 🚀 Project Overview
 
-S8CVote aims to modernize and streamline the election process within the school environment. The system supports real-time vote monitoring, offline mobile voting (room-to-room), secure authentication, and automated tallying with instant result generation.
+S8CVote modernizes and streamlines the school election process. It offers real-time vote monitoring, offline mobile voting for room-to-room setups, secure authentication, and automated vote tallying with instant result generation.
 
 ---
 
 ## 📦 Tech Stack
 
-| Category               | Technology/Tool                                                               |
-| ---------------------- | ----------------------------------------------------------------------------- |
-| **Frontend (Web)**     | Next.js (React Framework), Tailwind CSS                                       |
-| **Frontend (Mobile)**  | React Native, NativeWind                                                      |
-| **Frontend (Desktop)** | ElectronJS (with React & Tailwind)                                            |
-| **Backend**            | Node.js + Express, WebSocket (real-time), JWT (Auth), Prisma ORM              |
-| **Database**           | PostgreSQL (main DB), SQLite (offline/local DB for mobile/desktop)            |
-| **Authentication**     | JWT (access + refresh tokens), bcryptjs (password hashing)                    |
-| **API Helpers**        | Axios (frontend), CORS, Cookie-parser                                         |
-| **Logging & Dev**      | Morgan (HTTP logger), Nodemon (auto-reload), Dotenv (env vars), Typescript    |
-| **Code Quality**       | ESLint (linter), Prettier (formatter), Git + GitHub (version control), VSCode |
+| Category               | Technology/Tool                                     |
+| :--------------------- | :-------------------------------------------------- |
+| **Frontend (Web)**     | Next.js (React), Tailwind CSS, Shadcn               |
+| **Frontend (Mobile)**  | React Native, Nativewind                            |
+| **Frontend (Desktop)** | ElectronJS with React, Tailwind CSS and Shadcn      |
+| **Backend**            | Supabase                                            |
+| **Database**           | PostgreSQL (online), SQLite (offline/local syncing) |
+| **Validation**         | Zod, React-Hook-Form                                |
+| **Development Tools**  | Typescript, VSCode, Git/Github, ESLint, Prettier    |
 
 ---
 
 ## 📱 Features
 
-### ✅ General (All Platforms)
+### ✅ General (Across All Platforms)
 
-- Secure user authentication
-- Student ID verification (Only Full Name + Student ID required)
-  - ✅ Must exist in database
-  - ❌ Must not have already voted
-- Vote duplication prevention through server-side validation
-- Real-time voting results via WebSockets
-- Offline voting supported with background sync
-- Role-based access
+- Secure authentication and role-based access (students, admins, faculty)
+- Student ID verification against official enrollment database
+- Prevention of duplicate voting per election
+- Offline-first voting with background automatic sync when online
+- Real-time election results and transparency dashboards
+- Admin verification process for new admin registrations
 
 ---
 
-### 🌐 Web App (For Students & Public Viewing)
+### 🌐 Web App (Students \& Public)
 
-- Login and vote using Student ID and Full Name
-- Live vote count display for transparency
-- Accessible from any browser with internet
-- View candidate profiles and election details
-- User-friendly dashboard for current/past election monitoring
-- Generate statistics and view historical results (e.g., 2024, 2025)
-
----
-
-### 🖥️ Desktop App (For Admins & System Setup)
-
-- Acts as the **main controller** of the system
-- Create/manage elections (council, themed events, etc.)
-- Add/edit/delete candidates and assign per election
-- Upload and manage student records via CSV/Excel
-- View real-time votes with result analytics
-- Generate downloadable reports (PDF/Excel)
-- Configure election timelines and system settings
-- Offline data storage using SQLite and syncing to PostgreSQL
+- Student registration and verification using Student ID
+- Voting available online only with internet connection
+- Clickable elections and candidate selection with vote submission
+- Live election result dashboards, with historical data by year and month
+- Public access for election results transparency
+- Editable email and password for communication; locked Student ID and name
 
 ---
 
-### 📲 Mobile App (For Students without Devices & Admins in Rooms)
+### 🖥️ Desktop App (Admins \& Event Setup)
 
-- Secure login for faculty/admin
-- **Offline voting capability** (for students without devices)
-- Syncs votes to central server when online
-- Allows offline room-to-room collection by faculty using mobile/tablet
-- Admin mobile features:
-  - View real-time vote counts from anywhere
-  - Manage elections (create, edit, or close)
-  - See vote status: how many voted vs. pending
-  - Manual vote approval (if needed)
+- Central control hub supporting offline-first operation
+- Manage elections, candidates, and schedule dates
+- Import student voter lists via CSV/Excel to validate voters
+- Dashboard for live vote tracking and election analytics
+- Auto-sync data with Supabase when online
+- Configure account and admin user management with approval workflow
 
 ---
 
-## 🧩 System Modules
+### 📲 Mobile App (Admins \& Supervised Student Voting)
 
-1. **Authentication Module**
-   - Role-based login
-   - JWT-based secure sessions
-2. **Election Management Module**
-   - Add/manage elections
-   - Set active status and schedules
-3. **Voting Module**
-   - Cast and validate votes
-   - Prevent duplicate voting
-4. **Candidate Management**
-   - Upload candidate details/photos
-   - Assign per election
-5. **Real-Time Result Tally**
-   - WebSocket updates
-   - Display graphs or vote count per candidate
-6. **Report Generation**
-   - Export vote summary (PDF/Excel)
-   - Timestamped logs of voting activity
+- Offline voting collection for students without devices (room-to-room)
+- Faculty-admin supervised voting via mobile device
+- Local storage of votes with automatic background syncing
+- View live vote counts and election status remotely
+- Secure login for admins before conducting voting sessions
 
 ---
 
-## 🔒 Security Practices
+## 🧩 Modules
 
-Security is a core focus of S8CVote, especially due to the sensitivity of voting data. The system includes the following mechanisms and protocols:
-
----
-
-### ✅ User Authentication & Authorization
-
-- **Secure Login:** Role-based authentication with secure credential storage
-- **Password Hashing:** All passwords are hashed using `bcryptjs` before being stored in the database
-- **JWT Tokens:** Stateless session management using JSON Web Tokens (JWT) for access and refresh tokens
-- **Cookie-based Sessions:** Secure HTTP-only cookies for storing authentication tokens when needed
-- **MFA (Multi-Factor Authentication):** Optional second layer of login verification for admin accounts (e.g., password + code)
+1. **Authentication \& Authorization**
+2. **Election and Candidate Management**
+3. **Voting and Duplication Prevention**
+4. **Real-time Vote Counting and Results**
+5. **Reports and Analytics Generation**
+6. **Admin User Management and Verification**
 
 ---
 
-### ✅ Voter Integrity & Validation
+## 🔒 Security Measures
 
-- **Voter Validation:** Verifies voter identity using Student ID + Full Name combination
-- **Voter Qualification Rules:**
-  - Student must exist in the uploaded records
-  - Student must not have already voted
-  - If validation passes, only then is voting allowed
-- **Prevention of Duplicate Voting:** Once a vote is cast, the system flags the student as "voted" in the database
-- **Vote Sync Auditing:** Offline votes are timestamped and validated before being committed to the online database
-
----
-
-### ✅ Data Security
-
-- **2-Level Encryption:**
-  - ✅ **At Rest:** Data stored in the database (e.g., vote records) may be encrypted using algorithms like AES-256
-  - ✅ **In Transit:** All network communication is encrypted using HTTPS (SSL/TLS)
-- **AES-256 Encryption:** Industry-standard symmetric encryption used for securing sensitive offline vote data or local backups
-- **Tokenization:** Sensitive identifiers (e.g., student records) can be tokenized to replace raw data with unique, non-sensitive tokens
-- **Input Sanitization:** All user inputs are validated and sanitized to prevent injection attacks (SQLi, XSS)
-- **CORS Headers & CSRF Protections:** Cross-Origin Resource Sharing is properly configured; CSRF protection added for web forms
+- Role-based secure login with hashed passwords (bcrypt)
+- JWT-based token authentication with refresh mechanism
+- Multi-factor authentication (MFA) via OTP for admins
+- Validation enforcing unique vote per student per election
+- Secure offline vote storage using encryption standards
+- HTTPS encryption in network communication
+- Input sanitization to prevent injection attacks
+- Audit logging and monitoring of login and admin actions
 
 ---
 
-### ✅ System Architecture
+## 📄 System Requirements
 
-- **Application Isolation:** The backend, web frontend, desktop app, and mobile app are separated into modules. Each platform authenticates independently and interacts only through secure API endpoints.
-- **Cross-Platform Security Consistency:** All platforms (web, desktop, mobile) use the same security principles: token-based auth, secure storage, encrypted transport, and role-based access
-
----
-
-### ✅ Monitoring & Logs
-
-- **Access Logs:** All requests logged via `Morgan`, with timestamps, routes, and user actions
-- **Failed Login Monitoring:** Repeated failed attempts are tracked and can be locked or throttled
-- **Audit Trails:** Admin actions (e.g., create/delete election) are logged for transparency
-
----
-
-## 📄 Requirements
-
-| Requirement      | Description                    |
-| ---------------- | ------------------------------ |
-| Node.js          | ^18.x or higher                |
-| PostgreSQL       | 13 or higher                   |
-| Mobile Platform  | Android 10+                    |
-| Web Browsers     | Modern (Chrome, Firefox, Edge) |
-| Desktop Platform | Windows 10+ (.exe installer)   |
+| Component          | Specification                                    |
+| :----------------- | :----------------------------------------------- |
+| Processor          | Intel® Core i3 or equivalent minimum            |
+| RAM                | Minimum 4 GB                                     |
+| Storage            | 10 GB free disk space                            |
+| Operating System   | Windows 10 Pro or later (64-bit)                 |
+| Internet           | Required for syncing and web access              |
+| Development Device | Intel® Core i5-8250U, 16 GB RAM, Windows 11 Pro |
 
 ---
 
 ## 🧑‍💻 Contributors
 
-👤 **Justine Norie Dela Cruz**  
-Capstone Developer, UI/UX Designer, and System Architect  
+👤 **Justine Norie Dela Cruz**
+Capstone Developer, UI/UX Designer, System Architect
 Colegio de Montalban, SY 2025–2026
 
 ---
 
 ## 💬 Acknowledgements
 
-- Our instructors and mentors at Colegio de Montalban
-- Southville 8C National High School teachers and staff
-- Open-source community (React, Express, Prisma, etc.)
+- Instructors and mentors at Colegio de Montalban
+- Southville 8C National High School faculty and staff
+- Open-source communities (React, Supabase, Tailwind, etc.)
 
 ---
 
@@ -189,4 +126,4 @@ Colegio de Montalban, SY 2025–2026
 
 This project is for academic purposes only. All rights reserved © 2025.
 
-**_Note the information here is not final. It needs to modify once the capstone project is done._**
+**_Note: This documentation is provisional and subject to update upon project completion._**
