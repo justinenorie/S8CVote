@@ -6,6 +6,7 @@ import "./../global.css";
 import { PortalHost } from "@rn-primitives/portal";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const RootLayout = () => {
   const [loaded] = useFonts({
@@ -22,6 +23,8 @@ const RootLayout = () => {
     "Inter-Italic": require("../assets/fonts/Inter-Italic.ttf"),
   });
 
+  const { session } = useAuthStore();
+
   if (!loaded) {
     // Async font loading only occurs in development.
     return null;
@@ -30,7 +33,15 @@ const RootLayout = () => {
   return (
     <ThemeProvider>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        {session ? (
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        ) : (
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        )}
+
+        {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+        {/* <Stack.Screen name="(auth)/index" options={{ headerShown: false }} /> */}
+
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
