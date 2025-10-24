@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: desktop-app-admin-
+productName: desktop-app-admin
 directories:
   buildResources: build
 files:
@@ -11,7 +11,7 @@ files:
   - "out/main/**"
   - "out/preload/**"
   - "out/renderer/**"
-  - ".env.production"
+  - ".env"
 asarUnpack:
   - resources/**
 win:
