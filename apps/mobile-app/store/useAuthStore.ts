@@ -83,11 +83,35 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   loadSession: async () => {
+    // Load the session from Supabase (AsyncStorage)
     const { data } = await supabase.auth.getSession();
+
     if (data.session) {
-      const { user } = data.session;
-      set({ user, session: data.session });
+      set({
+        user: data.session.user,
+        session: data.session,
+        loading: false,
+      });
+    } else {
+      set({ user: null, session: null, loading: false });
     }
+
+    // Subscribe to auth state changes (auto-login/logout)
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session) {
+          set({ user: session.user, session });
+        } else {
+          set({ user: null, session: null });
+        }
+      }
+    );
+
+    // Clean up listener when store unmounts
+    return new Promise<void>((resolve) => {
+      listener.subscription.unsubscribe();
+      resolve();
+    });
   },
 
   signOut: async () => {

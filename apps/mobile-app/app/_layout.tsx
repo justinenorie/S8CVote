@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -25,9 +26,15 @@ const RootLayout = () => {
     "Inter-Italic": require("../assets/fonts/Inter-Italic.ttf"),
   });
 
-  const { session } = useAuthStore();
+  const { session, loadSession, loading } = useAuthStore();
 
-  if (!loaded) {
+  useEffect(() => {
+    loadSession(); // check auth state on app start
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!loaded || loading) {
     // Async font loading only occurs in development.
     return null;
   }

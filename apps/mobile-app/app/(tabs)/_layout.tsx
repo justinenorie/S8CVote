@@ -1,12 +1,17 @@
-import { Tabs } from "expo-router";
+import { Tabs, Redirect } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
 import { LayoutDashboard, ChartGantt } from "lucide-react-native";
 import { useTheme } from "@/components/ThemeProvider";
 import { COLORS } from "@/constants/Colors";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function TabsLayout() {
   const { theme } = useTheme();
+  const { session, loading } = useAuthStore();
+
+  if (loading) return null;
+  if (!session) return <Redirect href="/(auth)" />;
 
   const isDark = theme === "dark";
   const backgroundColor = isDark ? COLORS.PRIMARY[950] : COLORS.PRIMARY[50];
