@@ -4,8 +4,10 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import "./../global.css";
 import { PortalHost } from "@rn-primitives/portal";
+import Toast from "react-native-toast-message";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
+import toastConfig from "@/components/toastConfig";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const RootLayout = () => {
@@ -36,7 +38,7 @@ const RootLayout = () => {
         {session ? (
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         ) : (
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
         )}
 
         {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
@@ -46,6 +48,7 @@ const RootLayout = () => {
       </Stack>
       <StatusBar style="auto" />
       <PortalHost />
+      <Toast config={toastConfig} />
     </ThemeProvider>
   );
 };

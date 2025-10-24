@@ -1,7 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
-
 import { LayoutDashboard, ChartGantt } from "lucide-react-native";
 import { useTheme } from "@/components/ThemeProvider";
 import { COLORS } from "@/constants/Colors";
@@ -38,7 +37,7 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: "Dashboard",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <LayoutDashboard size={30} color={color} />
           ),
         }}
@@ -47,7 +46,9 @@ export default function TabsLayout() {
         name="results"
         options={{
           title: "Results",
-          tabBarIcon: ({ color }) => <ChartGantt size={30} color={color} />,
+          tabBarIcon: ({ color }: { color: string }) => (
+            <ChartGantt size={30} color={color} />
+          ),
         }}
       />
     </Tabs>
