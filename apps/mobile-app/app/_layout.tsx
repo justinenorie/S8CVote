@@ -10,10 +10,14 @@ import Toast from "react-native-toast-message";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import toastConfig from "@/components/toastConfig";
 import { useAuthStore } from "@/store/useAuthStore";
-import { initDB } from "@/db/client";
+
+import { db, expo_sqlite } from "@/db/client";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import migrations from "@/db/drizzle/migrations";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 
 const RootLayout = () => {
-  const [loaded] = useFonts({
+  const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     "Poppins-Regular": require("../assets/fonts/Poppins-Regular.ttf"),
     "Poppins-Medium": require("../assets/fonts/Poppins-Medium.ttf"),
@@ -27,27 +31,37 @@ const RootLayout = () => {
     "Inter-Italic": require("../assets/fonts/Inter-Italic.ttf"),
   });
 
+  const { success, error: migrationError } = useMigrations(db, migrations);
+  useDrizzleStudio(expo_sqlite);
+
   const { session, loadSession } = useAuthStore();
-  const [dbReady, setDbReady] = useState(false);
+  // const [dbReady, setDbReady] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      try {
-        // ensures migrations are applied only once
-        await initDB();
-        setDbReady(true);
-      } catch (err) {
-        console.error("Migration failed", err);
-      }
-    })();
-  }, []);
+    if (error) throw error;
+    if (migrationError) throw migrationError;
+  }, [error, migrationError]);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       await initDB(); // ensures migrations are applied only once
+  //       setDbReady(true);
+  //       console.log("SQLite ready!");
+  //     } catch (err) {
+  //       console.error("Migration failed", err);
+  //     }
+  //   })();
+  // }, []);
 
   useEffect(() => {
     loadSession(); // check auth state on app start
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!loaded || !dbReady) {
+  // if (!dbReady) return null;
+
+  if (!loaded || !success) {
     // Async font loading only occurs in development.
     return null;
   }

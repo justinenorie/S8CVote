@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabaseClient";
 import { User, Session } from "@supabase/supabase-js";
+import { saveAdminSession, clearAdminSession } from "@/db/queries/authQuery";
 
 interface AdminData {
   id: string;
@@ -71,7 +72,15 @@ export const useAuthStore = create<AuthState>((set) => ({
       updated_at: new Date().toISOString(),
     };
 
-    // TODO: store into SQLite here
+    // Store in local SQLite
+    await saveAdminSession({
+      id: user.id,
+      fullname: profile.fullname,
+      email: user.email!,
+      role: profile.role,
+      access_token: session.access_token,
+      refresh_token: session.refresh_token ?? "",
+    });
 
     set({
       user,
@@ -116,6 +125,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   signOut: async () => {
     await supabase.auth.signOut();
+    await clearAdminSession();
     // TODO: signOut SQLite
     set({ user: null, session: null, adminData: null });
   },

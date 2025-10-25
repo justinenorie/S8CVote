@@ -1,25 +1,35 @@
-import * as SQLite from "expo-sqlite";
 import { drizzle } from "drizzle-orm/expo-sqlite";
-import { migrate } from "drizzle-orm/expo-sqlite/migrator";
+import { openDatabaseSync } from "expo-sqlite";
 import * as schema from "./schema";
-import migration from "./drizzle/migrations";
 
-let dbInstance: ReturnType<typeof drizzle> | null = null;
+export const DATABASE_NAME = "database.db";
 
-export async function initDB() {
-  if (dbInstance) return dbInstance;
+export const expo_sqlite = openDatabaseSync(DATABASE_NAME);
+export const db = drizzle(expo_sqlite, { schema });
 
-  const expoDb = await SQLite.openDatabaseAsync("s8cvote.db");
-  const db = drizzle(expoDb, { schema });
+// import * as SQLite from "expo-sqlite";
+// import { drizzle } from "drizzle-orm/expo-sqlite";
+// import { migrate } from "drizzle-orm/expo-sqlite/migrator";
+// import * as schema from "./schema";
+// import migration from "./drizzle/migrations";
 
-  await migrate(db, migration);
-  console.log("✅ SQLite migrations applied successfully.");
+// let db: ReturnType<typeof drizzle> | null = null;
 
-  dbInstance = db;
-  return db;
-}
+// export async function initDB() {
+//   const expoDb = await SQLite.openDatabaseAsync("s8cvote.db");
+//   db = drizzle(expoDb, { schema });
 
-// const expoDb = await SQLite.openDatabaseAsync("s8cvote.db");
-// export const db = drizzle(expoDb, { schema });
+//   await migrate(db, migration);
+//   console.log("✅ SQLite migrations applied successfully.");
 
-// await migrate(db, migration);
+//   return db;
+// }
+
+// export function getDatabase() {
+//   if (!db) throw new Error("Database not initialized");
+//   return db;
+// }
+// // const expoDb = await SQLite.openDatabaseAsync("s8cvote.db");
+// // export const db = drizzle(expoDb, { schema });
+
+// // await migrate(db, migration);
