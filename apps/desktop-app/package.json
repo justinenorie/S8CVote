@@ -59,8 +59,6 @@
     "drizzle-kit": "^0.31.5",
     "electron": "^35.1.5",
     "electron-builder": "^25.1.8",
-    "app-builder-lib": "25.1.8",
-    "dmg-builder": "25.1.8",
     "electron-vite": "^3.1.0",
     "eslint": "^9.24.0",
     "eslint-plugin-react": "^7.37.5",

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "0c2e354c-283d-491f-8a9f-617ebf322718",
+  "id": "a80980df-6651-4a81-9cfa-9efe66f42279",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "adminAuth": {
@@ -55,7 +55,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-25T02:49:53.902Z'"
+          "default": "'2025-10-25T13:16:14.433Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -88,25 +88,18 @@
     "candidates": {
       "name": "candidates",
       "columns": {
-        "id": {
-          "name": "id",
+        "candidate_id": {
+          "name": "candidate_id",
           "type": "text",
           "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
-        "name": {
-          "name": "name",
+        "candidate_name": {
+          "name": "candidate_name",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
           "autoincrement": false
         },
         "election_id": {
@@ -116,37 +109,24 @@
           "notNull": true,
           "autoincrement": false
         },
-        "profile": {
-          "name": "profile",
-          "type": "text",
+        "votes_count": {
+          "name": "votes_count",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "profile_path": {
-          "name": "profile_path",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
-          "default": "'2025-10-25T02:49:53.904Z'"
+          "default": 0
         },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
+        "percentage": {
+          "name": "percentage",
+          "type": "real",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
         },
-        "deleted_at": {
-          "name": "deleted_at",
+        "candidate_profile": {
+          "name": "candidate_profile",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -162,21 +142,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "candidates_election_id_elections_id_fk": {
-          "name": "candidates_election_id_elections_id_fk",
-          "tableFrom": "candidates",
-          "tableTo": "elections",
-          "columnsFrom": [
-            "election_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -191,27 +157,20 @@
           "notNull": true,
           "autoincrement": false
         },
-        "election": {
-          "name": "election",
+        "title": {
+          "name": "title",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "max_votes_allowed": {
-          "name": "max_votes_allowed",
+        "has_voted": {
+          "name": "has_voted",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": 1
+          "default": 0
         },
         "status": {
           "name": "status",
@@ -221,48 +180,13 @@
           "autoincrement": false,
           "default": "'active'"
         },
-        "end_time": {
-          "name": "end_time",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "end_date": {
-          "name": "end_date",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'2025-10-25T02:49:53.904Z'"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "synced_at": {
           "name": "synced_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": 0
         }
       },
       "indexes": {},
@@ -316,7 +240,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-25T02:49:53.904Z'"
+          "default": "'2025-10-25T13:16:14.435Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -437,15 +361,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "votes_candidate_id_candidates_id_fk": {
-          "name": "votes_candidate_id_candidates_id_fk",
+        "votes_candidate_id_candidates_candidate_id_fk": {
+          "name": "votes_candidate_id_candidates_candidate_id_fk",
           "tableFrom": "votes",
           "tableTo": "candidates",
           "columnsFrom": [
             "candidate_id"
           ],
           "columnsTo": [
-            "id"
+            "candidate_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"

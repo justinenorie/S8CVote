@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 
 // Save ADMIN AUTH Table
 export const adminAuth = sqliteTable("adminAuth", {
@@ -15,36 +15,23 @@ export const adminAuth = sqliteTable("adminAuth", {
   synced_at: text("synced_at"),
 });
 
-// Elections Table
+// 🗳️ Elections (for rendering)
 export const elections = sqliteTable("elections", {
   id: text("id").primaryKey(),
-  election: text("election").notNull(),
-  description: text("description"),
-  max_votes_allowed: integer("max_votes_allowed").notNull().default(1),
+  title: text("title").notNull(),
+  has_voted: integer("has_voted").notNull().default(0), // boolean (0/1)
   status: text("status").notNull().default("active"),
-  end_time: text("end_time"),
-  end_date: text("end_date"),
-
-  created_at: text("created_at").default(new Date().toISOString()),
-  updated_at: text("updated_at"),
-  deleted_at: text("deleted_at"),
-  synced_at: integer("synced_at"),
+  synced_at: integer("synced_at").default(0),
 });
 
-// Candidates Table
+// 👤 Candidates (for rendering)
 export const candidates = sqliteTable("candidates", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  description: text("description"),
-  election_id: text("election_id")
-    .notNull()
-    .references(() => elections.id, { onDelete: "cascade" }),
-  profile: text("profile"),
-  profile_path: text("profile_path"),
-
-  created_at: text("created_at").default(new Date().toISOString()),
-  updated_at: text("updated_at"),
-  deleted_at: text("deleted_at"),
+  candidate_id: text("candidate_id").primaryKey(),
+  candidate_name: text("candidate_name").notNull(),
+  election_id: text("election_id").notNull(),
+  votes_count: integer("votes_count").notNull().default(0),
+  percentage: real("percentage").notNull().default(0),
+  candidate_profile: text("candidate_profile"),
   synced_at: integer("synced_at").default(0),
 });
 
@@ -71,7 +58,7 @@ export const votes = sqliteTable("votes", {
     .references(() => elections.id),
   candidateId: text("candidate_id")
     .notNull()
-    .references(() => candidates.id),
+    .references(() => candidates.candidate_id),
   studentId: text("student_id").references(() => students.student_id),
   created_at: integer("created_at"),
   updated_at: integer("updated_at"),

@@ -5,38 +5,28 @@ CREATE TABLE `adminAuth` (
 	`role` text,
 	`access_token` text,
 	`refresh_token` text,
-	`created_at` text DEFAULT '2025-10-25T02:49:53.902Z',
+	`created_at` text DEFAULT '2025-10-25T13:16:14.433Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` text
 );
 --> statement-breakpoint
 CREATE TABLE `candidates` (
-	`id` text PRIMARY KEY NOT NULL,
-	`name` text NOT NULL,
-	`description` text,
+	`candidate_id` text PRIMARY KEY NOT NULL,
+	`candidate_name` text NOT NULL,
 	`election_id` text NOT NULL,
-	`profile` text,
-	`profile_path` text,
-	`created_at` text DEFAULT '2025-10-25T02:49:53.904Z',
-	`updated_at` text,
-	`deleted_at` text,
-	`synced_at` integer DEFAULT 0,
-	FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON UPDATE no action ON DELETE cascade
+	`votes_count` integer DEFAULT 0 NOT NULL,
+	`percentage` real DEFAULT 0 NOT NULL,
+	`candidate_profile` text,
+	`synced_at` integer DEFAULT 0
 );
 --> statement-breakpoint
 CREATE TABLE `elections` (
 	`id` text PRIMARY KEY NOT NULL,
-	`election` text NOT NULL,
-	`description` text,
-	`max_votes_allowed` integer DEFAULT 1 NOT NULL,
+	`title` text NOT NULL,
+	`has_voted` integer DEFAULT 0 NOT NULL,
 	`status` text DEFAULT 'active' NOT NULL,
-	`end_time` text,
-	`end_date` text,
-	`created_at` text DEFAULT '2025-10-25T02:49:53.904Z',
-	`updated_at` text,
-	`deleted_at` text,
-	`synced_at` integer
+	`synced_at` integer DEFAULT 0
 );
 --> statement-breakpoint
 CREATE TABLE `students` (
@@ -45,7 +35,7 @@ CREATE TABLE `students` (
 	`fullname` text NOT NULL,
 	`email` text,
 	`isRegistered` integer DEFAULT 0,
-	`created_at` text DEFAULT '2025-10-25T02:49:53.904Z',
+	`created_at` text DEFAULT '2025-10-25T13:16:14.435Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -63,6 +53,6 @@ CREATE TABLE `votes` (
 	`deleted_at` integer,
 	`synced_at` integer,
 	FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON UPDATE no action ON DELETE no action,
-	FOREIGN KEY (`candidate_id`) REFERENCES `candidates`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`candidate_id`) REFERENCES `candidates`(`candidate_id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`) ON UPDATE no action ON DELETE no action
 );

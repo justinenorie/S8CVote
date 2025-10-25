@@ -12,6 +12,7 @@ export interface Election {
   id: string;
   title: string;
   has_voted: boolean;
+  status?: string;
   elections?: any;
   candidates: Candidate[];
 }

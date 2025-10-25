@@ -255,6 +255,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
                 </Text>
               </Button>
 
+              {/* TODO: add a loading here later "loading" */}
               <Button
                 className="bg-PRIMARY900 dark:bg-PRIMARY50 active:bg-PRIMARY800 active:dark:bg-PRIMARY200"
                 onPress={handleConfirmVote}
