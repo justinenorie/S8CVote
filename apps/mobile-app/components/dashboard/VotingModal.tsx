@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { View, TouchableOpacity, Image, ScrollView } from "react-native";
+import { CircleCheck, CircleAlert } from "lucide-react-native";
+
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CircleCheck, CircleAlert } from "lucide-react-native";
+import { useVoteStore } from "@/store/useVoteStore";
+import { Candidate } from "@/types/api";
 
 export const VotingModal = ({ visible, onClose, election }: any) => {
   // TODO: Steps should be the data from supabase
@@ -19,30 +22,59 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
   const [studentName, setStudentName] = useState(""); // TODO: Should be a fetch name
   const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmitId = async () => {
-    // TODO: Replace with actual Supabase validation later
+  const { verifyStudent, castVote } = useVoteStore();
+
+  // TODO: checks if student_ID exist in db
+  const handleSubmitStudentId = async () => {
     if (studentId.trim() === "") {
       setErrorMessage("Please enter your Student ID.");
       return;
     }
-    if (studentId.trim() === "12345") {
-      setStudentName("Kor K. Kor");
-      setErrorMessage("");
-      setStep("success");
-    } else if (studentId.trim() === "54321") {
-      setErrorMessage("Kor K. Kor has already voted in this election.");
-    } else {
-      setErrorMessage("Invalid Student ID.");
+
+    setLoading(true);
+    const { data, error } = await verifyStudent(studentId, election.id);
+    setLoading(false);
+
+    if (error) {
+      setErrorMessage(`${error}`);
+      return;
     }
+
+    if (!data?.is_valid) {
+      setErrorMessage("Student not found.");
+      return;
+    }
+
+    if (data?.has_voted) {
+      setErrorMessage(
+        `${data.student_name} has already voted in this election.`
+      );
+      return;
+    }
+
+    setStudentName(data.student_name);
+    setErrorMessage("");
+    setStep("success");
   };
 
-  // TODO: This is a confirmation votes
   const handleConfirmVote = async () => {
+    console.log("got submited..");
+    console.log("Pressed confirm vote:", { selectedCandidate, studentId });
+
     if (!selectedCandidate) return;
 
-    console.log(`Student ${studentId} voted for ${selectedCandidate.name}`);
-    // TODO: Passing the votes to Supabase
+    const { error } = await castVote(
+      election.id,
+      selectedCandidate?.candidate_id,
+      studentId
+    );
+    if (error) {
+      setErrorMessage(error);
+      return;
+    }
+
     onClose();
     reset();
   };
@@ -116,7 +148,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
               <Button
                 variant="default"
                 className="bg-PRIMARY900 dark:bg-PRIMARY50 active:bg-PRIMARY800 active:dark:bg-PRIMARY200"
-                onPress={handleSubmitId}
+                onPress={handleSubmitStudentId}
               >
                 <Text>Submit</Text>
               </Button>
@@ -174,12 +206,13 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
 
             <View className="mt-3 gap-4" style={{ maxHeight: 300 }}>
               <ScrollView className="mt-3" contentContainerStyle={{ gap: 16 }}>
-                {election?.candidates?.map((candidate: any) => {
-                  const isSelected = selectedCandidate?.id === candidate.id;
+                {election.candidates.map((candi: Candidate) => {
+                  const isSelected =
+                    selectedCandidate?.candidate_id === candi.candidate_id;
                   return (
                     <TouchableOpacity
-                      key={candidate.id}
-                      onPress={() => setSelectedCandidate(candidate)}
+                      key={candi.candidate_id}
+                      onPress={() => setSelectedCandidate(candi)}
                       activeOpacity={0.8}
                       className={`border rounded-xl p-3  ${
                         isSelected
@@ -189,7 +222,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
                     >
                       <View className="flex flex-row ">
                         <Image
-                          source={{ uri: "https://picsum.photos/200" }}
+                          source={{ uri: `${candi.candidate_profile}` }}
                           className="w-12 h-12 rounded-full mr-3 self-center"
                         />
 
@@ -201,7 +234,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
                               : "text-TEXTdark dark:text-TEXTlight"
                           }`}
                         >
-                          {candidate.name}
+                          {candi.candidate_name}
                         </Text>
                       </View>
                     </TouchableOpacity>

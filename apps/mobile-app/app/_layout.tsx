@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -10,6 +10,7 @@ import Toast from "react-native-toast-message";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import toastConfig from "@/components/toastConfig";
 import { useAuthStore } from "@/store/useAuthStore";
+import { initDB } from "@/db/client";
 
 const RootLayout = () => {
   const [loaded] = useFonts({
@@ -26,15 +27,27 @@ const RootLayout = () => {
     "Inter-Italic": require("../assets/fonts/Inter-Italic.ttf"),
   });
 
-  const { session, loadSession, loading } = useAuthStore();
+  const { session, loadSession } = useAuthStore();
+  const [dbReady, setDbReady] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        // ensures migrations are applied only once
+        await initDB();
+        setDbReady(true);
+      } catch (err) {
+        console.error("Migration failed", err);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     loadSession(); // check auth state on app start
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!loaded || loading) {
+  if (!loaded || !dbReady) {
     // Async font loading only occurs in development.
     return null;
   }

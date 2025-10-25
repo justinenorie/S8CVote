@@ -1,155 +1,16 @@
+import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { ElectionCard } from "@/components/dashboard/ElectionCard";
-
-// Sample Data
-const elections = [
-  {
-    title: "SSG President",
-    voted: false,
-    candidates: [
-      {
-        id: 1,
-        name: "Candidate A",
-        image: "https://picsum.photos/200",
-        votes: 600,
-        percentage: 50.12,
-      },
-      {
-        id: 2,
-        name: "Candidate B",
-        image: "https://picsum.photos/200",
-        votes: 400,
-        percentage: 33.4,
-      },
-      {
-        id: 3,
-        name: "Candidate C",
-        image: "https://picsum.photos/200",
-        votes: 200,
-        percentage: 16.48,
-      },
-      {
-        id: 4,
-        name: "Candidate D",
-        image: "https://picsum.photos/200",
-        votes: 200,
-        percentage: 16.48,
-      },
-      {
-        id: 5,
-        name: "Candidate D",
-        image: "https://picsum.photos/200",
-        votes: 200,
-        percentage: 16.48,
-      },
-      {
-        id: 6,
-        name: "Candidate D",
-        image: "https://picsum.photos/200",
-        votes: 200,
-        percentage: 16.48,
-      },
-      {
-        id: 7,
-        name: "Candidate D",
-        image: "https://picsum.photos/200",
-        votes: 200,
-        percentage: 16.48,
-      },
-      {
-        id: 8,
-        name: "Candidate D",
-        image: "https://picsum.photos/200",
-        votes: 200,
-        percentage: 16.48,
-      },
-    ],
-  },
-  {
-    title: "SSG Vice President",
-    voted: true,
-    candidates: [
-      {
-        id: 1,
-        name: "Candidate A",
-        image: "https://picsum.photos/200",
-        votes: 700,
-        percentage: 60.1,
-      },
-      {
-        id: 2,
-        name: "Candidate B",
-        image: "https://picsum.photos/200",
-        votes: 300,
-        percentage: 25.3,
-      },
-      {
-        id: 3,
-        name: "Candidate C",
-        image: "https://picsum.photos/200",
-        votes: 200,
-        percentage: 14.6,
-      },
-    ],
-  },
-  {
-    title: "SSG Secretary",
-    voted: false,
-    candidates: [
-      {
-        id: 1,
-        name: "Candidate A",
-        image: "https://picsum.photos/200",
-        votes: 500,
-        percentage: 45.1,
-      },
-      {
-        id: 2,
-        name: "Candidate B",
-        image: "https://picsum.photos/200",
-        votes: 400,
-        percentage: 36.2,
-      },
-      {
-        id: 3,
-        name: "Candidate C",
-        image: "https://picsum.photos/200",
-        votes: 200,
-        percentage: 18.7,
-      },
-    ],
-  },
-  {
-    title: "SSG for Bai",
-    voted: false,
-    candidates: [
-      {
-        id: 1,
-        name: "Candidate A",
-        image: "https://picsum.photos/200",
-        votes: 500,
-        percentage: 45.1,
-      },
-      {
-        id: 2,
-        name: "Candidate B",
-        image: "https://picsum.photos/200",
-        votes: 400,
-        percentage: 36.2,
-      },
-      {
-        id: 3,
-        name: "Candidate C",
-        image: "https://picsum.photos/200",
-        votes: 200,
-        percentage: 18.7,
-      },
-    ],
-  },
-];
+import { useVoteStore } from "@/store/useVoteStore";
 
 export default function Dashboard() {
+  const { elections, loadElections, error } = useVoteStore();
+
+  useEffect(() => {
+    loadElections();
+  }, [loadElections]);
+
   return (
     <ScrollView className="py-10 px-3 bg-BGlight dark:bg-BGdark">
       <Text
@@ -165,9 +26,28 @@ export default function Dashboard() {
         Click on an election to cast your vote.
       </Text>
 
+      {error && (
+        <Text variant="p" className="text-red-500">
+          {error}
+        </Text>
+      )}
+
       <View className="mt-3 mb-10">
-        {elections.map((item, index) => (
-          <ElectionCard key={index} elections={item} />
+        {elections.map((elec) => (
+          <ElectionCard
+            key={elec.id}
+            elections={elec}
+            id={elec.id}
+            title={elec.title}
+            has_voted={elec.has_voted}
+            candidates={elec.candidates.map((candi) => ({
+              candidate_id: candi.candidate_id,
+              candidate_name: candi.candidate_name,
+              votes_count: candi.votes_count,
+              percentage: candi.percentage,
+              candidate_profile: candi.candidate_profile ?? null,
+            }))}
+          />
         ))}
       </View>
     </ScrollView>

@@ -129,7 +129,7 @@ function Calendar({
               data-slot="calendar"
               ref={rootRef as React.Ref<HTMLDivElement>}
               className={cn(className)}
-              {...props}
+              {...(props as { popover?: "" | "auto" | "manual" | undefined })}
             />
           );
         },
@@ -156,7 +156,9 @@ function Calendar({
         DayButton: CalendarDayButton,
         WeekNumber: ({ children, ...props }) => {
           return (
-            <td {...props}>
+            <td
+              {...(props as { popover?: "" | "auto" | "manual" | undefined })}
+            >
               <div className="flex size-(--cell-size) items-center justify-center text-center">
                 {children}
               </div>
@@ -203,7 +205,7 @@ function CalendarDayButton({
         defaultClassNames.day,
         className
       )}
-      {...props}
+      {...(props as { popover?: "" | "auto" | "manual" | undefined })}
     />
   );
 }

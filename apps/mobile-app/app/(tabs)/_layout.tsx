@@ -1,7 +1,7 @@
 import { Tabs, Redirect } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
-import { LayoutDashboard, ChartGantt } from "lucide-react-native";
+import { LayoutDashboard, ChartGantt, Settings } from "lucide-react-native";
 import { useTheme } from "@/components/ThemeProvider";
 import { COLORS } from "@/constants/Colors";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -53,6 +53,15 @@ export default function TabsLayout() {
           title: "Results",
           tabBarIcon: ({ color }: { color: string }) => (
             <ChartGantt size={30} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Settings size={30} color={color} />
           ),
         }}
       />

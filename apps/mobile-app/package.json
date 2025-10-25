@@ -27,6 +27,7 @@
     "@supabase/supabase-js": "^2.57.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.44.5",
     "expo": "~54.0.20",
     "expo-blur": "~15.0.7",
     "expo-constants": "~18.0.9",
@@ -66,6 +67,8 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~19.1.17",
+    "babel-plugin-inline-import": "^3.0.0",
+    "drizzle-kit": "^0.31.5",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "prettier-plugin-tailwindcss": "^0.5.11",

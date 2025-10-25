@@ -49,7 +49,7 @@ export default function RegisterForm() {
   });
 
   const handleVerifyStudent = async (student_id: string) => {
-    const { data, error } = await verifyStudent(student_id);
+    const { error } = await verifyStudent(student_id);
 
     if (error) {
       form.setError("student_id", { type: "manual", message: error });
@@ -58,7 +58,7 @@ export default function RegisterForm() {
     }
 
     form.clearErrors("student_id");
-    form.setValue("name", (data as { fullname: string }).fullname);
+    // form.setValue("name", (data as { fullname: string }).fullname);
     toast.success("Student verified!");
   };
 
@@ -130,14 +130,14 @@ export default function RegisterForm() {
                   <FormLabel>
                     <div className="flex flex-col gap-1">
                       Full Name{" "}
-                      <Typography
+                      {/* <Typography
                         variant="small"
                         className="text-TEXTdark/50 dark:text-TEXTlight/50 text-xs"
                       >
                         {
                           "(Input your Student ID to automatically fill out your name)"
                         }
-                      </Typography>
+                      </Typography> */}
                     </div>
                   </FormLabel>
                   <FormControl>
@@ -148,9 +148,9 @@ export default function RegisterForm() {
                       <Input
                         {...field}
                         type="name"
-                        placeholder="Auto-filled after verifying Student ID"
+                        placeholder="eg. Juan Dela Cruz"
                         className="px-10"
-                        disabled
+                        // disabled
                       />
                     </div>
                   </FormControl>
