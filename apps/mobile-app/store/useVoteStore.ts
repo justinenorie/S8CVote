@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import * as Network from "expo-network";
 import { supabase } from "@/lib/supabaseClient";
-import { Election } from "@/types/api";
+import { Candidate, Election } from "@/types/api";
 import {
   syncElectionsAndCandidates,
   syncStudentsFromSupabase,
@@ -9,10 +8,11 @@ import {
 } from "@/db/queries/syncQuery";
 import {
   getElectionsWithCandidates,
-  getElectionById,
   insertLocalVote,
   hasLocalVote,
 } from "@/db/queries/voteQuery";
+
+import { hybridSync } from "@/utils/hybridSync";
 
 type VoteResult<T = void> =
   | { data: null; error: string }
@@ -25,7 +25,7 @@ interface VoteState {
   error: string | null;
 
   loadElections: () => Promise<VoteResult<Election[]>>;
-  loadElection: (electionId: string) => Promise<VoteResult<Election>>;
+  // loadElection: (electionId: string) => Promise<VoteResult<Election>>;
   castVote: (
     electionId: string,
     candidateId: string,
@@ -109,201 +109,221 @@ export const useVoteStore = create<VoteState>((set, get) => ({
   //   return { data: elections, error: null };
   // },
 
-  // ✅ Load all elections (offline-first)
-  // TODO: Add a state to mark if online, and offline..
   loadElections: async () => {
     try {
       set({ loading: true, error: null });
 
-      // 2️⃣ Always read from SQLite
-      const localElections = await getElectionsWithCandidates();
-      set({ elections: localElections, loading: false });
-      console.log(`✅ Loaded ${localElections.length} elections from SQLite`);
+      const elections = await hybridSync<Election[]>(
+        // 🟢 ONLINE MODE
+        async () => {
+          // TODO: instead of console.log change it to state then renders it
+          // Get elections from view
+          const { data: electionsRaw, error: e1 } = await supabase
+            .from("elections_with_user_flag")
+            .select("id, election, has_voted, status")
+            .eq("status", "active")
+            .order("created_at", { ascending: true });
 
-      // 1️⃣ Try syncing from Supabase if online
-      try {
-        const { data: connection } = await supabase
-          .from("elections")
-          .select("id")
-          .limit(1);
-        if (connection) {
-          console.log("🌐 Online: syncing elections...");
+          if (e1 || !electionsRaw)
+            throw new Error(e1?.message ?? "Failed to load elections");
+
+          if (electionsRaw.length === 0) return [];
+
+          const ids = electionsRaw.map((e) => e.id);
+
+          // Get candidate tallies
+          const { data: resultsRaw, error: e2 } = await supabase
+            .from("election_results_with_percent")
+            .select(
+              "election_id, candidate_id, candidate_name, votes_count, percentage, candidate_profile"
+            )
+            .in("election_id", ids);
+
+          if (e2 || !resultsRaw)
+            throw new Error(e2?.message ?? "Failed to load results");
+
+          // Group candidates by election
+          const byElection: Record<string, Candidate[]> = {};
+          for (const row of resultsRaw) {
+            const arr = byElection[row.election_id] || [];
+            arr.push({
+              candidate_id: row.candidate_id,
+              candidate_name: row.candidate_name,
+              votes_count: row.votes_count,
+              percentage: Number(row.percentage),
+              candidate_profile: row.candidate_profile || null,
+            });
+            byElection[row.election_id] = arr;
+          }
+
+          // Final shape for rendering
+          const electionsData: Election[] = electionsRaw.map((e) => ({
+            id: e.id,
+            title: e.election,
+            has_voted: !!e.has_voted,
+            candidates: (byElection[e.id] || []).sort(
+              (a, b) => b.votes_count - a.votes_count
+            ),
+          }));
+
+          // Cache it locally for offline use
           await syncElectionsAndCandidates();
+
+          return electionsData;
+        },
+
+        // 🔵 OFFLINE MODE
+        async () => {
+          console.log("📴 Fetching elections from SQLite cache...");
+          const localElections = await getElectionsWithCandidates();
+          return localElections;
+        },
+
+        // Optional: run cache sync when new data comes
+        async (data) => {
+          if (data?.length) await syncElectionsAndCandidates();
         }
-      } catch {
-        console.log("📴 Offline mode: using cached elections");
-      }
+      );
 
-      return { data: localElections, error: null };
+      set({ elections, loading: false });
+      return { data: elections, error: null };
     } catch (err: any) {
-      console.error("loadElections error:", err);
-      set({ loading: false, error: err.message || "Failed to load elections" });
-      return { data: null, error: err.message || "Failed to load elections" };
+      console.error("❌ loadElections error:", err);
+      set({
+        loading: false,
+        error: err.message || "Failed to load elections",
+      });
+      return { data: null, error: err.message };
     }
   },
 
-  loadElection: async (electionId) => {
-    try {
-      set({ loading: true, error: null });
-
-      const election = await getElectionById(electionId);
-      if (!election) {
-        return { data: null, error: "Election not found" };
-      }
-
-      set({ loading: false });
-      return { data: election, error: null };
-    } catch (err: any) {
-      console.error("loadElection error:", err);
-      set({ loading: false, error: err.message || "Failed to load election" });
-      return { data: null, error: err.message || "Failed to load election" };
-    }
-  },
-
-  // Renderes the clicked election then fetch the candidates belong to the clicked election
   // loadElection: async (electionId) => {
-  //   // one election from view
-  //   const { data: eRaw, error: e1 } = await supabase
-  //     .from("elections_with_user_flag")
-  //     .select("id, election, has_voted, status")
-  //     .eq("id", electionId)
-  //     .single();
+  //   try {
+  //     set({ loading: true, error: null });
 
-  //   if (e1 || !eRaw) {
-  //     return { data: null, error: e1?.message || "Election not found" };
+  //     const election = await getElectionById(electionId);
+  //     if (!election) {
+  //       return { data: null, error: "Election not found" };
+  //     }
+
+  //     set({ loading: false });
+  //     return { data: election, error: null };
+  //   } catch (err: any) {
+  //     console.error("loadElection error:", err);
+  //     set({ loading: false, error: err.message || "Failed to load election" });
+  //     return { data: null, error: err.message || "Failed to load election" };
   //   }
-
-  //   // candidates for that election
-  //   const { data: cRaw, error: e2 } = await supabase
-  //     .from("election_results_with_percent")
-  //     .select(
-  //       "election_id, candidate_id, candidate_name, votes_count, percentage, candidate_profile"
-  //     )
-  //     .eq("election_id", electionId);
-
-  //   if (e2 || !cRaw) {
-  //     return { data: null, error: e2?.message || "Failed to load candidates" };
-  //   }
-
-  //   const election: Election = {
-  //     id: eRaw.id,
-  //     title: eRaw.election,
-  //     has_voted: !!eRaw.has_voted,
-  //     candidates: cRaw
-  //       .map((row) => ({
-  //         candidate_id: row.candidate_id,
-  //         candidate_name: row.candidate_name,
-  //         votes_count: row.votes_count,
-  //         percentage: Number(row.percentage),
-  //         candidate_profile: row.candidate_profile || null,
-  //       }))
-  //       .sort((a, b) => b.votes_count - a.votes_count),
-  //   };
-
-  //   // update store copy
-  //   const current = get().elections;
-  //   const idx = current.findIndex((x) => x.id === electionId);
-  //   if (idx >= 0) {
-  //     const next = [...current];
-  //     next[idx] = election;
-  //     set({ elections: next });
-  //   } else {
-  //     set({ elections: [...current, election] });
-  //   }
-
-  //   return { data: election, error: null };
   // },
+
   castVote: async (electionId, candidateId, studentId) => {
-    const session = await supabase.auth.getSession();
-    console.log("SUPABASE SESSION:", session.data?.session?.user?.id);
-
     try {
-      const net = await Network.getNetworkStateAsync();
+      console.log("🗳️ Attempting to cast vote...");
 
-      // 🌐 ONLINE
-      if (net.isConnected) {
-        const body = {
-          p_election_id: electionId,
-          p_candidate_id: candidateId,
-          p_student_id: studentId,
-        };
+      const session = await supabase.auth.getSession();
+      const adminId = session.data?.session?.user?.id;
+      console.log("SUPABASE SESSION:", adminId);
 
-        console.log("Sending RPC body:", body);
+      const result = await hybridSync(
+        // 🟢 ONLINE MODE
+        async () => {
+          console.log("🌐 Casting vote via Supabase RPC...");
+          const body = {
+            p_election_id: electionId,
+            p_candidate_id: candidateId,
+            p_student_id: studentId,
+          };
 
-        const { data, error } = await supabase.rpc("admin_cast_vote", body);
-        console.log("Admin cast RPC:", { data, error });
+          console.log("Sending RPC body:", body);
 
-        if (error) {
-          return { data: null, error: error.message };
+          const { error } = await supabase.rpc("admin_cast_vote", body);
+
+          if (error) throw new Error(error.message);
+
+          // ✅ If RPC succeeds, sync any pending offline votes
+          await syncVotesToSupabase();
+
+          console.log("🗳️ Vote submitted online successfully");
+        },
+
+        // 🔵 OFFLINE MODE
+        async () => {
+          console.log("📴 Offline mode: saving vote locally...");
+          await insertLocalVote(electionId, candidateId, studentId);
+          console.log("💾 Vote saved to local SQLite for later sync");
+        },
+
+        // 🟣 Cache refresher or background sync (optional)
+        async () => {
+          await syncVotesToSupabase();
         }
+      );
 
-        // IF NO ERROR SYNC IT
-        if (!error) await syncVotesToSupabase();
-
-        console.log("🗳️ Vote submitted online successfully");
-        return { data: null, error: null };
-      }
-
-      // 📴 OFFLINE
-      console.log("📴 Offline mode: saving vote locally...");
-      await insertLocalVote(electionId, candidateId, studentId);
-      return { data: null, error: null };
+      return { data: result, error: null };
     } catch (err: any) {
-      console.error("castVote error:", err);
+      console.error("❌ castVote error:", err);
+
+      set({ loading: false, error: err.message || "Verification failed" });
       return { data: null, error: err.message || "Failed to cast vote" };
     }
   },
 
-  // ✅ Verify student (Offline-first)
-  verifyStudent: async (studentId, electionId) => {
+  verifyStudent: async (studentId: string, electionId: string) => {
     try {
-      // check network state
-      const net = await Network.getNetworkStateAsync();
+      set({ loading: true, error: null });
 
-      // 🌐 ONLINE MODE
-      if (net.isConnected) {
-        const { data, error } = await supabase.rpc("verify_student", {
-          p_student_id: studentId,
-          p_election_id: electionId,
-        });
+      const result = await hybridSync(
+        // 🟢 ONLINE MODE
+        async () => {
+          console.log("🌐 Verifying student via Supabase RPC...");
 
-        if (error || !data || data.length === 0) {
-          return { data: null, error: error?.message || "Invalid Student ID" };
+          const { data, error } = await supabase.rpc("verify_student", {
+            p_student_id: studentId,
+            p_election_id: electionId,
+          });
+
+          if (error || !data || data.length === 0) {
+            throw new Error(error?.message || "Invalid Student ID");
+          }
+
+          const verified = data[0];
+
+          // 🔄 Cache update: refresh students locally
+          await syncStudentsFromSupabase();
+
+          return {
+            is_valid: verified.is_valid,
+            student_name: verified.student_name,
+            has_voted: verified.has_voted,
+          };
+        },
+
+        // 🔵 OFFLINE MODE
+        async () => {
+          console.log("📴 Offline mode: verifying student locally...");
+          const local = await hasLocalVote(studentId, electionId);
+
+          if (!local) {
+            return {
+              is_valid: false,
+              student_name: "",
+              has_voted: false,
+            };
+          }
+
+          return local;
+        },
+
+        // 🟣 Cache refresher (optional, runs after online fetch)
+        async () => {
+          await syncStudentsFromSupabase();
         }
+      );
 
-        const result = data[0];
-
-        // Optional: sync student data locally for offline use
-        await syncStudentsFromSupabase();
-
-        return {
-          data: {
-            is_valid: result.is_valid,
-            student_name: result.student_name,
-            has_voted: result.has_voted,
-          },
-          error: null,
-        };
-      }
-
-      // 📴 OFFLINE MODE
-      console.log("📴 Offline mode: verifying locally...");
-      const result = await hasLocalVote(studentId, electionId);
-
-      if (!result) {
-        return {
-          data: {
-            is_valid: false,
-            student_name: "",
-            has_voted: false,
-          },
-          error: null,
-        };
-      }
-
+      set({ loading: false });
       return { data: result, error: null };
     } catch (err: any) {
-      console.error("verifyStudent error:", err);
+      console.error("❌ verifyStudent error:", err);
+      set({ loading: false, error: err.message || "Verification failed" });
       return { data: null, error: err.message || "Verification failed" };
     }
   },

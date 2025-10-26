@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { View, TouchableOpacity, Image, ScrollView } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { CircleCheck, CircleAlert } from "lucide-react-native";
 
 import { Text } from "@/components/ui/text";
@@ -60,9 +66,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
   };
 
   const handleConfirmVote = async () => {
-    console.log("got submited..");
-    console.log("Pressed confirm vote:", { selectedCandidate, studentId });
-
+    setLoading(true);
     if (!selectedCandidate) return;
 
     const { error } = await castVote(
@@ -75,7 +79,14 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
       return;
     }
 
+    setLoading(false);
     onClose();
+    reset();
+  };
+
+  const handleCancelStudentInput = () => {
+    onClose();
+    setErrorMessage("");
     reset();
   };
 
@@ -83,6 +94,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
     setSelectedCandidate(null);
     setStep("input");
     setErrorMessage("");
+    reset();
   };
 
   const reset = () => {
@@ -140,7 +152,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
               <Button
                 variant="outline"
                 className="bg-PRIMARY50 dark:bg-PRIMARY950 active:bg-PRIMARY-100 active:dark:bg-PRIMARY800"
-                onPress={onClose}
+                onPress={handleCancelStudentInput}
               >
                 <Text>Cancel</Text>
               </Button>
@@ -150,7 +162,21 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
                 className="bg-PRIMARY900 dark:bg-PRIMARY50 active:bg-PRIMARY800 active:dark:bg-PRIMARY200"
                 onPress={handleSubmitStudentId}
               >
-                <Text>Submit</Text>
+                {/* {loading ? (
+                            <ActivityIndicator color="#fff" />
+                          ) : (
+                            <Text className="text-TEXTlight dark:text-TEXTdark">Sign in</Text>
+                          )} */}
+
+                <Text className="text-TEXTlight dark:text-TEXTdark">
+                  {loading ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text className="text-TEXTlight dark:text-TEXTdark">
+                      Submit
+                    </Text>
+                  )}
+                </Text>
               </Button>
             </View>
           </View>
@@ -261,15 +287,19 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
                 onPress={handleConfirmVote}
                 disabled={!selectedCandidate}
               >
-                <Text
-                  className={`${
-                    selectedCandidate
-                      ? "text-TEXTlight dark:text-TEXTdark"
-                      : "text-gray-400"
-                  }`}
-                >
-                  Submit Vote
-                </Text>
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text
+                    className={`${
+                      selectedCandidate
+                        ? "text-TEXTlight dark:text-TEXTdark"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    Submit Vote
+                  </Text>
+                )}
               </Button>
             </View>
           </View>
