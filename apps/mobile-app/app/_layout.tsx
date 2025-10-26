@@ -9,12 +9,24 @@ import Toast from "react-native-toast-message";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import toastConfig from "@/components/toastConfig";
+// state imports
 import { useAuthStore } from "@/store/useAuthStore";
 
+// local db imports
 import { db, expo_sqlite } from "@/db/client";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "@/db/drizzle/migrations";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+
+// // autosync imports
+// import { AppState } from "react-native";
+// import { isOnline } from "@/utils/network";
+// import {
+//   syncElectionsAndCandidates,
+//   syncStudentsFromSupabase,
+//   syncVotesToSupabase,
+// } from "@/db/queries/syncQuery";
+import { useAppSync } from "@/hooks/useAppSync";
 
 const RootLayout = () => {
   const [loaded, error] = useFonts({
@@ -37,29 +49,42 @@ const RootLayout = () => {
   const { session, loadSession } = useAuthStore();
   // const [dbReady, setDbReady] = useState(false);
 
+  // // listner to check if online
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener("change", async (state) => {
+  //     if (state === "active") {
+  //       const online = await isOnline();
+  //       if (online) {
+  //         console.log("🔄 App active & online — syncing pending data...");
+  //         await Promise.all([
+  //           syncElectionsAndCandidates(),
+  //           syncStudentsFromSupabase(),
+  //           syncVotesToSupabase(),
+  //         ]);
+  //       } else {
+  //         console.log("📴 Offline mode detected");
+  //       }
+  //     }
+  //   });
+
+  //   // Cleanup when layout unmounts
+  //   return () => {
+  //     subscription.remove();
+  //   };
+  // }, []);
+
   useEffect(() => {
     if (error) throw error;
     if (migrationError) throw migrationError;
   }, [error, migrationError]);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       await initDB(); // ensures migrations are applied only once
-  //       setDbReady(true);
-  //       console.log("SQLite ready!");
-  //     } catch (err) {
-  //       console.error("Migration failed", err);
-  //     }
-  //   })();
-  // }, []);
 
   useEffect(() => {
     loadSession(); // check auth state on app start
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // if (!dbReady) return null;
+  // Sync
+  useAppSync();
 
   if (!loaded || !success) {
     // Async font loading only occurs in development.

@@ -23,9 +23,9 @@ interface VoteState {
   elections: Election[];
   loading: boolean;
   error: string | null;
+  lastUpdated?: number;
 
   loadElections: () => Promise<VoteResult<Election[]>>;
-  // loadElection: (electionId: string) => Promise<VoteResult<Election>>;
   castVote: (
     electionId: string,
     candidateId: string,
@@ -37,77 +37,14 @@ interface VoteState {
   ) => Promise<
     VoteResult<{ is_valid: boolean; student_name: string; has_voted: boolean }>
   >;
+  triggerRefresh: () => void;
 }
 
 export const useVoteStore = create<VoteState>((set, get) => ({
   elections: [],
   loading: false,
+  lastUpdated: Date.now(),
   error: null,
-
-  // Renders all the active elections
-  // loadElections: async () => {
-  //   set({ loading: true, error: null });
-
-  //   // 1) list active elections (+ has_voted) from the view
-  //   const { data: electionsRaw, error: e1 } = await supabase
-  //     .from("elections_with_user_flag")
-  //     .select("id, election, has_voted, status")
-  //     .eq("status", "active")
-  //     .order("created_at", { ascending: true });
-
-  //   if (e1 || !electionsRaw) {
-  //     set({ loading: false, error: e1?.message || "Failed to load elections" });
-  //     return { data: null, error: e1?.message || "Failed to load elections" };
-  //   }
-
-  //   if (electionsRaw.length === 0) {
-  //     set({ elections: [], loading: false });
-  //     return { data: [], error: null };
-  //   }
-
-  //   const ids = electionsRaw.map((e) => e.id);
-
-  //   // 2) get candidate tallies for those elections in one go
-  //   const { data: resultsRaw, error: e2 } = await supabase
-  //     .from("election_results_with_percent")
-  //     .select(
-  //       "election_id, candidate_id, candidate_name, votes_count, percentage, candidate_profile"
-  //     )
-  //     .in("election_id", ids);
-
-  //   if (e2 || !resultsRaw) {
-  //     set({ loading: false, error: e2?.message || "Failed to load results" });
-  //     return { data: null, error: e2?.message || "Failed to load results" };
-  //   }
-
-  //   // 3) group candidates -> elections
-  //   const byElection: Record<string, Candidate[]> = {};
-  //   for (const row of resultsRaw) {
-  //     const arr = byElection[row.election_id] || [];
-  //     arr.push({
-  //       candidate_id: row.candidate_id,
-  //       candidate_name: row.candidate_name,
-  //       votes_count: row.votes_count,
-  //       percentage: Number(row.percentage),
-  //       candidate_profile: row.candidate_profile || null,
-  //     });
-  //     byElection[row.election_id] = arr;
-  //   }
-
-  //   // 4) final shape - to display to UI
-  //   const elections: Election[] = electionsRaw.map((e) => ({
-  //     id: e.id,
-  //     title: e.election,
-  //     has_voted: !!e.has_voted,
-  //     candidates: (byElection[e.id] || []).sort(
-  //       (a, b) => b.votes_count - a.votes_count
-  //     ),
-  //   }));
-
-  //   set({ elections, loading: false, error: null });
-
-  //   return { data: elections, error: null };
-  // },
 
   loadElections: async () => {
     try {
@@ -197,24 +134,6 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     }
   },
 
-  // loadElection: async (electionId) => {
-  //   try {
-  //     set({ loading: true, error: null });
-
-  //     const election = await getElectionById(electionId);
-  //     if (!election) {
-  //       return { data: null, error: "Election not found" };
-  //     }
-
-  //     set({ loading: false });
-  //     return { data: election, error: null };
-  //   } catch (err: any) {
-  //     console.error("loadElection error:", err);
-  //     set({ loading: false, error: err.message || "Failed to load election" });
-  //     return { data: null, error: err.message || "Failed to load election" };
-  //   }
-  // },
-
   castVote: async (electionId, candidateId, studentId) => {
     try {
       console.log("🗳️ Attempting to cast vote...");
@@ -240,6 +159,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
           if (error) throw new Error(error.message);
 
           // ✅ If RPC succeeds, sync any pending offline votes
+          await get().loadElections();
           await syncVotesToSupabase();
 
           console.log("🗳️ Vote submitted online successfully");
@@ -249,6 +169,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
         async () => {
           console.log("📴 Offline mode: saving vote locally...");
           await insertLocalVote(electionId, candidateId, studentId);
+          await get().loadElections();
           console.log("💾 Vote saved to local SQLite for later sync");
         },
 
@@ -326,5 +247,11 @@ export const useVoteStore = create<VoteState>((set, get) => ({
       set({ loading: false, error: err.message || "Verification failed" });
       return { data: null, error: err.message || "Verification failed" };
     }
+  },
+
+  triggerRefresh: () => {
+    console.log("🔄 Triggering UI refresh from background sync...");
+    set({ lastUpdated: Date.now() });
+    get().loadElections(); // 👈 re-fetch elections automatically
   },
 }));

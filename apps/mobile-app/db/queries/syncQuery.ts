@@ -1,4 +1,3 @@
-// db/queries/syncQueries.ts
 import { db } from "../client";
 import { elections, candidates, students, votes } from "../schema";
 import { eq } from "drizzle-orm";

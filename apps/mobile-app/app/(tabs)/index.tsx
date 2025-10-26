@@ -5,11 +5,11 @@ import { ElectionCard } from "@/components/dashboard/ElectionCard";
 import { useVoteStore } from "@/store/useVoteStore";
 
 export default function Dashboard() {
-  const { elections, loadElections, error } = useVoteStore();
+  const { elections, loadElections, error, lastUpdated } = useVoteStore();
 
   useEffect(() => {
     loadElections();
-  }, [loadElections]);
+  }, [loadElections, lastUpdated]);
 
   return (
     <ScrollView className="py-10 px-3 bg-BGlight dark:bg-BGdark">
