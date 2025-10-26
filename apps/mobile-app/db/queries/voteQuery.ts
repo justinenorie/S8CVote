@@ -14,7 +14,9 @@ export async function getElectionsWithCandidates() {
       title: election.title,
       has_voted: Boolean(election.has_voted),
       status: election.status,
-      candidates: candidateRows.filter((c) => c.election_id === election.id),
+      candidates: candidateRows
+        .filter((c) => c.election_id === election.id)
+        .sort((a, b) => b.votes_count - a.votes_count),
     })
   );
 

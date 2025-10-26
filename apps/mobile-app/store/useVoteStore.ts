@@ -252,6 +252,6 @@ export const useVoteStore = create<VoteState>((set, get) => ({
   triggerRefresh: () => {
     console.log("🔄 Triggering UI refresh from background sync...");
     set({ lastUpdated: Date.now() });
-    get().loadElections(); // 👈 re-fetch elections automatically
+    get().loadElections();
   },
 }));

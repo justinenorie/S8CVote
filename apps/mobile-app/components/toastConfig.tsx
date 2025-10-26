@@ -27,19 +27,23 @@ const BaseToast = ({
   text2?: string;
 }) => (
   <View
-    className="flex-row items-start w-[90%] rounded-xl px-4 py-3 mt-1"
+    className="flex-row items-start w-[90%] rounded-xl px-4 py-3 mt-1 z-99999"
     style={{ borderColor, backgroundColor: bgColor, borderWidth: 1 }}
   >
     <View className="mr-3 mt-0.5">{icon}</View>
 
     <View className="flex-1">
       {text1 && (
-        <Text className="font-semibold text-sm" style={{ color: titleColor }}>
+        <Text
+          variant="p"
+          className="font-semibold text-sm"
+          style={{ color: titleColor }}
+        >
           {text1}
         </Text>
       )}
       {text2 && (
-        <Text className="text-xs mt-0.5" style={{ color: descColor }}>
+        <Text variant="small" className="mt-0.5" style={{ color: descColor }}>
           {text2}
         </Text>
       )}

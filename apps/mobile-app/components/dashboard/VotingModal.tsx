@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { CircleCheck, CircleAlert } from "lucide-react-native";
+import Toast from "react-native-toast-message";
 
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
@@ -25,14 +26,13 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
   // TODO: Steps should be the data from supabase
   const [step, setStep] = useState<"input" | "success">("input");
   const [studentId, setStudentId] = useState("");
-  const [studentName, setStudentName] = useState(""); // TODO: Should be a fetch name
+  const [studentName, setStudentName] = useState("");
   const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const { verifyStudent, castVote } = useVoteStore();
 
-  // TODO: checks if student_ID exist in db
   const handleSubmitStudentId = async () => {
     if (studentId.trim() === "") {
       setErrorMessage("Please enter your Student ID.");
@@ -41,6 +41,11 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
 
     setLoading(true);
     const { data, error } = await verifyStudent(studentId, election.id);
+    Toast.show({
+      type: "success",
+      text1: `Your studentID has been verified.`,
+      text2: `You can now vote ${studentId}`,
+    });
     setLoading(false);
 
     if (error) {
@@ -50,6 +55,11 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
 
     if (!data?.is_valid) {
       setErrorMessage("Student not found.");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: `Student not found.`,
+      });
       return;
     }
 
@@ -57,6 +67,11 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
       setErrorMessage(
         `${data.student_name} has already voted in this election.`
       );
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: `${data.student_name} has already voted in this election.`,
+      });
       return;
     }
 
@@ -74,6 +89,13 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
       selectedCandidate?.candidate_id,
       studentId
     );
+
+    Toast.show({
+      type: "success",
+      text1: `Vote Submitted!`,
+      text2: `Thank you, ${studentName}! Your vote has been recorded..`,
+    });
+
     if (error) {
       setErrorMessage(error);
       return;
