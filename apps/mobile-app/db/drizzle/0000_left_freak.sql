@@ -5,7 +5,7 @@ CREATE TABLE `adminAuth` (
 	`role` text,
 	`access_token` text,
 	`refresh_token` text,
-	`created_at` text DEFAULT '2025-10-25T13:16:14.433Z',
+	`created_at` text DEFAULT '2025-10-25T20:26:53.122Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` text
@@ -35,7 +35,7 @@ CREATE TABLE `students` (
 	`fullname` text NOT NULL,
 	`email` text,
 	`isRegistered` integer DEFAULT 0,
-	`created_at` text DEFAULT '2025-10-25T13:16:14.435Z',
+	`created_at` text DEFAULT '2025-10-25T20:26:53.125Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -44,14 +44,13 @@ CREATE TABLE `students` (
 CREATE UNIQUE INDEX `students_student_id_unique` ON `students` (`student_id`);--> statement-breakpoint
 CREATE TABLE `votes` (
 	`id` text PRIMARY KEY NOT NULL,
-	`timestamp` integer,
 	`election_id` text NOT NULL,
 	`candidate_id` text NOT NULL,
 	`student_id` text,
-	`created_at` integer,
-	`updated_at` integer,
-	`deleted_at` integer,
-	`synced_at` integer,
+	`created_at` text DEFAULT '2025-10-25T20:26:53.125Z',
+	`updated_at` text,
+	`deleted_at` text,
+	`synced_at` integer DEFAULT 0,
 	FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`candidate_id`) REFERENCES `candidates`(`candidate_id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`) ON UPDATE no action ON DELETE no action

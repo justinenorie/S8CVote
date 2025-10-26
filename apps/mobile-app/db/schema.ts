@@ -52,16 +52,16 @@ export const students = sqliteTable("students", {
 // Votes Table
 export const votes = sqliteTable("votes", {
   id: text("id").primaryKey(),
-  timestamp: integer("timestamp"), // epoch ms
-  electionId: text("election_id")
+  election_id: text("election_id")
     .notNull()
     .references(() => elections.id),
-  candidateId: text("candidate_id")
+  candidate_id: text("candidate_id")
     .notNull()
     .references(() => candidates.candidate_id),
-  studentId: text("student_id").references(() => students.student_id),
-  created_at: integer("created_at"),
-  updated_at: integer("updated_at"),
-  deleted_at: integer("deleted_at"),
-  synced_at: integer("synced_at"),
+  student_id: text("student_id").references(() => students.student_id),
+
+  created_at: text("created_at").default(new Date().toISOString()),
+  updated_at: text("updated_at"),
+  deleted_at: text("deleted_at"),
+  synced_at: integer("synced_at").default(0),
 });

@@ -1,10 +1,17 @@
 import { create } from "zustand";
+import * as Network from "expo-network";
 import { supabase } from "@/lib/supabaseClient";
 import { Election } from "@/types/api";
-import { syncElectionsAndCandidates } from "@/db/queries/syncQuery";
+import {
+  syncElectionsAndCandidates,
+  syncStudentsFromSupabase,
+  syncVotesToSupabase,
+} from "@/db/queries/syncQuery";
 import {
   getElectionsWithCandidates,
   getElectionById,
+  insertLocalVote,
+  hasLocalVote,
 } from "@/db/queries/voteQuery";
 
 type VoteResult<T = void> =
@@ -135,7 +142,6 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     }
   },
 
-  // ✅ Load single election (offline-first)
   loadElection: async (electionId) => {
     try {
       set({ loading: true, error: null });
@@ -207,43 +213,98 @@ export const useVoteStore = create<VoteState>((set, get) => ({
 
   //   return { data: election, error: null };
   // },
-
   castVote: async (electionId, candidateId, studentId) => {
-    const { error } = await supabase.rpc("admin_cast_vote", {
-      p_election_id: electionId,
-      p_candidate_id: candidateId,
-      p_student_id: studentId,
-    });
+    const session = await supabase.auth.getSession();
+    console.log("SUPABASE SESSION:", session.data?.session?.user?.id);
 
-    console.log(electionId, candidateId, studentId);
+    try {
+      const net = await Network.getNetworkStateAsync();
 
-    if (error) {
-      return { data: null, error: error.message };
+      // 🌐 ONLINE
+      if (net.isConnected) {
+        const body = {
+          p_election_id: electionId,
+          p_candidate_id: candidateId,
+          p_student_id: studentId,
+        };
+
+        console.log("Sending RPC body:", body);
+
+        const { data, error } = await supabase.rpc("admin_cast_vote", body);
+        console.log("Admin cast RPC:", { data, error });
+
+        if (error) {
+          return { data: null, error: error.message };
+        }
+
+        // IF NO ERROR SYNC IT
+        if (!error) await syncVotesToSupabase();
+
+        console.log("🗳️ Vote submitted online successfully");
+        return { data: null, error: null };
+      }
+
+      // 📴 OFFLINE
+      console.log("📴 Offline mode: saving vote locally...");
+      await insertLocalVote(electionId, candidateId, studentId);
+      return { data: null, error: null };
+    } catch (err: any) {
+      console.error("castVote error:", err);
+      return { data: null, error: err.message || "Failed to cast vote" };
     }
-
-    await get().loadElection(electionId);
-    return { data: null, error: null };
   },
 
+  // ✅ Verify student (Offline-first)
   verifyStudent: async (studentId, electionId) => {
-    const { data, error } = await supabase.rpc("verify_student", {
-      p_student_id: studentId,
-      p_election_id: electionId,
-    });
+    try {
+      // check network state
+      const net = await Network.getNetworkStateAsync();
 
-    if (error || !data || data.length === 0) {
-      return { data: null, error: error?.message || "Invalid Student ID" };
+      // 🌐 ONLINE MODE
+      if (net.isConnected) {
+        const { data, error } = await supabase.rpc("verify_student", {
+          p_student_id: studentId,
+          p_election_id: electionId,
+        });
+
+        if (error || !data || data.length === 0) {
+          return { data: null, error: error?.message || "Invalid Student ID" };
+        }
+
+        const result = data[0];
+
+        // Optional: sync student data locally for offline use
+        await syncStudentsFromSupabase();
+
+        return {
+          data: {
+            is_valid: result.is_valid,
+            student_name: result.student_name,
+            has_voted: result.has_voted,
+          },
+          error: null,
+        };
+      }
+
+      // 📴 OFFLINE MODE
+      console.log("📴 Offline mode: verifying locally...");
+      const result = await hasLocalVote(studentId, electionId);
+
+      if (!result) {
+        return {
+          data: {
+            is_valid: false,
+            student_name: "",
+            has_voted: false,
+          },
+          error: null,
+        };
+      }
+
+      return { data: result, error: null };
+    } catch (err: any) {
+      console.error("verifyStudent error:", err);
+      return { data: null, error: err.message || "Verification failed" };
     }
-
-    const result = data[0];
-
-    return {
-      data: {
-        is_valid: result.is_valid,
-        student_name: result.student_name,
-        has_voted: result.has_voted,
-      },
-      error: null,
-    };
   },
 }));

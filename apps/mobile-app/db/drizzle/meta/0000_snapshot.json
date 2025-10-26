@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "a80980df-6651-4a81-9cfa-9efe66f42279",
+  "id": "3ee7f92f-8c33-4a0d-a1eb-7844bb1ee9da",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "adminAuth": {
@@ -55,7 +55,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-25T13:16:14.433Z'"
+          "default": "'2025-10-25T20:26:53.122Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -240,7 +240,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-25T13:16:14.435Z'"
+          "default": "'2025-10-25T20:26:53.125Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -289,13 +289,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "timestamp": {
-          "name": "timestamp",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "election_id": {
           "name": "election_id",
           "type": "text",
@@ -319,21 +312,22 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "'2025-10-25T20:26:53.125Z'"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "deleted_at": {
           "name": "deleted_at",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -343,7 +337,8 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": 0
         }
       },
       "indexes": {},
