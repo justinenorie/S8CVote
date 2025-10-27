@@ -28,6 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useCandidateStore } from "@renderer/stores/useCandidateStore";
 import { useElectionStore } from "@renderer/stores/useElectionStore";
+import { usePartylistStore } from "@renderer/stores/usePartylistStore";
 import { uploadProfileImage } from "@renderer/lib/upload";
 
 // Form Candidate Schema
@@ -35,6 +36,7 @@ const formCandidateSchema = z.object({
   profile: z.any().optional(),
   name: z.string().min(1, { message: "Candidate name is required" }),
   election_id: z.string({ message: "Election Position is required" }),
+  partylist_id: z.string().optional(),
   description: z.string().optional(),
 });
 
@@ -53,6 +55,7 @@ export const AddCandidatesModal = ({
       profile: "",
       name: "",
       election_id: "",
+      partylist_id: "",
       description: "",
     },
   });
@@ -61,12 +64,16 @@ export const AddCandidatesModal = ({
 
   const { addCandidate, updateCandidate, loading } = useCandidateStore();
   const { elections, fetchElections } = useElectionStore();
+  const { partylist, fetchPartylist } = usePartylistStore();
   const [uploading, setUploading] = React.useState(false);
 
-  // Fetch Elections
+  // Fetch Selections
   React.useEffect(() => {
-    if (open) fetchElections();
-  }, [open, fetchElections]);
+    if (open) {
+      fetchElections();
+      fetchPartylist();
+    }
+  }, [open, fetchElections, fetchPartylist]);
 
   if (!open) return null;
 
@@ -76,6 +83,7 @@ export const AddCandidatesModal = ({
       profile_path: "",
       name: values.name,
       election_id: values.election_id,
+      partylist_id: values.partylist_id,
       description: values.description,
     };
 
@@ -236,6 +244,46 @@ export const AddCandidatesModal = ({
                               className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80"
                             >
                               {election.election}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Partylist */}
+          <FormField
+            control={form.control}
+            name="partylist_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Partylist</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Select
+                      {...field}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border-1">
+                        <SelectValue placeholder="Select Partylist Group" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-PRIMARY-100 dark:bg-PRIMARY-800 text-TEXTdark dark:text-TEXTlight">
+                        <SelectGroup>
+                          <SelectLabel>Partylist Group</SelectLabel>
+
+                          {partylist.map((party) => (
+                            <SelectItem
+                              key={party.id}
+                              value={party.id ?? ""}
+                              className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80"
+                            >
+                              {party.partylist}
                             </SelectItem>
                           ))}
                         </SelectGroup>

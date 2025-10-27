@@ -74,6 +74,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
     const newCandidates = {
       id: crypto.randomUUID(),
       ...candidate,
+      partylist_id: candidate.partylist_id || null,
     };
 
     try {
@@ -98,9 +99,17 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
       return { data: null, error: "No user logged in" };
     }
 
+    const updateCandidates = {
+      ...updates,
+      partylist_id: updates.partylist_id || null,
+    };
+
     try {
       set({ loading: true });
-      await window.electronAPI.candidatesUpdate(id, updates as Candidates);
+      await window.electronAPI.candidatesUpdate(
+        id,
+        updateCandidates as Candidates
+      );
       await get().fetchCandidates();
 
       return { data: updates as Candidates, error: null };

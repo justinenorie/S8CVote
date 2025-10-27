@@ -36,6 +36,7 @@ export interface Candidates {
   name: string;
   description?: string;
   election_id?: string;
+  partylist_id?: string | null;
   election?: {
     id: string;
     election: string;

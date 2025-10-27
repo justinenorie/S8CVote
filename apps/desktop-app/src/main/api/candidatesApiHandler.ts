@@ -92,6 +92,7 @@ export function candidatesApiHandlers(): void {
         description: candidates.description,
         profile: candidates.profile,
         election_id: candidates.election_id,
+        partylist_id: candidates.partylist_id,
         // election details from joined table
         election: elections.election,
         election_status: elections.status,
@@ -114,6 +115,7 @@ export function candidatesApiHandlers(): void {
       description: row.description,
       profile: row.profile,
       election_id: row.election_id,
+      partylist_id: row.partylist_id,
       election: row.election
         ? {
             id: row.election_id,

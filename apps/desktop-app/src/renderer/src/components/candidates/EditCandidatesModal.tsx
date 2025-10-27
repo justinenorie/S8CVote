@@ -27,6 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useCandidateStore } from "@renderer/stores/useCandidateStore";
 import { useElectionStore } from "@renderer/stores/useElectionStore";
+import { usePartylistStore } from "@renderer/stores/usePartylistStore";
 import { uploadProfileImage } from "@renderer/lib/upload";
 import { Candidates } from "@renderer/types/api";
 
@@ -35,6 +36,7 @@ const formCandidateSchema = z.object({
   profile: z.any().optional(),
   name: z.string().min(1, { message: "Candidate name is required" }),
   election_id: z.string().min(1, { message: "Election Position is required" }),
+  partylist_id: z.string().optional(),
   description: z.string().optional(),
 });
 
@@ -55,6 +57,7 @@ export const EditCandidatesModal = ({
       profile: "",
       name: "",
       election_id: "",
+      partylist_id: "",
       description: "",
     },
   });
@@ -63,31 +66,34 @@ export const EditCandidatesModal = ({
 
   const { updateCandidate, loading } = useCandidateStore();
   const { elections, fetchElections } = useElectionStore();
+  const { partylist, fetchPartylist } = usePartylistStore();
   const [originalImageUrl, setOriginalImageUrl] = React.useState<string | null>(
     null
   );
   const [uploading, setUploading] = React.useState(false);
 
-  // Fetching Elections for Select
+  // Fetch Selections
   React.useEffect(() => {
     if (open) {
       fetchElections();
+      fetchPartylist();
     }
-  }, [open, fetchElections]);
+  }, [open, fetchElections, fetchPartylist]);
 
   // Fetching Candidates Info
   React.useEffect(() => {
-    if (open && candidates && elections.length > 0) {
+    if (open && candidates) {
       setOriginalImageUrl(candidates.profile || null);
 
       form.reset({
         profile: candidates.profile || "",
         name: candidates.name || "",
         election_id: String(candidates.election_id),
+        partylist_id: String(candidates.partylist_id),
         description: candidates.description || "",
       });
     }
-  }, [open, candidates, elections, form]);
+  }, [open, candidates, elections, partylist, form]);
 
   // Fetching the Image initially
   React.useEffect(() => {
@@ -139,6 +145,7 @@ export const EditCandidatesModal = ({
       profile_path: profilePath,
       name: values.name,
       election_id: values.election_id,
+      partylist_id: values.partylist_id,
       description: values.description,
     };
 
@@ -264,6 +271,42 @@ export const EditCandidatesModal = ({
                               className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80"
                             >
                               {election.election}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Partylist */}
+          <FormField
+            control={form.control}
+            name="partylist_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Partylist</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border-1">
+                        <SelectValue placeholder="Select Partylist Group" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-PRIMARY-100 dark:bg-PRIMARY-800 text-TEXTdark dark:text-TEXTlight">
+                        <SelectGroup>
+                          <SelectLabel>Partylist Group</SelectLabel>
+
+                          {partylist.map((party) => (
+                            <SelectItem
+                              key={party.id}
+                              value={String(party.id)}
+                              className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80"
+                            >
+                              {party.partylist}
                             </SelectItem>
                           ))}
                         </SelectGroup>
