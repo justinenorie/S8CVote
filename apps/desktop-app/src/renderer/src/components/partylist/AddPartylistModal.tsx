@@ -50,6 +50,7 @@ export const AddPartylistModal = ({
   const { addPartylist, updatePartylist, loading } = usePartylistStore();
   const [uploading, setUploading] = React.useState(false);
   const { reset } = form;
+  const colorValue = form.watch("color");
 
   if (!open) return null;
 
@@ -216,11 +217,20 @@ export const AddPartylistModal = ({
               <FormItem>
                 <FormLabel>Color</FormLabel>
                 <FormControl>
-                  <Input
-                    type="color"
-                    {...field}
-                    className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 h-10 w-16 cursor-pointer rounded-md border-1 p-1"
-                  />
+                  <div className="grid grid-cols-1">
+                    <Input
+                      type="color"
+                      {...field}
+                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 h-10 w-full cursor-pointer rounded-md border-1 p-1"
+                    />
+
+                    <Typography>
+                      Selected Color:{" "}
+                      <span style={{ color: colorValue, fontWeight: "bold" }}>
+                        {colorValue}
+                      </span>
+                    </Typography>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

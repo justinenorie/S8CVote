@@ -76,7 +76,9 @@ export interface Partylist {
   color: string;
   logo: string;
   logo_path: string;
+  description?: string;
   members_count?: number;
+
   synced_at?: number;
   deleted_at?: string | null;
   updated_at?: string;

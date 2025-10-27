@@ -6,49 +6,10 @@ import { DataTable } from "@renderer/components/ui/DataTable";
 import { usePartylistColumns } from "@renderer/components/partylist/column";
 import { Partylist } from "@renderer/types/api";
 import { AddPartylistModal } from "@renderer/components/partylist/AddPartylistModal";
-// import EditPartylistModal from "@renderer/components/partylist/EditPartylistModal";
+import { EditPartylistModal } from "@renderer/components/partylist/EditPartylistModal";
 import { ConfirmDialog } from "@renderer/components/ui/ConfirmDialog";
 
 import { usePartylistStore } from "@renderer/stores/usePartylistStore";
-
-// const samplePartyListData = [
-//   {
-//     id: "partylist-001",
-//     partylist: "Unified Student Alliance",
-//     acronym: "USA",
-//     color: "#1E90FF",
-//     logo: "../../assets/S8CVote-TempLogo.png",
-//     logo_path: "logos/usa.png",
-//     members_count: 5,
-//     created_at: "2025-10-27T10:00:00Z",
-//     updated_at: "2025-10-27T10:00:00Z",
-//     synced_at: 1,
-//   },
-//   {
-//     id: "partylist-002",
-//     partylist: "Youth Empowerment Front",
-//     acronym: "YEF",
-//     color: "#32CD32",
-//     logo: "../../assets/S8CVote-TempLogo.png",
-//     logo_path: "logos/yef.png",
-//     members_count: 3,
-//     created_at: "2025-10-27T10:00:00Z",
-//     updated_at: "2025-10-27T10:00:00Z",
-//     synced_at: 1,
-//   },
-//   {
-//     id: "partylist-003",
-//     partylist: "Progressive Minds Party",
-//     acronym: "PMP",
-//     color: "#FF6347",
-//     logo: "../../assets/S8CVote-TempLogo.png",
-//     logo_path: "logos/pmp.png",
-//     members_count: 4,
-//     created_at: "2025-10-27T10:00:00Z",
-//     updated_at: "2025-10-27T10:00:00Z",
-//     synced_at: 1,
-//   },
-// ];
 
 const Partylists = (): React.ReactElement => {
   const { loading, partylist, fetchPartylist, deletePartylist } =
@@ -57,17 +18,15 @@ const Partylists = (): React.ReactElement => {
   const [selectedPartylist, setSelectedPartylist] = useState<Partylist | null>(
     null
   );
-  // const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const columns = usePartylistColumns({
     onEdit: (partylist) => {
-      console.log(partylist);
       setSelectedPartylist(partylist);
-      // setEditModalOpen(true);
+      setEditModalOpen(true);
     },
     onDelete: (partylist) => {
-      console.log(partylist);
       setSelectedPartylist(partylist);
       setDeleteModalOpen(true);
     },
@@ -122,7 +81,14 @@ const Partylists = (): React.ReactElement => {
         defaultSorting={[{ id: "partylist", desc: false }]}
       />
 
-      {/* <EditPartylistModal /> */}
+      <EditPartylistModal
+        open={editModalOpen}
+        onClose={() => {
+          setEditModalOpen(false);
+          setSelectedPartylist(null);
+        }}
+        selectedPartylist={selectedPartylist}
+      />
 
       <ConfirmDialog
         open={deleteModalOpen}
