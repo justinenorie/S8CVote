@@ -45,6 +45,12 @@ export function candidatesApiHandlers(): void {
         .from(candidates)
         .where(eq(candidates.id, cleanRecord.id));
 
+      // 🧹 Delete locally if Supabase has deleted it
+      if (record.deleted_at) {
+        await db.delete(candidates).where(eq(candidates.id, record.id));
+        continue;
+      }
+
       if (!local) {
         await db.insert(candidates).values({
           ...cleanRecord,

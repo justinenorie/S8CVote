@@ -13,11 +13,6 @@ export function electionsApiHandlers(): void {
       .from(elections)
       .where(sql`synced_at = 0 OR synced_at IS NULL`);
 
-    // const unsyncedString = unsynced
-    //   .map((election) => `${election.id} - ${election.election}`)
-    //   .join("\n ");
-    // console.log(`Unsynced data: ${unsyncedString}`);
-
     return unsynced;
   });
 
@@ -43,6 +38,12 @@ export function electionsApiHandlers(): void {
         .select()
         .from(elections)
         .where(eq(elections.id, record.id));
+
+      // 🧹 Delete locally if Supabase has deleted it
+      if (record.deleted_at) {
+        await db.delete(elections).where(eq(elections.id, record.id));
+        continue;
+      }
 
       // If record doesn’t exist locally, insert it
       if (!local) {

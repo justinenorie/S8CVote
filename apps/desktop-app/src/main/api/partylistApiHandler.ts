@@ -36,6 +36,12 @@ export function partylistApiHandlers(): void {
         .from(partylist)
         .where(eq(partylist.id, record.id));
 
+      // 🧹 If the record from Supabase has been soft-deleted, mirror it locally
+      if (record.deleted_at) {
+        await db.delete(partylist).where(eq(partylist.id, record.id));
+        continue;
+      }
+
       if (!local) {
         await db.insert(partylist).values({
           ...record,

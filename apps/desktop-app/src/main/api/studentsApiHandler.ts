@@ -61,6 +61,12 @@ export function studentsApiHandlers(): void {
         .from(students)
         .where(eq(students.id, record.id));
 
+      // 🧹 If the record from Supabase has been soft-deleted, mirror it locally
+      if (record.deleted_at) {
+        await db.delete(students).where(eq(students.id, record.id));
+        continue;
+      }
+
       if (!local) {
         await db.insert(students).values({ ...record, synced_at: 1 });
         continue;
@@ -80,6 +86,7 @@ export function studentsApiHandlers(): void {
           .where(eq(students.id, record.id));
       }
     }
+
     return { success: true };
   });
 }
