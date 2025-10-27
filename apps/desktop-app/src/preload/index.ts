@@ -3,6 +3,19 @@ import { electronAPI } from "@electron-toolkit/preload";
 
 // Save All the API methods here
 const api = {
+  // PARTYLIST
+  partylistGet: () => ipcRenderer.invoke("partylist:get"),
+  partylistAdd: (record) => ipcRenderer.invoke("partylist:add", record),
+  partylistUpdate: (id, updates) =>
+    ipcRenderer.invoke("partylist:update", id, updates),
+  partylistDelete: (id) => ipcRenderer.invoke("partylist:delete", id),
+
+  // Sync helpers
+  partylistBulkUpsert: (records) =>
+    ipcRenderer.invoke("partylist:bulkUpsert", records),
+  partylistGetUnsynced: () => ipcRenderer.invoke("partylist:getUnsynced"),
+  partylistMarkSynced: (ids) => ipcRenderer.invoke("partylist:markSynced", ids),
+
   // STUDENTS
   studentsGet: () => ipcRenderer.invoke("students:get"),
   studentsBulkInsert: (records) =>

@@ -12,6 +12,20 @@ declare global {
 
     // Tandaan mo toh: Use for type safes for calling api (sige)
     electronAPI: {
+      // PARTYLIST
+      partylistGet: () => Promise<Partylist[]>;
+      partylistAdd: (record: Partylist) => Promise<{ success: boolean }>;
+      partylistUpdate: (
+        id: string,
+        updates: Partial<Partylist>
+      ) => Promise<{ success: boolean }>;
+      partylistDelete: (id: string) => Promise<{ success: boolean }>;
+      partylistBulkUpsert: (
+        records: Partylist[]
+      ) => Promise<{ success: boolean }>;
+      partylistGetUnsynced: () => Promise<Partylist[]>;
+      partylistMarkSynced: (ids: string[]) => Promise<{ success: boolean }>;
+
       // Students
       studentsGet: () => Promise<Student[]>;
       studentsBulkInsert: (records: Student[]) => Promise<{ success: boolean }>;

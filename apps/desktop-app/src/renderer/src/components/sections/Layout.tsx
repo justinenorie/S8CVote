@@ -9,7 +9,7 @@ const Layout = (): React.JSX.Element => {
       <SideNav />
 
       {/* Main Content */}
-      <main className="bg-BGlight dark:bg-BGdark flex-1 overflow-y-auto p-6 transition-colors duration-300">
+      <main className="bg-BGlight dark:bg-BGdark flex-1 overflow-y-auto p-6 transition-colors duration-500">
         <Outlet />
       </main>
     </div>

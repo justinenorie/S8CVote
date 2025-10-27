@@ -10,6 +10,7 @@ import {
   ChevronsRight,
   ChevronsLeft,
   LogOut,
+  Group,
 } from "lucide-react";
 import { ThemeToggle } from "../ui/ThemeToggle";
 import Typography from "../ui/Typography";
@@ -51,6 +52,7 @@ const SideNav = (): React.JSX.Element => {
   const navItems = [
     { label: "Dashboard", path: "/dashboard", icon: <LayoutDashboard /> },
     { label: "Elections", path: "/elections", icon: <ChartBarStacked /> },
+    { label: "Partylist", path: "/partylist", icon: <Group /> },
     { label: "Candidates", path: "/candidates", icon: <Users /> },
     { label: "Students", path: "/students", icon: <ContactRound /> },
     { label: "Reports", path: "/reports", icon: <BarChart /> },
@@ -58,7 +60,7 @@ const SideNav = (): React.JSX.Element => {
 
   return (
     <aside
-      className={`bg-PRIMARY-50 dark:bg-PRIMARY-950 text-TEXTdark dark:text-TEXTlight z-10 h-screen shadow-[7px_7px_21px_5px_rgba(0,_0,_0,_0.1)] transition-all duration-300 ${
+      className={`bg-PRIMARY-50 dark:bg-PRIMARY-950 text-TEXTdark dark:text-TEXTlight z-10 h-screen shadow-[7px_7px_21px_5px_rgba(0,_0,_0,_0.1)] transition-all duration-500 ${
         isCollapsed ? "w-20" : "w-64"
       } flex flex-col`}
     >

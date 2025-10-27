@@ -145,6 +145,7 @@ export function candidatesApiHandlers(): void {
         synced_at: 0,
       })
       .where(eq(candidates.id, id));
+    return { success: true };
   });
 
   // DELETE

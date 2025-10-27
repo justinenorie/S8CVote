@@ -5,10 +5,20 @@ CREATE TABLE `adminAuth` (
 	`role` text,
 	`access_token` text,
 	`refresh_token` text,
-	`created_at` text DEFAULT '2025-10-16T11:08:30.146Z',
+	`created_at` text DEFAULT '2025-10-27T03:20:44.638Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` text
+);
+--> statement-breakpoint
+CREATE TABLE `candidate_tallies` (
+	`election_id` text NOT NULL,
+	`candidate_id` text NOT NULL,
+	`votes_count` integer NOT NULL,
+	`percentage` numeric NOT NULL,
+	`updated_at` text,
+	FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`candidate_id`) REFERENCES `candidates`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `candidates` (
@@ -18,11 +28,13 @@ CREATE TABLE `candidates` (
 	`profile` text,
 	`profile_path` text,
 	`election_id` text NOT NULL,
-	`created_at` text DEFAULT '2025-10-16T11:08:30.148Z',
+	`partylist_id` text NOT NULL,
+	`created_at` text DEFAULT '2025-10-27T03:20:44.640Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0,
-	FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON UPDATE no action ON DELETE cascade
+	FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`partylist_id`) REFERENCES `partylist`(`id`) ON UPDATE no action ON DELETE set null
 );
 --> statement-breakpoint
 CREATE TABLE `elections` (
@@ -33,7 +45,20 @@ CREATE TABLE `elections` (
 	`status` text DEFAULT 'active' NOT NULL,
 	`end_time` text,
 	`end_date` text,
-	`created_at` text DEFAULT '2025-10-16T11:08:30.148Z',
+	`created_at` text DEFAULT '2025-10-27T03:20:44.639Z',
+	`updated_at` text,
+	`deleted_at` text,
+	`synced_at` integer DEFAULT 0
+);
+--> statement-breakpoint
+CREATE TABLE `partylist` (
+	`id` text PRIMARY KEY NOT NULL,
+	`partylist` text NOT NULL,
+	`acronym` text NOT NULL,
+	`color` text NOT NULL,
+	`logo` text,
+	`logo_path` text,
+	`created_at` text DEFAULT '2025-10-27T03:20:44.641Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -45,7 +70,7 @@ CREATE TABLE `students` (
 	`fullname` text NOT NULL,
 	`email` text,
 	`isRegistered` integer DEFAULT 0,
-	`created_at` text DEFAULT '2025-10-16T11:08:30.148Z',
+	`created_at` text DEFAULT '2025-10-27T03:20:44.640Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0

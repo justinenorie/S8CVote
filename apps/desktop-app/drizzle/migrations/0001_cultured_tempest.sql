@@ -6,7 +6,7 @@ CREATE TABLE `__new_adminAuth` (
 	`role` text,
 	`access_token` text,
 	`refresh_token` text,
-	`created_at` text DEFAULT '2025-10-22T01:45:26.482Z',
+	`created_at` text DEFAULT '2025-10-27T03:26:55.126Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` text
@@ -23,14 +23,16 @@ CREATE TABLE `__new_candidates` (
 	`profile` text,
 	`profile_path` text,
 	`election_id` text NOT NULL,
-	`created_at` text DEFAULT '2025-10-22T01:45:26.486Z',
+	`partylist_id` text,
+	`created_at` text DEFAULT '2025-10-27T03:26:55.128Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0,
-	FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON UPDATE no action ON DELETE cascade
+	FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`partylist_id`) REFERENCES `partylist`(`id`) ON UPDATE no action ON DELETE set null
 );
 --> statement-breakpoint
-INSERT INTO `__new_candidates`("id", "name", "description", "profile", "profile_path", "election_id", "created_at", "updated_at", "deleted_at", "synced_at") SELECT "id", "name", "description", "profile", "profile_path", "election_id", "created_at", "updated_at", "deleted_at", "synced_at" FROM `candidates`;--> statement-breakpoint
+INSERT INTO `__new_candidates`("id", "name", "description", "profile", "profile_path", "election_id", "partylist_id", "created_at", "updated_at", "deleted_at", "synced_at") SELECT "id", "name", "description", "profile", "profile_path", "election_id", "partylist_id", "created_at", "updated_at", "deleted_at", "synced_at" FROM `candidates`;--> statement-breakpoint
 DROP TABLE `candidates`;--> statement-breakpoint
 ALTER TABLE `__new_candidates` RENAME TO `candidates`;--> statement-breakpoint
 CREATE TABLE `__new_elections` (
@@ -41,7 +43,7 @@ CREATE TABLE `__new_elections` (
 	`status` text DEFAULT 'active' NOT NULL,
 	`end_time` text,
 	`end_date` text,
-	`created_at` text DEFAULT '2025-10-22T01:45:26.485Z',
+	`created_at` text DEFAULT '2025-10-27T03:26:55.127Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -50,13 +52,29 @@ CREATE TABLE `__new_elections` (
 INSERT INTO `__new_elections`("id", "election", "description", "max_votes_allowed", "status", "end_time", "end_date", "created_at", "updated_at", "deleted_at", "synced_at") SELECT "id", "election", "description", "max_votes_allowed", "status", "end_time", "end_date", "created_at", "updated_at", "deleted_at", "synced_at" FROM `elections`;--> statement-breakpoint
 DROP TABLE `elections`;--> statement-breakpoint
 ALTER TABLE `__new_elections` RENAME TO `elections`;--> statement-breakpoint
+CREATE TABLE `__new_partylist` (
+	`id` text PRIMARY KEY NOT NULL,
+	`partylist` text NOT NULL,
+	`acronym` text NOT NULL,
+	`color` text NOT NULL,
+	`logo` text,
+	`logo_path` text,
+	`created_at` text DEFAULT '2025-10-27T03:26:55.129Z',
+	`updated_at` text,
+	`deleted_at` text,
+	`synced_at` integer DEFAULT 0
+);
+--> statement-breakpoint
+INSERT INTO `__new_partylist`("id", "partylist", "acronym", "color", "logo", "logo_path", "created_at", "updated_at", "deleted_at", "synced_at") SELECT "id", "partylist", "acronym", "color", "logo", "logo_path", "created_at", "updated_at", "deleted_at", "synced_at" FROM `partylist`;--> statement-breakpoint
+DROP TABLE `partylist`;--> statement-breakpoint
+ALTER TABLE `__new_partylist` RENAME TO `partylist`;--> statement-breakpoint
 CREATE TABLE `__new_students` (
 	`id` text PRIMARY KEY NOT NULL,
 	`student_id` text NOT NULL,
 	`fullname` text NOT NULL,
 	`email` text,
 	`isRegistered` integer DEFAULT 0,
-	`created_at` text DEFAULT '2025-10-22T01:45:26.486Z',
+	`created_at` text DEFAULT '2025-10-27T03:26:55.128Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0

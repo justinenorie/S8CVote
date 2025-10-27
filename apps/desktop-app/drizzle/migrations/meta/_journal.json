@@ -5,22 +5,15 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1760612910158,
-      "tag": "0000_foamy_moonstone",
+      "when": 1761535244656,
+      "tag": "0000_goofy_grey_gargoyle",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "6",
-      "when": 1761097526521,
-      "tag": "0001_empty_mister_sinister",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1761174446948,
-      "tag": "0002_fair_anthem",
+      "when": 1761535615161,
+      "tag": "0001_cultured_tempest",
       "breakpoints": true
     }
   ]

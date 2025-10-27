@@ -90,7 +90,6 @@ const CandidatesPage = (): React.JSX.Element => {
         defaultSorting={[{ id: "name", desc: false }]}
       />
 
-      {/* TODO: Change this into Candidates Modal */}
       <EditCandidatesModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}

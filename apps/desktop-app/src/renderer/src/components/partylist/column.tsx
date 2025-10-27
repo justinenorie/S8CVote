@@ -6,35 +6,29 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@renderer/components/ui/dropdown-menu";
-import {
-  ArrowUpDown,
-  ArrowDown,
-  ArrowUp,
-  Delete,
-  SquarePen,
-} from "lucide-react";
-import { Candidates } from "@renderer/types/api";
+import { ArrowDown, ArrowUp, Delete, SquarePen } from "lucide-react";
+import { Partylist } from "@renderer/types/api";
 
-export const useCandidatesColumns = ({
+export const usePartylistColumns = ({
   onEdit,
   onDelete,
 }: {
-  onEdit: (candidates: Candidates) => void;
-  onDelete: (candidates: Candidates) => void;
-}): ColumnDef<Candidates>[] => {
-  const columns: ColumnDef<Candidates>[] = [
+  onEdit: (candidates: Partylist) => void;
+  onDelete: (candidates: Partylist) => void;
+}): ColumnDef<Partylist>[] => {
+  const columns: ColumnDef<Partylist>[] = [
     {
-      accessorKey: "profile",
-      header: "Profile",
+      accessorKey: "logo",
+      header: "Logo",
       cell: ({ row }) => {
-        const name = row.getValue("name") as string;
-        const url = row.getValue("profile") as string;
+        const partylist = row.getValue("partylist") as string;
+        const url = row.getValue("logo") as string;
         return (
           <div>
             {url ? (
               <img
                 src={url}
-                alt={`${name} Profile`}
+                alt={`${partylist} Logos`}
                 className="h-15 w-15 rounded-full object-cover"
               />
             ) : (
@@ -45,7 +39,7 @@ export const useCandidatesColumns = ({
       },
     },
     {
-      accessorKey: "name",
+      accessorKey: "partylist",
       header: ({ column }) => {
         return (
           <Button
@@ -53,7 +47,7 @@ export const useCandidatesColumns = ({
             className="flex items-center gap-1"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Name
+            Partylist
             {column.getIsSorted() === "asc" && <ArrowUp />}
             {column.getIsSorted() === "desc" && <ArrowDown />}
           </Button>
@@ -61,7 +55,7 @@ export const useCandidatesColumns = ({
       },
     },
     {
-      accessorKey: "election",
+      accessorKey: "acronym",
       header: ({ column }) => {
         return (
           <Button
@@ -69,16 +63,16 @@ export const useCandidatesColumns = ({
             className="flex items-center gap-1"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Elections
+            Acronym
             {column.getIsSorted() === "asc" && <ArrowUp />}
             {column.getIsSorted() === "desc" && <ArrowDown />}
           </Button>
         );
       },
-      accessorFn: (row) => row.election?.election,
     },
+    // TODO: Add a total votes results here for transparency
     {
-      accessorKey: "votes_count",
+      accessorKey: "color",
       header: ({ column }) => {
         return (
           <Button
@@ -86,7 +80,7 @@ export const useCandidatesColumns = ({
             className="flex items-center gap-1 text-left"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Vote Counts
+            Color
             {column.getIsSorted() === "asc" && <ArrowUp />}
             {column.getIsSorted() === "desc" && <ArrowDown />}
           </Button>
@@ -94,55 +88,22 @@ export const useCandidatesColumns = ({
       },
     },
     {
-      accessorKey: "status",
+      accessorKey: "members_count",
       header: ({ column }) => {
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="flex items-center gap-1 text-left"
-              >
-                Status
-                <ArrowUpDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="start"
-              className="bg-PRIMARY-50 dark:bg-PRIMARY-950 text-TEXTdark dark:text-TEXTlight"
-            >
-              {/* Filtering */}
-              <DropdownMenuItem
-                onClick={() => column.setFilterValue(undefined)}
-              >
-                All
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => column.setFilterValue("active")}>
-                Active
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => column.setFilterValue("closed")}>
-                Closed
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
-      accessorFn: (row) => row.election?.status,
-      cell: ({ row }) => {
-        const status = row.getValue("status") as "active" | "closed";
-        return (
-          <span
-            className={
-              status === "active"
-                ? "font-semibold text-green-600"
-                : "text-gray-500"
-            }
+          <Button
+            variant="ghost"
+            className="flex items-center gap-1 text-left"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            {status === "active" ? "Active" : "Closed"}
-          </span>
+            Members
+            {column.getIsSorted() === "asc" && <ArrowUp />}
+            {column.getIsSorted() === "desc" && <ArrowDown />}
+          </Button>
         );
       },
     },
+
     {
       id: "actions",
       header: "Actions",

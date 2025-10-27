@@ -68,6 +68,21 @@ export interface Student {
   created_at?: string;
 }
 
+// PARTLIST
+export interface Partylist {
+  id: string;
+  partylist: string;
+  acronym: string;
+  color: string;
+  logo: string;
+  logo_path: string;
+  members_count?: number;
+  synced_at?: number;
+  deleted_at?: string | null;
+  updated_at?: string;
+  created_at?: string;
+}
+
 // TODO: Add more api types here
 // // Students (voters)
 

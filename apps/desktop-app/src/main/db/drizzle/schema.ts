@@ -41,6 +41,9 @@ export const candidates = sqliteTable("candidates", {
   election_id: text("election_id")
     .notNull()
     .references(() => elections.id, { onDelete: "cascade" }),
+  partylist_id: text("partylist_id").references(() => partylist.id, {
+    onDelete: "set null",
+  }),
 
   created_at: text("created_at").default(new Date().toISOString()),
   updated_at: text("updated_at"),
@@ -62,7 +65,7 @@ export const students = sqliteTable("students", {
   synced_at: integer("synced_at").default(0),
 });
 
-// drizzle (sqlite)
+// Votes
 export const candidateTallies = sqliteTable("candidate_tallies", {
   election_id: text("election_id")
     .notNull()
@@ -73,4 +76,19 @@ export const candidateTallies = sqliteTable("candidate_tallies", {
   votes_count: integer("votes_count").notNull(),
   percentage: numeric("percentage").notNull(),
   updated_at: text("updated_at"),
+});
+
+// PARTY LIST
+export const partylist = sqliteTable("partylist", {
+  id: text("id").primaryKey(),
+  partylist: text("partylist").notNull(),
+  acronym: text("acronym").notNull(),
+  color: text("color").notNull(),
+  logo: text("logo"),
+  logo_path: text("logo_path"),
+
+  created_at: text("created_at").default(new Date().toISOString()),
+  updated_at: text("updated_at"),
+  deleted_at: text("deleted_at"),
+  synced_at: integer("synced_at").default(0),
 });
