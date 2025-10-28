@@ -3,6 +3,7 @@ import Typography from "@renderer/components/ui/Typography";
 import SummaryStat from "@renderer/components/dashboard/SummaryStat";
 import ElectionsCard from "@renderer/components/dashboard/ElectionsCard";
 import { useDashboardStore } from "@renderer/stores/useDashboardStore";
+import { useRealtimeSync } from "@renderer/hooks/useRealtimeSync";
 
 // TODO: Change this later based on the database
 const sampleSummaryStats = [
@@ -29,6 +30,8 @@ const Dashboard = (): React.JSX.Element => {
   useEffect(() => {
     loadElections();
   }, [loadElections]);
+
+  useRealtimeSync();
 
   return (
     <div className="text-TEXTdark dark:text-TEXTlight space-y-7">

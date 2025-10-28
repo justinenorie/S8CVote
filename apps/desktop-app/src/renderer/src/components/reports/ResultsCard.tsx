@@ -15,15 +15,16 @@ import {
 import Typography from "@renderer/components/ui/Typography";
 
 interface Candidate {
-  id: number;
+  id: string;
   name: string;
-  votes: number;
+  vote_counts: number;
   percentage: number;
 }
 
 interface Election {
-  position: string;
-  totalVotes: number;
+  id?: string;
+  election: string;
+  total_votes: number;
   candidates: Candidate[];
 }
 
@@ -78,8 +79,8 @@ const ResultsCard = ({ data }: { data: ResultsProps }): React.ReactElement => {
                   </SelectTrigger>
                   <SelectContent>
                     {month.elections.map((elec, elecIndex) => (
-                      <SelectItem key={elecIndex} value={elec.position}>
-                        {elec.position}
+                      <SelectItem key={elecIndex} value={elec.election}>
+                        {elec.election}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -91,11 +92,11 @@ const ResultsCard = ({ data }: { data: ResultsProps }): React.ReactElement => {
                 {month.elections
                   .filter(
                     (election) =>
-                      election.position === selectedElections[monthIndex]
+                      election.election === selectedElections[monthIndex]
                   )
                   .map((election, electionIndex) => {
                     const sorted = [...election.candidates].sort(
-                      (a, b) => b.votes - a.votes
+                      (a, b) => b.vote_counts - a.vote_counts
                     );
 
                     return (
@@ -107,7 +108,7 @@ const ResultsCard = ({ data }: { data: ResultsProps }): React.ReactElement => {
                         <div className="grid grid-cols-3 gap-2 text-center">
                           <div>
                             <Typography variant="h4">
-                              {election.totalVotes}
+                              {election.total_votes}
                             </Typography>
                             <Typography
                               variant="small"
@@ -173,7 +174,7 @@ const ResultsCard = ({ data }: { data: ResultsProps }): React.ReactElement => {
                                   variant="small"
                                   className="text-muted-foreground"
                                 >
-                                  {c.votes} Votes
+                                  {c.vote_counts} Votes
                                 </Typography>
 
                                 <div className="bg-muted relative mt-1 h-2 w-full overflow-hidden rounded-full">

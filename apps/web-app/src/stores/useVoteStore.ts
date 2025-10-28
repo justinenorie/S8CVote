@@ -17,12 +17,11 @@ interface VoteState {
   loadElections: () => Promise<VoteResult<Election[]>>;
   loadElection: (electionId: string) => Promise<VoteResult<Election>>;
   castVote: (electionId: string, candidateId: string) => Promise<VoteResult>;
-  subscribeToElection: (electionId: string) => void;
-  unsubscribeFromElection: (electionId: string) => void;
+  subscribeToVotes: () => void;
+  unsubscribeFromVotes: () => void;
 }
 
-type ChannelMap = Record<string, ReturnType<typeof supabase.channel> | null>;
-const channels: ChannelMap = {};
+let votesChannel: ReturnType<typeof supabase.channel> | null = null;
 
 export const useVoteStore = create<VoteState>((set, get) => ({
   elections: [],
@@ -172,37 +171,35 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     return { data: null, error: null };
   },
 
-  // TODO: Apply this to real-time updates
-  subscribeToElection: async (electionId) => {
-    if (channels[electionId]) return; // already subscribed
+  // REAL-TIME VOTE COUNTING
+  subscribeToVotes: () => {
+    if (votesChannel) {
+      console.log("🔁 Realtime votes already active");
+      return votesChannel;
+    }
 
-    channels[electionId] = supabase
-      .channel(`votes-election-${electionId}`)
+    console.log("📡 Subscribing to realtime votes...");
+
+    votesChannel = supabase
+      .channel("votes-realtime")
       .on(
         "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "votes",
-          filter: `election_id=eq.${electionId}`,
-        },
+        { event: "INSERT", schema: "public", table: "votes" },
         async () => {
-          // refresh tallies on new vote
-          await get().loadElection(electionId);
+          console.log("🔃 Vote detected → refreshing UI");
+          await get().loadElections();
         }
       )
       .subscribe();
+
+    return votesChannel;
   },
 
-  unsubscribeFromElection: async (electionId) => {
-    const ch = channels[electionId];
-    if (ch) {
-      supabase.removeChannel(ch);
-      channels[electionId] = null;
+  unsubscribeFromVotes: () => {
+    if (votesChannel) {
+      console.log("🔌 Unsubscribing realtime votes...");
+      supabase.removeChannel(votesChannel);
+      votesChannel = null;
     }
   },
-
-  // fetchElection: async () => {
-  //   // Check if user is logges in
-  // },
 }));

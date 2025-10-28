@@ -97,9 +97,9 @@ const ElectionsCard = ({
               </div>
 
               {/* Progress bar */}
-              <div className="bg-PRIMARY-200 dark:bg-PRIMARY-800 h-2 w-full rounded-full">
+              <div className="bg-PRIMARY-100 dark:bg-PRIMARY-950 h-2 w-full rounded-full">
                 <div
-                  className="h-2 rounded-full bg-teal-500 dark:bg-teal-600"
+                  className="bg-SECONDARY-400 dark:bg-SECONDARY-200 h-2 rounded-full transition-all"
                   style={{
                     width: `${cand.percentage}%`,
                     // backgroundColor: acronym === "N/A" ? "#00bba7" : partyColor,

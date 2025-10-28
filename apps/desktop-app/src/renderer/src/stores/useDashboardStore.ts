@@ -30,9 +30,13 @@ interface DashboardState {
   error: string | null;
 
   loadElections: () => Promise<VoteResult<Election[]>>;
+  subscribeToVotes: () => void;
+  unsubscribeFromVotes: () => void;
 }
 
-export const useDashboardStore = create<DashboardState>((set) => ({
+let votesChannel: ReturnType<typeof supabase.channel> | null = null;
+
+export const useDashboardStore = create<DashboardState>((set, get) => ({
   elections: [],
   loading: false,
   error: null,
@@ -104,5 +108,37 @@ export const useDashboardStore = create<DashboardState>((set) => ({
 
     set({ elections, loading: false, error: null });
     return { data: elections, error: null };
+  },
+
+  // REAL-TIME VOTE COUNTING
+  subscribeToVotes: () => {
+    if (votesChannel) {
+      console.log("🔁 Realtime votes already active");
+      return votesChannel;
+    }
+
+    console.log("📡 Subscribing to realtime votes...");
+
+    votesChannel = supabase
+      .channel("votes-realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "votes" },
+        async () => {
+          console.log("🔃 Vote detected → refreshing UI");
+          await get().loadElections();
+        }
+      )
+      .subscribe();
+
+    return votesChannel;
+  },
+
+  unsubscribeFromVotes: () => {
+    if (votesChannel) {
+      console.log("🔌 Unsubscribing realtime votes...");
+      supabase.removeChannel(votesChannel);
+      votesChannel = null;
+    }
   },
 }));

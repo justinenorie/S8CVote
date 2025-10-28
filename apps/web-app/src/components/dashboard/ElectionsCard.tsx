@@ -118,9 +118,9 @@ const ElectionCard = ({
                   </Typography>
                   <Typography variant="p">{c.percentage}%</Typography>
                 </div>
-                <div className="bg-PRIMARY-200 dark:bg-PRIMARY-800 relative mt-1 h-2 w-full overflow-hidden rounded-full">
+                <div className="bg-PRIMARY-100 dark:bg-PRIMARY-950 relative mt-1 h-2 w-full overflow-hidden rounded-full">
                   <div
-                    className="absolute top-0 left-0 h-full bg-teal-500 transition-all dark:bg-teal-600"
+                    className="bg-SECONDARY-400 dark:bg-SECONDARY-200 absolute top-0 left-0 h-full transition-all"
                     style={{ width: `${c.percentage}%` }}
                   ></div>
                 </div>

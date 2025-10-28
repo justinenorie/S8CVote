@@ -5,6 +5,7 @@ import LoadingElections from "./LoadingElections";
 import Typography from "../ui/Typography";
 import ElectionsCard from "@/components/dashboard/ElectionsCard";
 import { useVoteStore } from "@/stores/useVoteStore";
+import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 
 export default function DashboardElectionList() {
   const { elections, loadElections, error } = useVoteStore();
@@ -14,6 +15,8 @@ export default function DashboardElectionList() {
     loadElections();
     setTimeout(() => setIsLoading(false), 1000);
   }, [loadElections]);
+
+  useRealtimeSync();
 
   return (
     <div>
