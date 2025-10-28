@@ -15,6 +15,7 @@ interface PartylistState {
   syncing: boolean;
   syncError: string | null;
   lastSyncedAt: string | null;
+  lastChangedAt: string | null;
 
   fetchPartylist: () => Promise<Result<Partylist[]>>;
   addPartylist: (
@@ -39,8 +40,9 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
   syncing: false,
   syncError: null,
   lastSyncedAt: null,
+  lastChangedAt: null,
 
-  // 🟢 FETCH (Offline First)
+  // FETCH (Offline First)
   fetchPartylist: async () => {
     set({ loading: true, error: null });
 
@@ -67,7 +69,7 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
     }
   },
 
-  // 🟢 ADD
+  // ADD
   addPartylist: async (record) => {
     const userID = useAuthStore.getState().user?.id;
     if (!userID) return { data: null, error: "No user logged in" };
@@ -80,6 +82,7 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
     try {
       set({ loading: true });
       await window.electronAPI.partylistAdd(newPartylist);
+      set({ lastChangedAt: new Date().toISOString() });
       await get().fetchPartylist();
 
       return { data: newPartylist, error: null };
@@ -90,7 +93,7 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
     }
   },
 
-  // 🟡 UPDATE
+  // UPDATE
   updatePartylist: async (id, updates) => {
     const userID = useAuthStore.getState().user?.id;
     if (!userID) return { data: null, error: "No user logged in" };
@@ -98,6 +101,7 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
     try {
       set({ loading: true });
       await window.electronAPI.partylistUpdate(id, updates);
+      set({ lastChangedAt: new Date().toISOString() });
       await get().fetchPartylist();
       return { data: updates as Partylist, error: null };
     } catch (error: unknown) {
@@ -107,7 +111,7 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
     }
   },
 
-  // 🔴 DELETE (Soft Delete)
+  // DELETE (Soft Delete)
   deletePartylist: async (id) => {
     const userID = useAuthStore.getState().user?.id;
     if (!userID) return { data: null, error: "No user logged in" };
@@ -115,6 +119,7 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
     try {
       set({ loading: true });
       await window.electronAPI.partylistDelete(id);
+      set({ lastChangedAt: new Date().toISOString() });
       await get().fetchPartylist();
       return { data: null, error: null };
     } catch (error: unknown) {

@@ -15,6 +15,7 @@ interface ElectionState {
   syncing: boolean;
   syncError: string | null;
   lastSyncedAt: string | null;
+  lastChangedAt: string | null;
 
   fetchElections: () => Promise<Result<Election[]>>;
   addElection: (election: Omit<Election, "id">) => Promise<Result<Election>>;
@@ -37,6 +38,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
   syncing: false,
   syncError: null,
   lastSyncedAt: null,
+  lastChangedAt: null,
 
   // TODO: Loading is kinda glitchy fix the logic later.
 
@@ -122,6 +124,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     try {
       set({ loading: true });
       await window.electronAPI.addElection(newElection);
+      set({ lastChangedAt: new Date().toISOString() });
       await get().fetchElections();
 
       return { data: newElection, error: null };
@@ -146,6 +149,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     try {
       set({ loading: true });
       await window.electronAPI.updateElection(id, updates);
+      set({ lastChangedAt: new Date().toISOString() });
       await get().fetchElections();
 
       return { data: updates as Election, error: null };
@@ -168,6 +172,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     try {
       set({ loading: true });
       await window.electronAPI.deleteElection(id);
+      set({ lastChangedAt: new Date().toISOString() });
       get().fetchElections();
 
       return { data: null, error: null };

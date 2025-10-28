@@ -16,6 +16,7 @@ interface StudentState {
   syncing: boolean;
   syncError: string | null;
   lastSyncedAt: string | null;
+  lastChangedAt: string | null;
 
   fetchStudents: () => Promise<Result<Student[]>>;
   handleExcelUpload: (file: File) => Promise<Result<null>>;
@@ -32,6 +33,7 @@ export const useStudentStore = create<StudentState>((set, get) => ({
   syncing: false,
   syncError: null,
   lastSyncedAt: null,
+  lastChangedAt: null,
 
   fetchStudents: async () => {
     set({ loading: true, error: null });
@@ -97,6 +99,7 @@ export const useStudentStore = create<StudentState>((set, get) => ({
       }));
 
       await window.electronAPI.studentsBulkInsert(data);
+      set({ lastChangedAt: new Date().toISOString() });
       await get().fetchStudents();
 
       set({ loading: false });

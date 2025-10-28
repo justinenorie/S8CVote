@@ -35,11 +35,10 @@ const AppRoutes = (): React.JSX.Element => {
           <Route path="/students" element={<Students />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="*" element={<NotFound />} />
         </Route>
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

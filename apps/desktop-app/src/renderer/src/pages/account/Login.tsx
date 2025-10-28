@@ -23,11 +23,9 @@ import {
 // Schema for Validation
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
-  // TODO: change the password requirements
-  // this is for testing only change this later
   password: z
     .string()
-    .min(4, { message: "Password must be at least 6 characters" }),
+    .min(8, { message: "Password must be at least 8 characters" }),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -156,20 +154,20 @@ const Login = (): React.JSX.Element => {
               <Button type="submit" disabled={loading} variant="default">
                 {loading ? "Logging in..." : "Login"}
               </Button>
+            </div>
 
-              <div className="block text-center">
-                <Typography variant="small" className="">
-                  Forgot password?{" "}
+            <div className="block text-center">
+              <Button
+                variant="link"
+                onClick={() => navigate("/forgot-password")}
+              >
+                <Typography
+                  variant="small"
+                  className="text-PRIMARY-900 dark:text-PRIMARY-200"
+                >
+                  Forgot password?
                 </Typography>
-                <a href="#" className="underline">
-                  <Typography
-                    variant="small"
-                    className="text-PRIMARY-900 dark:text-PRIMARY-200"
-                  >
-                    Click here
-                  </Typography>
-                </a>
-              </div>
+              </Button>
             </div>
           </form>
         </Form>

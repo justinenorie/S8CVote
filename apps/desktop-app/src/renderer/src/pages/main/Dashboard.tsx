@@ -56,7 +56,10 @@ const Dashboard = (): React.JSX.Element => {
       {/* Current Date */}
       <div>
         <Typography variant="h3">Vote Results</Typography>
-        <Typography variant="small">
+        <Typography
+          variant="small"
+          className="text-TEXTdark/70 dark:text-TEXTlight/70"
+        >
           As of{" "}
           {new Intl.DateTimeFormat("en-US", {
             year: "numeric",
@@ -71,6 +74,8 @@ const Dashboard = (): React.JSX.Element => {
       {/* TODO: add a Loading Skeleton */}
       {/* TODO: Add a error for fetching if offline set the message or display to "Cannot fetch the data the status is OFFLINE........"*/}
       {/* Elections and Candidates */}
+      {/* {elections ? "offline" : "online"} */}
+
       <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
         {elections.map((elec) => (
           <div key={elec.id} className="mb-6 break-inside-avoid">
@@ -84,6 +89,9 @@ const Dashboard = (): React.JSX.Element => {
                 votes: candi.votes_count,
                 percentage: candi.percentage,
                 image: candi.candidate_profile ?? null,
+                partylist: candi.partylist_name || "Independent",
+                acronym: candi.partylist_acronym,
+                color: candi.partylist_color,
               }))}
             />
           </div>

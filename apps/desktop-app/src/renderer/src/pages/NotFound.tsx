@@ -4,10 +4,10 @@ import { Button } from "@renderer/components/ui/Button";
 
 const NotFound = (): React.JSX.Element => {
   return (
-    <div className="text-TEXTdark dark:text-TEXTlight flex h-full flex-col items-center justify-center text-center">
+    <div className="bg-BGlight dark:bg-BGdark text-TEXTdark dark:text-TEXTlight flex h-screen flex-col items-center justify-center text-center">
       <Typography
         variant="h1"
-        className="text-ERRORlight dark:text-ERRORlight mb-4 text-8xl font-bold"
+        className="text-ERRORlight dark:text-ERRORlight mb-4 text-9xl font-bold"
       >
         404
       </Typography>
@@ -19,7 +19,7 @@ const NotFound = (): React.JSX.Element => {
       </Typography>
 
       <Button variant="default">
-        <Link to="/dashboard" className="rounded-lg text-white transition">
+        <Link to="/dashboard" className="transition">
           ⬅ Back to Dashboard
         </Link>
       </Button>

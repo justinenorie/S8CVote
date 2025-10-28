@@ -267,7 +267,13 @@ export const AddCandidatesModal = ({
                   <div className="relative">
                     <Select
                       {...field}
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        if (value === "none") {
+                          field.onChange(undefined);
+                        } else {
+                          field.onChange(value);
+                        }
+                      }}
                       defaultValue={field.value}
                     >
                       <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border-1">
@@ -276,6 +282,12 @@ export const AddCandidatesModal = ({
                       <SelectContent className="bg-PRIMARY-100 dark:bg-PRIMARY-800 text-TEXTdark dark:text-TEXTlight">
                         <SelectGroup>
                           <SelectLabel>Partylist Group</SelectLabel>
+                          <SelectItem
+                            value="none"
+                            className="dark:focus:bg-PRIMARY-200/80 focus:bg-PRIMARY-800/80 bold text-red-400 italic dark:text-red-300"
+                          >
+                            CLEAR SELECTION
+                          </SelectItem>
 
                           {partylist.map((party) => (
                             <SelectItem

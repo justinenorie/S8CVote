@@ -7,6 +7,10 @@ interface CandidateResult {
   votes_count: number;
   percentage: number;
   candidate_profile: string | null;
+  partylist_id: string | null;
+  partylist_name: string | null;
+  partylist_acronym: string | null;
+  partylist_color: string | null;
 }
 
 interface Election {
@@ -58,7 +62,7 @@ export const useDashboardStore = create<DashboardState>((set) => ({
     const { data: electionRender, error: errFetch } = await supabase
       .from("election_results_with_percent")
       .select(
-        "election_id, election_title, candidate_id, candidate_name, votes_count, percentage, candidate_profile"
+        "election_id, election_title, candidate_id, candidate_name, votes_count, percentage, candidate_profile, partylist_id, partylist_name, partylist_acronym, partylist_color"
       )
       .in("election_id", ids);
 
@@ -82,6 +86,10 @@ export const useDashboardStore = create<DashboardState>((set) => ({
         votes_count: row.votes_count,
         percentage: Number(row.percentage),
         candidate_profile: row.candidate_profile || null,
+        partylist_id: row.partylist_id || null,
+        partylist_name: row.partylist_name || null,
+        partylist_acronym: row.partylist_acronym || null,
+        partylist_color: row.partylist_color || null,
       });
       byElection[row.election_id] = arr;
     }

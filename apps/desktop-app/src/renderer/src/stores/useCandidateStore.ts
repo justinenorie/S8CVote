@@ -15,6 +15,7 @@ interface CandidateState {
   syncing: boolean;
   syncError: string | null;
   lastSyncedAt: string | null;
+  lastChangedAt: string | null;
 
   fetchCandidates: () => Promise<Result<Candidates[]>>;
   addCandidate: (
@@ -39,6 +40,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
   syncing: false,
   syncError: null,
   lastSyncedAt: null,
+  lastChangedAt: null,
 
   // FETCH
   fetchCandidates: async () => {
@@ -80,6 +82,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
     try {
       set({ loading: true });
       await window.electronAPI.candidatesAdd(newCandidates);
+      set({ lastChangedAt: new Date().toISOString() });
       await get().fetchCandidates();
 
       return { data: newCandidates, error: null };
@@ -110,6 +113,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
         id,
         updateCandidates as Candidates
       );
+      set({ lastChangedAt: new Date().toISOString() });
       await get().fetchCandidates();
 
       return { data: updates as Candidates, error: null };
@@ -132,6 +136,7 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
     try {
       set({ loading: true });
       await window.electronAPI.candidatesDelete(id);
+      set({ lastChangedAt: new Date().toISOString() });
       get().fetchCandidates();
 
       return { data: null, error: null };
