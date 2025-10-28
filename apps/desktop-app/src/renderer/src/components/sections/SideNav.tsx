@@ -15,11 +15,12 @@ import {
 import { ThemeToggle } from "../ui/ThemeToggle";
 import Typography from "../ui/Typography";
 import { Button } from "../ui/Button";
-import s8cvotelogo from "../../assets/S8CVote-TempLogo.png";
+import s8cvotelogo from "@renderer/assets/S8CVote-TempLogo.png";
 import { useAuthStore } from "@renderer/stores/useAuthStore";
 import AppRoutes from "@renderer/routes/AppRoutes";
 import { toast } from "sonner";
 import { ConfirmDialog } from "../ui/ConfirmDialog";
+import { SyncStatus } from "../ui/SyncStatus";
 
 const SideNav = (): React.JSX.Element => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
@@ -82,6 +83,7 @@ const SideNav = (): React.JSX.Element => {
             {isCollapsed ? <ChevronsRight /> : <ChevronsLeft />}
           </Button>
         </div>
+        {!isCollapsed && <SyncStatus />}
         <div className="border-TEXTdark/30 dark:border-TEXTlight/30 w-full border-b" />
       </div>
 
