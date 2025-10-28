@@ -12,6 +12,9 @@ type Candidate = {
   id: number | string;
   name: string;
   image: string | null;
+  partylist?: string | null;
+  acronym?: string | null;
+  color?: string | null;
 };
 
 interface CandidatesModalProps {
@@ -20,7 +23,22 @@ interface CandidatesModalProps {
   onClose: () => void;
 }
 
-// TODO: Add RHK and zod schema here
+// Calculate the background Color for contrast of text color
+const getTextColor = (bgColor: string | null): string => {
+  if (!bgColor) return "#000"; // default black text
+
+  // Remove # if present
+  const color = bgColor.replace("#", "");
+  const r = parseInt(color.substring(0, 2), 16);
+  const g = parseInt(color.substring(2, 4), 16);
+  const b = parseInt(color.substring(4, 6), 16);
+
+  // Calculate relative luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  // If bright background → use dark text, else use white text
+  return luminance > 0.6 ? "#000" : "#fff";
+};
 
 const CandidatesModal = ({
   electionId,
@@ -46,38 +64,61 @@ const CandidatesModal = ({
 
   return (
     <div className="space-y-4">
-      {candidates.map((c) => (
-        <div
-          key={c.id}
-          className="bg-card hover:bg-muted/40 flex items-center justify-between rounded-lg border p-3 transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
-              {c.image ? (
-                <Image
-                  src={c.image}
-                  alt={c.name}
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 rounded-full object-cover"
-                />
-              ) : (
-                // simple fallback if no image
-                <div className="text-muted-foreground grid h-full w-full place-content-center text-xs">
-                  N/A
-                </div>
-              )}
-            </div>
-            <Typography variant="p">{c.name}</Typography>
-          </div>
-          <Button
-            variant={selected === c.id ? "default" : "outline"}
-            onClick={() => setSelected(c.id)}
+      {candidates.map((c) => {
+        const partyColor = c.color || "#9ca3af";
+        const acronym = c.acronym || "N/A";
+
+        return (
+          <div
+            key={c.id}
+            className="bg-card hover:bg-muted/40 flex items-center justify-between rounded-lg border p-3 transition"
           >
-            {selected === c.id ? "Selected" : "Vote"}
-          </Button>
-        </div>
-      ))}
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
+                {c.image ? (
+                  <Image
+                    src={c.image}
+                    alt={c.name}
+                    width={40}
+                    height={40}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                ) : (
+                  // simple fallback if no image
+                  <div className="text-muted-foreground grid h-full w-full place-content-center text-xs">
+                    N/A
+                  </div>
+                )}
+              </div>
+              {/* <Typography variant="p">{c.name}</Typography> */}
+              <div className="mb-2 flex items-center justify-between">
+                <div className="flex flex-row items-center gap-2">
+                  <Typography variant="p">{c.name}</Typography>
+                  <span
+                    className="rounded-full px-2 py-0.5 text-xs font-bold uppercase"
+                    style={{
+                      backgroundColor: partyColor,
+                      color:
+                        acronym === "N/A"
+                          ? "#e9eefd"
+                          : getTextColor(partyColor),
+                      textAlign: "center",
+                    }}
+                  >
+                    {acronym}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <Button
+              variant={selected === c.id ? "default" : "outline"}
+              onClick={() => setSelected(c.id)}
+            >
+              {selected === c.id ? "Selected" : "Vote"}
+            </Button>
+          </div>
+        );
+      })}
 
       <div className="flex justify-end gap-3 pt-3">
         <Button variant="outline" onClick={onClose}>

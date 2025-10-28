@@ -86,22 +86,20 @@ const ElectionsCard = ({
                     {acronym}
                   </span>
                 </div>
-
-                <span className="text-sm font-semibold">
-                  {cand.percentage.toFixed(2)}%
-                </span>
               </div>
 
-              <div className="mb-1 flex items-center justify-between text-sm">
-                <span className="font-semibold text-teal-600">
-                  {cand.votes} Votes
-                </span>
+              <div className="text-muted-foreground flex flex-row items-center justify-between">
+                <Typography variant="h4">
+                  {cand.votes}{" "}
+                  <Typography variant="small">Votes</Typography>{" "}
+                </Typography>
+                <Typography variant="p">{cand.percentage}%</Typography>
               </div>
 
               {/* Progress bar */}
-              <div className="h-2 w-full rounded-full bg-gray-200">
+              <div className="bg-PRIMARY-200 dark:bg-PRIMARY-800 h-2 w-full rounded-full">
                 <div
-                  className="h-2 rounded-full bg-teal-500"
+                  className="h-2 rounded-full bg-teal-500 dark:bg-teal-600"
                   style={{
                     width: `${cand.percentage}%`,
                     // backgroundColor: acronym === "N/A" ? "#00bba7" : partyColor,

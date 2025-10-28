@@ -73,8 +73,6 @@ const Dashboard = (): React.JSX.Element => {
 
       {/* TODO: add a Loading Skeleton */}
       {/* TODO: Add a error for fetching if offline set the message or display to "Cannot fetch the data the status is OFFLINE........"*/}
-      {/* Elections and Candidates */}
-      {/* {elections ? "offline" : "online"} */}
 
       <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
         {elections.map((elec) => (

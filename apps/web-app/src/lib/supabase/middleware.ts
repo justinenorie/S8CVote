@@ -65,7 +65,7 @@ export async function updateSession(request: NextRequest) {
   );
 
   if (isProtectedPath && !user) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   // Redirect logged-in users away from auth pages

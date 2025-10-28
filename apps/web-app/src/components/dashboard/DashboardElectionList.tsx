@@ -40,6 +40,9 @@ export default function DashboardElectionList() {
                   votes: candi.votes_count,
                   percentage: candi.percentage,
                   image: candi.candidate_profile ?? null,
+                  partylist: candi.partylist_name || "Independent",
+                  acronym: candi.partylist_acronym,
+                  color: candi.partylist_color,
                 }))}
               />
             </div>
