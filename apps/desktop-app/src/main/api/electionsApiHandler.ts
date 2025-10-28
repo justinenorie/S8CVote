@@ -39,22 +39,32 @@ export function electionsApiHandlers(): void {
         .from(elections)
         .where(eq(elections.id, record.id));
 
-      // 🧹 Delete locally if Supabase has deleted it
+      // 1️⃣ If deleted remotely, mark as soft-deleted locally (not hard delete)
       if (record.deleted_at) {
-        await db.delete(elections).where(eq(elections.id, record.id));
+        await db
+          .update(elections)
+          .set({
+            deleted_at: record.deleted_at,
+            synced_at: 1,
+          })
+          .where(eq(elections.id, record.id));
+
+        // 2️⃣ Soft-delete linked candidates too
+        await db
+          .update(candidates)
+          .set({ deleted_at: record.deleted_at })
+          .where(eq(candidates.election_id, record.id));
+
         continue;
       }
 
-      // If record doesn’t exist locally, insert it
+      // 3️⃣ Insert if new
       if (!local) {
-        await db.insert(elections).values({
-          ...record,
-          synced_at: 1,
-        });
+        await db.insert(elections).values({ ...record, synced_at: 1 });
         continue;
       }
 
-      // Safely compare updated_at timestamps
+      // 4️⃣ Update if server newer
       const localUpdated = local.updated_at
         ? new Date(local.updated_at).getTime()
         : 0;
@@ -62,14 +72,10 @@ export function electionsApiHandlers(): void {
         ? new Date(record.updated_at).getTime()
         : 0;
 
-      // Only update local if Supabase has newer record
       if (serverUpdated > localUpdated) {
         await db
           .update(elections)
-          .set({
-            ...record,
-            synced_at: 1,
-          })
+          .set({ ...record, synced_at: 1 })
           .where(eq(elections.id, record.id));
       }
     }
@@ -140,3 +146,17 @@ export function electionsApiHandlers(): void {
     return { success: true };
   });
 }
+
+// CLEAN IS HERE
+ipcMain.handle("cleanup:removedRecords", async () => {
+  const db = getDatabase();
+  console.log("clean up done");
+
+  // Delete elections that are soft-deleted
+  await db.delete(elections).where(sql`${elections.deleted_at} IS NOT NULL`);
+
+  // Delete candidates whose election is soft-deleted
+  await db.delete(candidates).where(sql`${candidates.deleted_at} IS NOT NULL`);
+
+  return { success: true };
+});

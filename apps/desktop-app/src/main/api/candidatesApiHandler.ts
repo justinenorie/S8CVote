@@ -33,47 +33,53 @@ export function candidatesApiHandlers(): void {
     const db = getDatabase();
 
     for (const record of records) {
-      const { election, ...cleanRecord } = record;
-
-      // Ensure election_id exists (foreign key)
-      if (!cleanRecord.election_id && election?.id) {
-        cleanRecord.election_id = election.id;
-      }
-
       const [local] = await db
         .select()
         .from(candidates)
-        .where(eq(candidates.id, cleanRecord.id));
+        .where(eq(candidates.id, record.id));
 
-      // 🧹 Delete locally if Supabase has deleted it
+      // 1️⃣ Handle deleted remotely — soft delete locally
       if (record.deleted_at) {
-        await db.delete(candidates).where(eq(candidates.id, record.id));
+        await db
+          .update(candidates)
+          .set({
+            deleted_at: record.deleted_at,
+            synced_at: 1,
+          })
+          .where(eq(candidates.id, record.id));
         continue;
       }
 
+      // 2️⃣ Ensure parent election exists before insert/update
+      const [parentElection] = await db
+        .select()
+        .from(elections)
+        .where(eq(elections.id, record.election_id));
+
+      if (!parentElection) {
+        console.warn(`Skipping candidate ${record.id} — missing election_id`);
+        continue;
+      }
+
+      // 3️⃣ Insert if new
       if (!local) {
-        await db.insert(candidates).values({
-          ...cleanRecord,
-          synced_at: 1,
-        });
+        await db.insert(candidates).values({ ...record, synced_at: 1 });
         continue;
       }
 
+      // 4️⃣ Update if newer
       const localUpdated = local.updated_at
         ? new Date(local.updated_at).getTime()
         : 0;
-      const serverUpdated = cleanRecord.updated_at
-        ? new Date(cleanRecord.updated_at).getTime()
+      const serverUpdated = record.updated_at
+        ? new Date(record.updated_at).getTime()
         : 0;
 
       if (serverUpdated > localUpdated) {
         await db
           .update(candidates)
-          .set({
-            ...cleanRecord,
-            synced_at: 1,
-          })
-          .where(eq(candidates.id, cleanRecord.id));
+          .set({ ...record, synced_at: 1 })
+          .where(eq(candidates.id, record.id));
       }
     }
 

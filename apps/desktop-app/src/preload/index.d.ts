@@ -47,6 +47,9 @@ declare global {
         records: CandidateResult[]
       ) => Promise<{ success: boolean }>;
 
+      // Clean up for Candidates + Elections after sync
+      cleanupRemovedRecords: () => Promise<void>;
+
       // Elections
       getElections: () => Promise<Election>;
       addElection: (data: Election) => Promise<void>;

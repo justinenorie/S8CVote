@@ -67,12 +67,8 @@ export const students = sqliteTable("students", {
 
 // Votes
 export const candidateTallies = sqliteTable("candidate_tallies", {
-  election_id: text("election_id")
-    .notNull()
-    .references(() => elections.id),
-  candidate_id: text("candidate_id")
-    .notNull()
-    .references(() => candidates.id),
+  election_id: text("election_id"),
+  candidate_id: text("candidate_id"),
   votes_count: integer("votes_count").notNull(),
   percentage: numeric("percentage").notNull(),
   updated_at: text("updated_at"),

@@ -39,6 +39,9 @@ const api = {
   talliesReplaceForElections: (records) =>
     ipcRenderer.invoke("tallies:replaceForElections", records),
 
+  // Clean up for Candidates + Elections after sync
+  cleanupRemovedRecords: () => ipcRenderer.invoke("cleanup:removedRecords"),
+
   // ELECTIONS
   getElections: () => ipcRenderer.invoke("elections:get"),
   addElection: (data) => ipcRenderer.invoke("elections:add", data),

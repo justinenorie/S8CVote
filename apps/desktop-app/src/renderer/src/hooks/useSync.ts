@@ -47,6 +47,7 @@ export function useFullSync(): void {
           }).format(new Date())
         );
         setSyncing(false);
+        await window.electronAPI.cleanupRemovedRecords();
         console.log("✅ Sync complete!");
       } catch (err) {
         console.error("❌ Sync error:", err);

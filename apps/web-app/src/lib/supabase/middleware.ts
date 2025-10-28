@@ -73,7 +73,7 @@ export async function updateSession(request: NextRequest) {
   const isAuthPath = authPaths.includes(request.nextUrl.pathname);
 
   if (isAuthPath && user) {
-    return NextResponse.redirect(new URL("/elections", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;
