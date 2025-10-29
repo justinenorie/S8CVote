@@ -34,7 +34,7 @@ export async function syncElectionsAndCandidates() {
     const { data: candidatesRaw, error: e2 } = await supabase
       .from("election_results_with_percent")
       .select(
-        "election_id, candidate_id, candidate_name, votes_count, percentage, candidate_profile"
+        "election_id, election_title, candidate_id, candidate_name, votes_count, percentage, candidate_profile, partylist_id, partylist_name, partylist_acronym, partylist_color"
       )
       .in("election_id", electionIds);
 
@@ -52,6 +52,10 @@ export async function syncElectionsAndCandidates() {
         percentage: c.percentage,
         candidate_profile: c.candidate_profile || null,
         synced_at: Date.now(),
+        partylist_id: c.partylist_id || null,
+        partylist_name: c.partylist_name || null,
+        partylist_acronym: c.partylist_acronym || null,
+        partylist_color: c.partylist_color || null,
       }))
     );
 

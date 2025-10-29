@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { Text } from "@/components/ui/text";
-import { Progress } from "../ui/progress";
+import { getTextColor } from "@/utils/getTextColor";
 
 type CandidateProps = {
   rank: string;
@@ -8,6 +8,8 @@ type CandidateProps = {
   votes: number;
   percentage: number;
   isWinner?: boolean;
+  acronym?: string | null;
+  color?: string | null;
 };
 
 export function CandidateCard({
@@ -16,7 +18,12 @@ export function CandidateCard({
   votes,
   percentage,
   isWinner,
+  acronym,
+  color,
 }: CandidateProps) {
+  const partyColor = color || "#9ca3af";
+  const acronyms = acronym || "N/A";
+
   return (
     <View
       className={`rounded-lg border mb-2 p-3 ${
@@ -28,6 +35,16 @@ export function CandidateCard({
       <View className="flex-row justify-between mb-2">
         <Text variant="h4" className="ext-TEXTdark dark:text-TEXTlight">
           <Text variant="small">{rank}</Text> {name}
+        </Text>
+        <Text
+          className="rounded-full px-2 py-0.5 text-xs font-bold uppercase"
+          style={{
+            backgroundColor: partyColor,
+            color: acronym === "N/A" ? "#e9eefd" : getTextColor(partyColor),
+            textAlign: "center",
+          }}
+        >
+          {acronyms}
         </Text>
       </View>
 
@@ -44,11 +61,16 @@ export function CandidateCard({
         </Text>
       </View>
 
-      <Progress
-        value={percentage}
-        className="h-2 mt-2 bg-PRIMARY100 dark:bg-PRIMARY950"
-        indicatorClassName="bg-SECONDARY400 dark:bg-SECONDARY200"
-      />
+      {/* Progress bar */}
+      <View className="bg-PRIMARY100 dark:bg-PRIMARY950 h-2 mt-2 w-full rounded-full">
+        <View
+          className="bg-SECONDARY400 dark:bg-SECONDARY200 h-2 rounded-full transition-all"
+          style={{
+            width: `${percentage}%`,
+            // backgroundColor: acronym === "N/A" ? "#00bba7" : partyColor,
+          }}
+        />
+      </View>
     </View>
   );
 }

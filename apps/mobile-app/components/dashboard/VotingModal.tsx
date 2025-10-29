@@ -21,9 +21,9 @@ import {
 } from "@/components/ui/dialog";
 import { useVoteStore } from "@/store/useVoteStore";
 import { Candidate } from "@/types/api";
+import { getTextColor } from "@/utils/getTextColor";
 
 export const VotingModal = ({ visible, onClose, election }: any) => {
-  // TODO: Steps should be the data from supabase
   const [step, setStep] = useState<"input" | "success">("input");
   const [studentId, setStudentId] = useState("");
   const [studentName, setStudentName] = useState("");
@@ -257,6 +257,9 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
                 {election.candidates.map((candi: Candidate) => {
                   const isSelected =
                     selectedCandidate?.candidate_id === candi.candidate_id;
+
+                  const partyColor = candi.partylist_color || "#9ca3af";
+                  const acronyms = candi.partylist_name || "N/A";
                   return (
                     <TouchableOpacity
                       key={candi.candidate_id}
@@ -285,6 +288,19 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
                           {candi.candidate_name}
                         </Text>
                       </View>
+                      <Text
+                        className="rounded-full border-2 px-2 py-0.5 text-xs font-bold uppercase"
+                        style={{
+                          backgroundColor: partyColor,
+                          color:
+                            acronyms === "N/A"
+                              ? "#e9eefd"
+                              : getTextColor(partyColor),
+                          textAlign: "center",
+                        }}
+                      >
+                        {acronyms}
+                      </Text>
                     </TouchableOpacity>
                   );
                 })}

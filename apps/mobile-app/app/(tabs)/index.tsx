@@ -46,6 +46,10 @@ export default function Dashboard() {
               votes_count: candi.votes_count,
               percentage: candi.percentage,
               candidate_profile: candi.candidate_profile ?? null,
+              partylist_id: candi.partylist_id,
+              partylist_name: candi.partylist_name,
+              partylist_acronym: candi.partylist_acronym,
+              partylist_color: candi.partylist_color,
             }))}
           />
         ))}

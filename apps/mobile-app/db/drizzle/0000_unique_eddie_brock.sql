@@ -5,7 +5,7 @@ CREATE TABLE `adminAuth` (
 	`role` text,
 	`access_token` text,
 	`refresh_token` text,
-	`created_at` text DEFAULT '2025-10-25T20:26:53.122Z',
+	`created_at` text DEFAULT '2025-10-29T00:11:02.400Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` text
@@ -18,7 +18,11 @@ CREATE TABLE `candidates` (
 	`votes_count` integer DEFAULT 0 NOT NULL,
 	`percentage` real DEFAULT 0 NOT NULL,
 	`candidate_profile` text,
-	`synced_at` integer DEFAULT 0
+	`synced_at` integer DEFAULT 0,
+	`partylist_id` text,
+	`partylist_name` text,
+	`partylist_acronym` text,
+	`partylist_color` text
 );
 --> statement-breakpoint
 CREATE TABLE `elections` (
@@ -35,7 +39,7 @@ CREATE TABLE `students` (
 	`fullname` text NOT NULL,
 	`email` text,
 	`isRegistered` integer DEFAULT 0,
-	`created_at` text DEFAULT '2025-10-25T20:26:53.125Z',
+	`created_at` text DEFAULT '2025-10-29T00:11:02.405Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -47,7 +51,7 @@ CREATE TABLE `votes` (
 	`election_id` text NOT NULL,
 	`candidate_id` text NOT NULL,
 	`student_id` text,
-	`created_at` text DEFAULT '2025-10-25T20:26:53.125Z',
+	`created_at` text DEFAULT '2025-10-29T00:11:02.406Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0,

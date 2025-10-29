@@ -33,6 +33,11 @@ export const candidates = sqliteTable("candidates", {
   percentage: real("percentage").notNull().default(0),
   candidate_profile: text("candidate_profile"),
   synced_at: integer("synced_at").default(0),
+
+  partylist_id: text("partylist_id"),
+  partylist_name: text("partylist_name"),
+  partylist_acronym: text("partylist_acronym"),
+  partylist_color: text("partylist_color"),
 });
 
 // Students Table

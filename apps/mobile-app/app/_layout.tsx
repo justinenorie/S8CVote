@@ -2,7 +2,11 @@ import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated";
+
 import "./../global.css";
 import { PortalHost } from "@rn-primitives/portal";
 import Toast from "react-native-toast-message";
@@ -85,6 +89,11 @@ const RootLayout = () => {
 
   // Sync
   useAppSync();
+
+  configureReanimatedLogger({
+    level: ReanimatedLogLevel.warn,
+    strict: false, // Reanimated runs in strict mode by default
+  });
 
   if (!loaded || !success) {
     // Async font loading only occurs in development.

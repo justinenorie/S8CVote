@@ -6,6 +6,12 @@ import { CandidateCard } from "./CandidateCard";
 import { VotingModal } from "./VotingModal";
 import { Candidate, Election } from "@/types/api";
 
+const getOrdinalNumber = (n: number): string => {
+  const suffixes = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return n + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+};
+
 export function ElectionCard({
   id,
   title,
@@ -21,15 +27,16 @@ export function ElectionCard({
         {title}
       </Text>
 
-      {/* TODO: Add a proper type here */}
       {candidates.map((candidate: Candidate, index: number) => (
         <CandidateCard
           key={candidate.candidate_id}
-          rank={`${index + 1}${index === 0 ? "st" : index === 1 ? "nd" : "th"}`}
+          rank={getOrdinalNumber(index + 1)}
           name={candidate.candidate_name}
           votes={candidate.votes_count}
           percentage={candidate.percentage}
           isWinner={index === 0}
+          acronym={candidate.partylist_acronym}
+          color={candidate.partylist_color}
         />
       ))}
 

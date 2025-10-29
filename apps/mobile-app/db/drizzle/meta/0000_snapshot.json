@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "3ee7f92f-8c33-4a0d-a1eb-7844bb1ee9da",
+  "id": "dc47fa8a-d7a7-4d34-8a64-41d74557ad28",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "adminAuth": {
@@ -55,7 +55,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-25T20:26:53.122Z'"
+          "default": "'2025-10-29T00:11:02.400Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -139,6 +139,34 @@
           "notNull": false,
           "autoincrement": false,
           "default": 0
+        },
+        "partylist_id": {
+          "name": "partylist_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "partylist_name": {
+          "name": "partylist_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "partylist_acronym": {
+          "name": "partylist_acronym",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "partylist_color": {
+          "name": "partylist_color",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -240,7 +268,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-25T20:26:53.125Z'"
+          "default": "'2025-10-29T00:11:02.405Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -316,7 +344,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-25T20:26:53.125Z'"
+          "default": "'2025-10-29T00:11:02.406Z'"
         },
         "updated_at": {
           "name": "updated_at",
