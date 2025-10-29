@@ -4,41 +4,10 @@ import ResultsCard from "@renderer/components/reports/ResultsCard";
 import YearSelectionCard from "@renderer/components/reports/YearSelectionCard";
 import { useResultsStore } from "@renderer/stores/useResultStore";
 
-// const electionData = [
-//   {
-//     year: 2025,
-//     months: [
-//       {
-//         date: "January 2025",
-//         elections: [
-//           {
-//             id: "1",
-//             election: "SSG President",
-//             total_votes: 1100,
-//             candidates: [
-//               {
-//                 id: "1",
-//                 name: "Ninomo Binovoto",
-//                 vote_counts: 600,
-//                 percentage: 50.12,
-//               },
-//               {
-//                 id: "2",
-//                 name: "Ninomo Binovoto",
-//                 vote_counts: 600,
-//                 percentage: 50.12,
-//               },
-//             ],
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ];
-
 const Reports = (): React.ReactElement => {
   const { results, loadResults } = useResultsStore();
-  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const todayYear = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState<number | null>(todayYear);
 
   useEffect(() => {
     loadResults();

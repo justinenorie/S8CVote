@@ -91,37 +91,57 @@ export const useResultsStore = create<ResultsStore>((set, get) => ({
 
       set({ results: Object.values(grouped) });
     } catch (error: unknown) {
-      console.error("Fetch elections error:", error);
+      console.error("Loading Results error:", error);
       set({ error: error as string, loading: false });
     }
   },
 
   // SYNC TO SERVER
   syncToServerResults: async () => {
-    const unsynced = await window.electronAPI.voteTalliesGetUnsynced();
-    if (!unsynced.length) return;
-    console.log(unsynced);
+    set({ loading: true, error: null });
 
-    const payload = unsynced.map((r) => ({ ...r, synced_at: 1 }));
+    try {
+      const unsynced = await window.electronAPI.voteTalliesGetUnsynced();
+      if (!unsynced.length) return;
 
-    const { error } = await supabase.from("vote_tallies").upsert(payload);
-    if (error) return console.error("❌ Sync results error:", error);
+      const payload = unsynced.map((r) => ({ ...r, synced_at: 1 }));
 
-    await window.electronAPI.voteTalliesMarkSynced(unsynced.map((r) => r.id));
+      const { error } = await supabase.from("vote_tallies").upsert(payload);
+      if (error) return console.error("❌ Sync results error:", error);
+
+      await window.electronAPI.voteTalliesMarkSynced(unsynced.map((r) => r.id));
+    } catch (error: unknown) {
+      console.error("Reports Sync for Local to Server error:", error);
+      set({ error: error as string, loading: false });
+    }
   },
 
   // SYNC FROM SERVER
   syncFromServerResults: async () => {
-    const { data, error } = await supabase.from("vote_tallies").select("*");
-    if (error) return;
+    set({ loading: true, error: null });
 
-    await window.electronAPI.voteTalliesBulkUpsert(data);
-    await get().loadResults();
+    try {
+      const { data, error } = await supabase.from("vote_tallies").select("*");
+      if (error) return;
+
+      await window.electronAPI.voteTalliesBulkUpsert(data);
+      await get().loadResults();
+    } catch (error: unknown) {
+      console.error("Reports Sync for Server to Local error:", error);
+      set({ error: error as string, loading: false });
+    }
   },
 
   // FULL SYNC
   fullSyncResults: async () => {
-    await get().syncToServerResults();
-    await get().syncFromServerResults();
+    set({ loading: true, error: null });
+
+    try {
+      await get().syncToServerResults();
+      await get().syncFromServerResults();
+    } catch (error: unknown) {
+      console.error("Reports Full Syncing error:", error);
+      set({ error: error as string, loading: false });
+    }
   },
 }));
