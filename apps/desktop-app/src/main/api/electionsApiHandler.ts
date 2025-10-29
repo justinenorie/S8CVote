@@ -145,18 +145,19 @@ export function electionsApiHandlers(): void {
 
     return { success: true };
   });
+
+  // Clean up for Candidates + Elections after sync
+  ipcMain.handle("cleanup:removedRecords", async () => {
+    const db = getDatabase();
+
+    // Delete elections that are soft-deleted
+    await db.delete(elections).where(sql`${elections.deleted_at} IS NOT NULL`);
+
+    // Delete candidates whose election is soft-deleted
+    await db
+      .delete(candidates)
+      .where(sql`${candidates.deleted_at} IS NOT NULL`);
+
+    return { success: true };
+  });
 }
-
-// CLEAN IS HERE
-ipcMain.handle("cleanup:removedRecords", async () => {
-  const db = getDatabase();
-  console.log("clean up done");
-
-  // Delete elections that are soft-deleted
-  await db.delete(elections).where(sql`${elections.deleted_at} IS NOT NULL`);
-
-  // Delete candidates whose election is soft-deleted
-  await db.delete(candidates).where(sql`${candidates.deleted_at} IS NOT NULL`);
-
-  return { success: true };
-});

@@ -28,6 +28,9 @@ interface ElectionState {
   syncToServerElection: () => Promise<Result<null>>;
   syncFromServerElection: () => Promise<Result<null>>;
   fullSyncElection: () => Promise<Result<null>>;
+  saveElectionResultsSnapshot: (electionId: string) => Promise<void>;
+  autoCloseFinishedElections: () => Promise<void>;
+  // refreshResults: (electionIds: string[]) => void;
 }
 
 export const useElectionStore = create<ElectionState>((set, get) => ({
@@ -39,8 +42,6 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
   syncError: null,
   lastSyncedAt: null,
   lastChangedAt: null,
-
-  // TODO: Loading is kinda glitchy fix the logic later.
 
   // FETCH
   fetchElections: async (): Promise<Result<Election[]>> => {
@@ -246,5 +247,55 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     }
 
     return { data: null, error: "" };
+  },
+
+  // SAVE ELECTION RESULTS
+  saveElectionResultsSnapshot: async (electionId) => {
+    const { data, error } = await supabase
+      .from("election_results_with_percent")
+      .select(
+        "election_id, election_title, candidate_id, candidate_name, votes_count, percentage, candidate_profile, partylist_name, partylist_acronym, partylist_color"
+      )
+      .eq("election_id", electionId);
+
+    if (error || !data) return;
+
+    const totalVotes = data.reduce((sum, r) => sum + r.votes_count, 0);
+
+    const rows = data.map((r) => ({
+      id: crypto.randomUUID(),
+      election_id: r.election_id,
+      election_name: r.election_title,
+      candidate_id: r.candidate_id,
+      candidate_name: r.candidate_name,
+      votes_count: r.votes_count,
+      percentage: r.percentage,
+      total_votes: totalVotes,
+      candidate_profile: r.candidate_profile,
+      partylist_name: r.partylist_name ?? null,
+      partylist_acronym: r.partylist_acronym ?? null,
+      partylist_color: r.partylist_color ?? null,
+    }));
+
+    await window.electronAPI.voteTalliesInsertMany(rows);
+  },
+
+  // Called in useFullSync
+  // Automatic closing the elections if end_date is reached
+  autoCloseFinishedElections: async () => {
+    const dbElections = (await window.electronAPI.getElections()) as Election[];
+    const now = new Date();
+
+    for (const elec of dbElections) {
+      if (elec.end_date && elec.end_time && elec.id) {
+        const end = new Date(`${elec.end_date}T${elec.end_time}`);
+        if (now > end && elec.status !== "closed") {
+          await window.electronAPI.updateElection(elec.id, {
+            status: "closed",
+          });
+          await get().saveElectionResultsSnapshot(elec.id);
+        }
+      }
+    }
   },
 }));

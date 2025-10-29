@@ -177,9 +177,11 @@ export function candidatesApiHandlers(): void {
     return { success: true };
   });
 
-  // FETCH VOTE COUNTS
+  // FETCH VOTE COUNTS + RESULTS
   ipcMain.handle("tallies:replaceForElections", async (_, rows) => {
     const db = getDatabase();
+    const now = new Date().toISOString();
+
     // const electionIds = [...new Set(rows.map((r) => r.election_id))];
 
     // wipe old tallies for these elections
@@ -193,7 +195,6 @@ export function candidatesApiHandlers(): void {
     // .where(inArray(candidates.id, ids))
 
     // insert fresh rows
-    const now = new Date().toISOString();
     if (rows.length) {
       await db.insert(candidateTallies).values(
         rows.map((r) => ({
@@ -201,7 +202,6 @@ export function candidatesApiHandlers(): void {
           candidate_id: r.candidate_id,
           votes_count: r.votes_count ?? 0,
           percentage: r.percentage ?? 0,
-          candidate_profile: r.candidate_profile ?? null,
           updated_at: now,
         }))
       );

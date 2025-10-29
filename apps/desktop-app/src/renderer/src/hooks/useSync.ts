@@ -4,10 +4,15 @@ import { useCandidateStore } from "@renderer/stores/useCandidateStore";
 import { useStudentStore } from "@renderer/stores/useStudentStore";
 import { usePartylistStore } from "@renderer/stores/usePartylistStore";
 import { useSyncStatusStore } from "@renderer/stores/useSyncStatusStore";
+import { useResultsStore } from "@renderer/stores/useResultStore";
 
 export function useFullSync(): void {
-  const { fullSyncElection, lastChangedAt: electionSyncedAt } =
-    useElectionStore();
+  const { fullSyncResults } = useResultsStore();
+  const {
+    autoCloseFinishedElections,
+    fullSyncElection,
+    lastChangedAt: electionSyncedAt,
+  } = useElectionStore();
   const { fullSyncCandidates, lastChangedAt: candidatesSyncedAt } =
     useCandidateStore();
   const { fullSyncStudents, lastChangedAt: studentsSyncedAt } =
@@ -31,6 +36,8 @@ export function useFullSync(): void {
       try {
         console.log("🔄 Syncing all data...");
         await Promise.all([
+          fullSyncResults(),
+          autoCloseFinishedElections(),
           fullSyncElection(),
           fullSyncCandidates(),
           fullSyncStudents(),

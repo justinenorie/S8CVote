@@ -5,6 +5,7 @@ import { electionsApiHandlers } from "./api/electionsApiHandler";
 import { candidatesApiHandlers } from "./api/candidatesApiHandler";
 import { studentsApiHandlers } from "./api/studentsApiHandler";
 import { partylistApiHandlers } from "./api/partylistApiHandler";
+import { resultsApiHandlers } from "./api/resultsApiHandler";
 
 // TODO: Add more ipc Handler here:
 /* 
@@ -25,6 +26,8 @@ export function setupIpcHandlers(): void {
   studentsApiHandlers();
 
   partylistApiHandlers();
+
+  resultsApiHandlers();
 
   // AUTH (simple offline cache)
   ipcMain.handle(
