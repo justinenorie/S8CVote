@@ -19,7 +19,11 @@ export function initDatabase(): DrizzleDB {
   db = drizzle(sqlite, { schema });
 
   try {
-    migrate(db, { migrationsFolder: "./drizzle/migrations" });
+    const migrationsPath = app.isPackaged
+      ? path.join(process.resourcesPath, "migrations") // Production
+      : path.join(__dirname, "../../drizzle/migrations"); // Development
+
+    migrate(db, { migrationsFolder: migrationsPath });
     console.log("Migrations applied successfully!");
   } catch (err) {
     console.error("Migration failed:", err);

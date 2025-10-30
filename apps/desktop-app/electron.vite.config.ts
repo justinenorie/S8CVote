@@ -6,6 +6,12 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()],
+    // need to include the sqlite
+    build: {
+      rollupOptions: {
+        external: ["better-sqlite3"],
+      },
+    },
   },
   preload: {
     plugins: [externalizeDepsPlugin()],

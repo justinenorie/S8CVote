@@ -14,14 +14,16 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
-    "build": "npm run typecheck && electron-vite build",
+    "build": "pnpm rebuild:electron && npm run typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
-    "build:win": "npm run build && electron-builder --win",
+    "build:win": "pnpm rebuild:electron && npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:generate": "pnpm rebuild:drizzle && drizzle-kit generate",
+    "db:migrate": "pnpm rebuild:drizzle && drizzle-kit migrate",
+    "rebuild:drizzle": "pnpm rebuild better-sqlite3",
+    "rebuild:electron": "electron-builder install-app-deps"
   },
   "dependencies": {
     "@e965/xlsx": "^0.20.3",
@@ -85,7 +87,8 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "electron",
-      "esbuild"
+      "esbuild",
+      "better-sqlite3"
     ]
   }
 }

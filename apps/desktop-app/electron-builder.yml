@@ -1,22 +1,25 @@
 appId: com.electron.app
-productName: desktop-app-admin
+productName: s8cvote
 directories:
   buildResources: build
+  output: dist
 files:
   - "!**/.vscode/*"
   - "!electron.vite.config.{js,ts,mjs,cjs}"
   - "!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}"
   - "!{.env,.npmrc,pnpm-lock.yaml}"
   - "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
+  - "!drizzle/**"
   - "out/main/**"
   - "out/preload/**"
   - "out/renderer/**"
-  - ".env"
 asarUnpack:
+  - "**/*.node"
+  - "node_modules/better-sqlite3/**/*"
   - resources/**
 win:
   icon: "resources/icon.ico"
-  executableName: desktop-app-admin-
+  executableName: desktop-app-admin
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -43,7 +46,13 @@ linux:
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
-npmRebuild: false
+npmRebuild: true
 publish:
   provider: generic
   url: https://example.com/auto-updates
+extraResources:
+  - from: ".env"
+    to: ".env"
+    filter: ["**/*"]
+  - from: "drizzle/migrations"
+    to: "migrations"
