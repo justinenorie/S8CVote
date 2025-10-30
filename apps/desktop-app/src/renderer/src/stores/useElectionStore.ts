@@ -236,6 +236,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
   fullSyncElection: async () => {
     set({ syncing: true, syncError: null });
     try {
+      await get().autoCloseFinishedElections();
       await get().syncToServerElection();
       await get().syncFromServerElection();
       set({ lastSyncedAt: new Date().toISOString() });
@@ -251,6 +252,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
 
   // SAVE ELECTION RESULTS
   saveElectionResultsSnapshot: async (electionId) => {
+    console.log("I got called", electionId);
     const { data, error } = await supabase
       .from("election_results_with_percent")
       .select(
@@ -263,22 +265,23 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     const totalVotes = data.reduce((sum, r) => sum + r.votes_count, 0);
 
     const rows = data.map((r) => ({
-      id: crypto.randomUUID(),
+      id: `${r.election_id}_${r.candidate_id ?? r.candidate_name.replace(/\s+/g, "_").toLowerCase()}`,
       election_id: r.election_id,
       election_name: r.election_title,
-      candidate_id: r.candidate_id,
-      candidate_name: r.candidate_name,
-      votes_count: r.votes_count,
-      percentage: r.percentage,
+      candidate_id: r.candidate_id ?? null,
+      candidate_name: r.candidate_name ?? null,
+      votes_count: r.votes_count ?? 0,
+      percentage: r.percentage ?? 0,
       total_votes: totalVotes,
-      candidate_profile: r.candidate_profile,
+      candidate_profile: r.candidate_profile ?? null,
       partylist_name: r.partylist_name ?? null,
       partylist_acronym: r.partylist_acronym ?? null,
       partylist_color: r.partylist_color ?? null,
     }));
 
-    await window.electronAPI.voteTalliesDeleteByElectionId(electionId);
-    await window.electronAPI.voteTalliesInsertMany(rows);
+    console.log(data);
+
+    await window.electronAPI.voteTalliesBulkUpsert(rows);
   },
 
   // Called in useFullSync

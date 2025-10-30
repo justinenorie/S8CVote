@@ -37,11 +37,11 @@ export function useFullSync(): void {
         console.log("🔄 Syncing all data...");
         await Promise.all([
           fullSyncResults(),
-          autoCloseFinishedElections(),
           fullSyncElection(),
           fullSyncCandidates(),
           fullSyncStudents(),
           fullSyncPartylist(),
+          autoCloseFinishedElections(),
         ]);
         setLastSynced(
           new Intl.DateTimeFormat(undefined, {
