@@ -94,6 +94,20 @@ export function resultsApiHandlers(): void {
           .set({ ...record })
           .where(eq(voteTallies.id, record.id));
       }
+
+      const localUpdated = local.updated_at
+        ? new Date(local.updated_at).getTime()
+        : 0;
+      const serverUpdated = record.updated_at
+        ? new Date(record.updated_at).getTime()
+        : 0;
+
+      if (serverUpdated > localUpdated) {
+        await db
+          .update(voteTallies)
+          .set({ ...record, synced_at: 1 })
+          .where(eq(voteTallies.id, record.id));
+      }
     }
 
     return { success: true };
