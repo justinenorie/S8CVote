@@ -14,6 +14,7 @@ declare global {
     electronAPI: {
       // RESULTS
       voteTalliesInsertMany: (rows: CandidateResult[]) => Promise<void>;
+      voteTalliesDeleteByElectionId: (id: string) => Promise<void>;
       voteTalliesGetAll: () => Promise<>;
       voteTalliesGetUnsynced: () => Promise<>;
       voteTalliesMarkSynced: (ids: string[]) => Promise<void>;

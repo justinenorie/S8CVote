@@ -277,6 +277,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
       partylist_color: r.partylist_color ?? null,
     }));
 
+    await window.electronAPI.voteTalliesDeleteByElectionId(electionId);
     await window.electronAPI.voteTalliesInsertMany(rows);
   },
 

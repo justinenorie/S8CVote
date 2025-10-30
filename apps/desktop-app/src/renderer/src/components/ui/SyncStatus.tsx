@@ -8,7 +8,7 @@ export const SyncStatus = () => {
   if (!online) {
     return (
       <StatusBadge
-        color="bg-red-300 dark:bg-red-700"
+        color="bg-red-300/60 dark:bg-red-700/60"
         icon={<WifiOff size={14} />}
         text="Offline Mode"
       />
@@ -18,7 +18,7 @@ export const SyncStatus = () => {
   if (syncing) {
     return (
       <StatusBadge
-        color="bg-yellow-300 dark:bg-yellow-700 "
+        color="bg-yellow-300/60 dark:bg-yellow-700/60 "
         icon={<Loader2 size={14} className="animate-spin" />}
         text={"Syncing...."}
       />
@@ -27,7 +27,7 @@ export const SyncStatus = () => {
 
   return (
     <StatusBadge
-      color="bg-green-300 dark:bg-green-700"
+      color="bg-green-300/60 dark:bg-green-700/60"
       icon={<CheckCircle size={14} />}
       text={lastSynced ? `Synced at ${lastSynced}` : "All Synced ✓"}
     />

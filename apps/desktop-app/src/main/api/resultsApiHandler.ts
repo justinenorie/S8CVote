@@ -22,6 +22,13 @@ export function resultsApiHandlers(): void {
     return { success: true };
   });
 
+  // DELETE TALLIES FOR UPSERTING PURPOSES
+  ipcMain.handle("voteTallies:deleteByElectionId", async (_, electionId) => {
+    const db = getDatabase();
+    await db.delete(voteTallies).where(eq(voteTallies.election_id, electionId));
+    return { success: true };
+  });
+
   // GET UNSYNCED SNAPSHOTS
   ipcMain.handle("voteTallies:getUnsynced", async () => {
     const db = getDatabase();

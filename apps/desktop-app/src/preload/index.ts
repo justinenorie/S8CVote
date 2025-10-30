@@ -6,6 +6,8 @@ const api = {
   // RESULTS
   voteTalliesInsertMany: (rows) =>
     ipcRenderer.invoke("voteTallies:insertMany", rows),
+  voteTalliesDeleteByElectionId: (id) =>
+    ipcRenderer.invoke("voteTallies:deleteByElectionId", id),
   voteTalliesGetAll: () => ipcRenderer.invoke("voteTallies:getAll"),
   voteTalliesGetUnsynced: () => ipcRenderer.invoke("voteTallies:getUnsynced"),
   voteTalliesMarkSynced: (ids) =>

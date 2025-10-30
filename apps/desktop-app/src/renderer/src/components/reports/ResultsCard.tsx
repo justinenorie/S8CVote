@@ -12,6 +12,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@renderer/components/ui/accordion";
+import { ScrollText, Trophy, FileUser } from "lucide-react";
 import Typography from "@renderer/components/ui/Typography";
 
 interface Candidate {
@@ -19,6 +20,7 @@ interface Candidate {
   name: string;
   vote_counts: number;
   percentage: number;
+  profile?: string | null;
 }
 
 interface Election {
@@ -51,7 +53,7 @@ const ResultsCard = ({ data }: { data: ResultsProps }): React.ReactElement => {
           type="single"
           collapsible
           key={monthIndex}
-          className="bg-card rounded-2xl px-5 py-2 shadow-md transition hover:shadow-lg"
+          className="bg-card hover:bg-PRIMARY-100/50 dark:hover:bg-PRIMARY-800/70 rounded-2xl px-5 py-2 shadow-md transition hover:shadow-lg"
         >
           <AccordionItem value={`month-${monthIndex}`}>
             <AccordionTrigger className="items-center">
@@ -73,6 +75,7 @@ const ResultsCard = ({ data }: { data: ResultsProps }): React.ReactElement => {
                       [monthIndex]: value,
                     }))
                   }
+                  defaultValue={""}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select Election" />
@@ -100,94 +103,111 @@ const ResultsCard = ({ data }: { data: ResultsProps }): React.ReactElement => {
                     );
 
                     return (
-                      <div
-                        key={electionIndex}
-                        className="0 space-y-4 rounded-lg p-4"
-                      >
+                      <div key={electionIndex} className="space-y-4 rounded-lg">
                         {/* Top Summary */}
                         <div className="grid grid-cols-3 gap-2 text-center">
-                          <div>
-                            <Typography variant="h4">
-                              {election.total_votes}
-                            </Typography>
-                            <Typography
-                              variant="small"
-                              className="text-muted-foreground"
-                            >
-                              Total Votes
-                            </Typography>
+                          <div className="border-PRIMARY-700 dark:border-PRIMARY-400 flex flex-row items-center justify-start gap-4 rounded-lg border-1 p-6">
+                            <ScrollText size={50} />
+                            <div className="text-left">
+                              <Typography variant="h3">
+                                {election.total_votes}
+                              </Typography>
+                              <Typography
+                                variant="small"
+                                className="text-muted-foreground"
+                              >
+                                Overall Election Collected Votes
+                              </Typography>
+                            </div>
                           </div>
-                          <div>
-                            <Typography variant="h4">
-                              {sorted[0].name}
-                            </Typography>
-                            <Typography
-                              variant="small"
-                              className="text-muted-foreground"
-                            >
-                              Winner
-                            </Typography>
+
+                          <div className="border-PRIMARY-700 dark:border-PRIMARY-400 flex flex-row items-center justify-start gap-4 rounded-lg border-1 p-6">
+                            {/* Check who's winner or first place */}
+                            <Trophy size={50} />
+                            <div className="text-left">
+                              <Typography variant="h3">
+                                {sorted[0].name}
+                              </Typography>
+                              <Typography
+                                variant="small"
+                                className="text-muted-foreground"
+                              >
+                                Winner
+                              </Typography>
+                            </div>
                           </div>
-                          <div>
-                            <Typography variant="h4">
-                              {election.candidates.length}
-                            </Typography>
-                            <Typography
-                              variant="small"
-                              className="text-muted-foreground"
-                            >
-                              Total Candidates
-                            </Typography>
+                          <div className="border-PRIMARY-700 dark:border-PRIMARY-400 flex flex-row items-center justify-start gap-4 rounded-lg border-1 p-6">
+                            <FileUser size={50} />
+                            <div className="text-left">
+                              <Typography variant="h3">
+                                {election.candidates.length}
+                              </Typography>
+                              <Typography
+                                variant="small"
+                                className="text-muted-foreground"
+                              >
+                                Total Candidates
+                              </Typography>
+                            </div>
                           </div>
                         </div>
 
                         {/* Candidate List */}
-                        <div className="space-y-2">
-                          {sorted.map((c, index) => {
-                            const isWinner = index === 0;
-                            return (
-                              <div
-                                key={c.id}
-                                className={`rounded-md border p-3 transition ${
-                                  isWinner
-                                    ? "bg-success/20 border-success"
-                                    : "bg-muted/20 hover:bg-muted/30"
-                                }`}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <Typography
-                                    variant="p"
-                                    className="font-medium"
-                                  >
-                                    {c.name}
-                                    {isWinner && (
-                                      <span className="bg-success ml-2 rounded-full px-2 py-[1px] text-xs text-white">
-                                        Winner 🏆
-                                      </span>
-                                    )}
-                                  </Typography>
-                                  <Typography variant="p">
-                                    {c.percentage}%
-                                  </Typography>
-                                </div>
-                                <Typography
-                                  variant="small"
-                                  className="text-muted-foreground"
-                                >
-                                  {c.vote_counts} Votes
-                                </Typography>
+                        <div>
+                          <Typography variant="h3">Candidates</Typography>
+                          <div className="space-y-4">
+                            {sorted.map((c, index) => {
+                              const isWinner = index === 0;
 
-                                <div className="bg-muted relative mt-1 h-2 w-full overflow-hidden rounded-full">
-                                  <div
-                                    className={`absolute top-0 left-0 h-full transition-all ${
-                                      isWinner ? "bg-success" : "bg-primary"
-                                    }`}
-                                    style={{ width: `${c.percentage}%` }}
-                                  ></div>
+                              return (
+                                <div
+                                  key={c.id}
+                                  className={`rounded-md border p-4 transition ${
+                                    isWinner
+                                      ? "bg-SUCCESSlight/20 border-SUCCESSlight"
+                                      : "border-PRIMARY-700 dark:border-PRIMARY-400"
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <Typography
+                                      variant="p"
+                                      className="flex flex-row items-center gap-4 font-medium"
+                                    >
+                                      {c.name}
+                                      {isWinner && (
+                                        <Typography
+                                          variant="small"
+                                          className="bg-SUCCESSlight/30 flex flex-row items-center gap-2 rounded-full px-3 py-1"
+                                        >
+                                          Winner
+                                          <Trophy size={20} />
+                                        </Typography>
+                                      )}
+                                    </Typography>
+                                    <Typography variant="p">
+                                      {c.percentage}%
+                                    </Typography>
+                                  </div>
+                                  <div className="flex flex-row items-end gap-2">
+                                    <Typography
+                                      variant="h3"
+                                      className="text-muted-foreground"
+                                    >
+                                      {c.vote_counts}
+                                    </Typography>
+                                    <Typography variant="p">Votes</Typography>
+                                  </div>
+
+                                  <div className="bg-PRIMARY-100 dark:bg-PRIMARY-950 relative mt-1 h-2 w-full overflow-hidden rounded-full">
+                                    <div
+                                      className="bg-SECONDARY-400 dark:bg-SECONDARY-200 h-2 rounded-full transition-all"
+                                      style={{ width: `${c.percentage}%` }}
+                                    ></div>
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
                     );
