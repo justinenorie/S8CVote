@@ -21,11 +21,16 @@ interface Candidate {
   name: string;
   votes: number;
   percentage: number;
+  image: string | null;
+  partylist: string | null;
+  acronym: string | null;
+  color: string | null;
 }
 
 interface Election {
-  position: string;
-  totalVotes: number;
+  id: string | null;
+  election: string;
+  total_votes: number;
   candidates: Candidate[];
 }
 
@@ -80,8 +85,8 @@ const ResultsCard = ({ data }: { data: ResultsProps }) => {
                   </SelectTrigger>
                   <SelectContent>
                     {month.elections.map((elec, elecIndex) => (
-                      <SelectItem key={elecIndex} value={elec.position}>
-                        {elec.position}
+                      <SelectItem key={elecIndex} value={elec.election}>
+                        {elec.election}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -93,7 +98,7 @@ const ResultsCard = ({ data }: { data: ResultsProps }) => {
                 {month.elections
                   .filter(
                     (election) =>
-                      election.position === selectedElections[monthIndex]
+                      election.election === selectedElections[monthIndex]
                   )
                   .map((election, electionIndex) => {
                     const sorted = [...election.candidates].sort(
@@ -109,7 +114,7 @@ const ResultsCard = ({ data }: { data: ResultsProps }) => {
                         <div className="grid grid-cols-3 gap-2 text-center">
                           <div>
                             <Typography variant="h4">
-                              {election.totalVotes}
+                              {election.total_votes}
                             </Typography>
                             <Typography
                               variant="small"

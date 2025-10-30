@@ -1,58 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Typography from "@/components/ui/Typography";
 import ResultsCard from "@/components/results/ResultsCard";
 import YearSelectionCard from "@/components/results/YearSelectionCard";
-
-const electionData = [
-  {
-    year: 2025,
-    months: [
-      {
-        date: "January 2025",
-        elections: [
-          {
-            position: "SSG President",
-            totalVotes: 500,
-            candidates: [
-              { id: 1, name: "Ninomo Binovoto", votes: 600, percentage: 50.12 },
-              { id: 2, name: "Ninomo Binovoto", votes: 600, percentage: 50.12 },
-            ],
-          },
-          {
-            position: "SSG Vice President",
-            totalVotes: 400,
-            candidates: [
-              { id: 1, name: "Mimi Lala", votes: 250, percentage: 62.5 },
-              { id: 2, name: "Toto Lino", votes: 150, percentage: 37.5 },
-            ],
-          },
-        ],
-      },
-      {
-        date: "March 2025",
-        elections: [
-          {
-            position: "SSG Secretary",
-            totalVotes: 320,
-            candidates: [
-              { id: 1, name: "Anna Dela Cruz", votes: 180, percentage: 56.25 },
-              { id: 2, name: "Lino Carpio", votes: 140, percentage: 43.75 },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-];
+import { useResultsStore } from "@/stores/useResultsStore";
 
 export default function ResultsHistory() {
-  const [selectedYear, setSelectedYear] = useState(2025);
-  const years = electionData.map((y) => y.year);
+  const { results, loadResults } = useResultsStore();
+  const todayYear = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState<number | null>(todayYear);
+  const years = results.map((y) => y.year);
 
-  // To render data of the selected year
-  const selectedData = electionData.find((y) => y.year === selectedYear)!;
+  useEffect(() => {
+    loadResults();
+  }, [loadResults]);
+
+  const selectedData = results.find((y) => y.year === selectedYear)!;
 
   return (
     <div className="space-y-5">
@@ -65,11 +29,11 @@ export default function ResultsHistory() {
 
       <YearSelectionCard
         years={years}
-        selectedYear={selectedYear}
+        selectedYear={selectedYear ?? years[0]}
         onSelectYear={setSelectedYear}
       />
 
-      <ResultsCard data={selectedData} />
+      {selectedData && <ResultsCard data={selectedData} />}
     </div>
   );
 }
