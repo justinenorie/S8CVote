@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "bf560f37-75c2-417d-be83-053a9830cb57",
+  "id": "5366b34a-7eae-46ea-9680-0caf73e2889f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "adminAuth": {
@@ -55,7 +55,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-30T21:40:48.968Z'"
+          "default": "'2025-10-31T23:37:02.438Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -188,7 +188,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-30T21:40:48.970Z'"
+          "default": "'2025-10-31T23:37:02.440Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -306,7 +306,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-30T21:40:48.969Z'"
+          "default": "'2025-10-31T23:37:02.440Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -388,7 +388,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-30T21:40:48.970Z'"
+          "default": "'2025-10-31T23:37:02.441Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -464,7 +464,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-30T21:40:48.970Z'"
+          "default": "'2025-10-31T23:37:02.440Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -603,7 +603,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-30T21:40:48.970Z'"
+          "default": "'2025-10-31T23:37:02.441Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -629,47 +629,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "voteTallies_election_id_elections_id_fk": {
-          "name": "voteTallies_election_id_elections_id_fk",
-          "tableFrom": "voteTallies",
-          "tableTo": "elections",
-          "columnsFrom": [
-            "election_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "voteTallies_candidate_id_candidates_id_fk": {
-          "name": "voteTallies_candidate_id_candidates_id_fk",
-          "tableFrom": "voteTallies",
-          "tableTo": "candidates",
-          "columnsFrom": [
-            "candidate_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "voteTallies_partylist_id_partylist_id_fk": {
-          "name": "voteTallies_partylist_id_partylist_id_fk",
-          "tableFrom": "voteTallies",
-          "tableTo": "partylist",
-          "columnsFrom": [
-            "partylist_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}

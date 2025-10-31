@@ -54,11 +54,14 @@ export function useFullSync(): void {
           }).format(new Date())
         );
         setSyncing(false);
-        await window.electronAPI.cleanupRemovedRecords();
         console.log("✅ Sync complete!");
       } catch (err) {
         console.error("❌ Sync error:", err);
       }
+      console.log("then later");
+      setTimeout(async () => {
+        await window.electronAPI.cleanupRemovedRecords();
+      }, 3000);
     };
 
     // 🔁 Debounce logic: wait 3 seconds after last change

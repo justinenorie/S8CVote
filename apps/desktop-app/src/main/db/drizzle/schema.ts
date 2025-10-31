@@ -93,19 +93,13 @@ export const partylist = sqliteTable("partylist", {
 export const voteTallies = sqliteTable("voteTallies", {
   id: text("id").primaryKey(),
 
-  election_id: text("election_id").references(() => elections.id, {
-    onDelete: "set null",
-  }),
+  election_id: text("election_id"),
   election_name: text("election_name").notNull(),
 
-  candidate_id: text("candidate_id").references(() => candidates.id, {
-    onDelete: "set null",
-  }),
+  candidate_id: text("candidate_id"),
   candidate_name: text("candidate_name").notNull(),
 
-  partylist_id: text("partylist_id").references(() => partylist.id, {
-    onDelete: "set null",
-  }),
+  partylist_id: text("partylist_id"),
   partylist_name: text("partylist_name"),
 
   partylist_acronym: text("partylist_acronym"),

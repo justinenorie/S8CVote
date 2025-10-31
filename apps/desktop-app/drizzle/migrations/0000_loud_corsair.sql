@@ -5,7 +5,7 @@ CREATE TABLE `adminAuth` (
 	`role` text,
 	`access_token` text,
 	`refresh_token` text,
-	`created_at` text DEFAULT '2025-10-30T21:40:48.968Z',
+	`created_at` text DEFAULT '2025-10-31T23:37:02.438Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` text
@@ -27,7 +27,7 @@ CREATE TABLE `candidates` (
 	`profile_path` text,
 	`election_id` text NOT NULL,
 	`partylist_id` text,
-	`created_at` text DEFAULT '2025-10-30T21:40:48.970Z',
+	`created_at` text DEFAULT '2025-10-31T23:37:02.440Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0,
@@ -43,7 +43,7 @@ CREATE TABLE `elections` (
 	`status` text DEFAULT 'active' NOT NULL,
 	`end_time` text,
 	`end_date` text,
-	`created_at` text DEFAULT '2025-10-30T21:40:48.969Z',
+	`created_at` text DEFAULT '2025-10-31T23:37:02.440Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -56,7 +56,7 @@ CREATE TABLE `partylist` (
 	`color` text NOT NULL,
 	`logo` text,
 	`logo_path` text,
-	`created_at` text DEFAULT '2025-10-30T21:40:48.970Z',
+	`created_at` text DEFAULT '2025-10-31T23:37:02.441Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -68,7 +68,7 @@ CREATE TABLE `students` (
 	`fullname` text NOT NULL,
 	`email` text,
 	`isRegistered` integer DEFAULT 0,
-	`created_at` text DEFAULT '2025-10-30T21:40:48.970Z',
+	`created_at` text DEFAULT '2025-10-31T23:37:02.440Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -89,11 +89,8 @@ CREATE TABLE `voteTallies` (
 	`votes_count` integer NOT NULL,
 	`percentage` numeric NOT NULL,
 	`total_votes` integer NOT NULL,
-	`created_at` text DEFAULT '2025-10-30T21:40:48.970Z',
+	`created_at` text DEFAULT '2025-10-31T23:37:02.441Z',
 	`updated_at` text,
 	`deleted_at` text,
-	`synced_at` integer DEFAULT 0,
-	FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON UPDATE no action ON DELETE set null,
-	FOREIGN KEY (`candidate_id`) REFERENCES `candidates`(`id`) ON UPDATE no action ON DELETE set null,
-	FOREIGN KEY (`partylist_id`) REFERENCES `partylist`(`id`) ON UPDATE no action ON DELETE set null
+	`synced_at` integer DEFAULT 0
 );
