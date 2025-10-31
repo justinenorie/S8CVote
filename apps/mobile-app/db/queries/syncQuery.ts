@@ -1,9 +1,8 @@
 import { db } from "../client";
-import { elections, candidates, students, votes } from "../schema";
+import { elections, candidates, students, votes, voteTallies } from "../schema";
 import { eq } from "drizzle-orm";
 import { supabase } from "@/lib/supabaseClient";
 
-// TODO: after sync automatically update the data
 export async function syncElectionsAndCandidates() {
   try {
     console.log("🌐 Syncing elections and candidates...");
@@ -112,5 +111,43 @@ export async function syncVotesToSupabase() {
     if (!error) {
       await db.update(votes).set({ synced_at: 1 }).where(eq(votes.id, v.id));
     }
+  }
+}
+
+export async function syncVoteResults() {
+  try {
+    console.log("🌐 Syncing vote results from Supabase...");
+
+    const { data, error } = await supabase
+      .from("vote_tallies")
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    if (error || !data) throw new Error(error?.message ?? "Failed to fetch");
+
+    await db.delete(voteTallies);
+    await db.insert(voteTallies).values(
+      data.map((row) => ({
+        id: row.id,
+        election_id: row.election_id,
+        election_name: row.election_name,
+        candidate_id: row.candidate_id,
+        candidate_name: row.candidate_name,
+        partylist_id: row.partylist_id,
+        partylist_name: row.partylist_name,
+        partylist_acronym: row.partylist_acronym,
+        partylist_color: row.partylist_color,
+        candidate_profile: row.candidate_profile,
+        votes_count: row.votes_count,
+        percentage: row.percentage,
+        total_votes: row.total_votes,
+        created_at: row.created_at,
+        synced_at: Date.now(),
+      }))
+    );
+
+    console.log("✅ Synced vote results to SQLite");
+  } catch (err) {
+    console.error("❌ syncVoteResults failed:", err);
   }
 }

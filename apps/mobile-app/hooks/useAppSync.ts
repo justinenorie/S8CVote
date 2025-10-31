@@ -6,6 +6,7 @@ import {
   syncElectionsAndCandidates,
   syncStudentsFromSupabase,
   syncVotesToSupabase,
+  syncVoteResults,
 } from "@/db/queries/syncQuery";
 import { useVoteStore } from "@/store/useVoteStore";
 
@@ -38,6 +39,7 @@ export function useAppSync() {
             syncElectionsAndCandidates(),
             syncStudentsFromSupabase(),
             syncVotesToSupabase(),
+            syncVoteResults(),
           ]);
           triggerRefresh();
         } else {

@@ -1,4 +1,10 @@
-import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
+import {
+  sqliteTable,
+  text,
+  integer,
+  real,
+  numeric,
+} from "drizzle-orm/sqlite-core";
 
 // Save ADMIN AUTH Table
 export const adminAuth = sqliteTable("adminAuth", {
@@ -64,6 +70,33 @@ export const votes = sqliteTable("votes", {
     .notNull()
     .references(() => candidates.candidate_id),
   student_id: text("student_id").references(() => students.student_id),
+
+  created_at: text("created_at").default(new Date().toISOString()),
+  updated_at: text("updated_at"),
+  deleted_at: text("deleted_at"),
+  synced_at: integer("synced_at").default(0),
+});
+
+// Vote Tallies
+export const voteTallies = sqliteTable("voteTallies", {
+  id: text("id").primaryKey(),
+
+  election_id: text("election_id"),
+  election_name: text("election_name").notNull(),
+
+  candidate_id: text("candidate_id"),
+  candidate_name: text("candidate_name").notNull(),
+
+  partylist_id: text("partylist_id"),
+  partylist_name: text("partylist_name"),
+  partylist_acronym: text("partylist_acronym"),
+  partylist_color: text("partylist_color"),
+
+  candidate_profile: text("candidate_profile"),
+
+  votes_count: integer("votes_count").notNull(),
+  percentage: numeric("percentage").notNull(),
+  total_votes: integer("total_votes").notNull(),
 
   created_at: text("created_at").default(new Date().toISOString()),
   updated_at: text("updated_at"),

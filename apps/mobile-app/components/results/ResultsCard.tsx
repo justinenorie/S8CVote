@@ -17,15 +17,20 @@ import {
 import { Label } from "../ui/label";
 
 interface Candidate {
-  id: number;
+  id: string | null;
   name: string;
   votes: number;
   percentage: number;
+  image: string | null;
+  partylist: string | null;
+  acronym: string | null;
+  color: string | null;
 }
 
 interface Election {
-  position: string;
-  totalVotes: number;
+  id: string | null;
+  election: string;
+  total_votes: number;
   candidates: Candidate[];
 }
 
@@ -92,7 +97,7 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
                       );
                     }
                   }}
-                  value={selectedElections[monthIndex] ?? undefined} // 👈 no need for ""
+                  value={selectedElections[monthIndex] ?? undefined}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select Election" />
@@ -101,8 +106,8 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
                     {month.elections.map((elec, elecIndex) => (
                       <SelectItem
                         key={elecIndex}
-                        value={elec.position}
-                        label={elec.position}
+                        value={elec.election}
+                        label={elec.election}
                       />
                     ))}
                   </SelectContent>
@@ -111,7 +116,7 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
                 {month.elections
                   .filter(
                     (election) =>
-                      election.position === selectedElections[monthIndex]?.value
+                      election.election === selectedElections[monthIndex]?.value
                   )
                   .map((election, electionIndex) => {
                     const sortedCandidates = [...election.candidates].sort(
