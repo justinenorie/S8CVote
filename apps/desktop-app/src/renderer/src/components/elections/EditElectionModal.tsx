@@ -62,7 +62,8 @@ export function EditElectionModal({
   });
 
   const [openState, setOpenState] = useState(false);
-  const { updateElection, loading } = useElectionStore();
+  const { updateElection, loading, saveElectionResultsSnapshot } =
+    useElectionStore();
 
   // Fetching the current data using the setValue
   useEffect(() => {
@@ -81,11 +82,22 @@ export function EditElectionModal({
 
   // Submit the updated data
   const onSubmit = async (values: EditElectionForm): Promise<void> => {
+    let newDate = values.date;
+    let newTime = values.time;
+
+    if (values.status === "closed") {
+      newDate = new Date();
+      newTime = `${new Date().getHours().toString().padStart(2, "0")}:${new Date()
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}`;
+    }
+
     const payload = {
       election: values.name,
       status: values.status,
-      end_date: values.date.toISOString().split("T")[0],
-      end_time: values.time,
+      end_date: newDate.toISOString().split("T")[0],
+      end_time: newTime,
       description: values.description ?? "",
     };
 
@@ -97,6 +109,10 @@ export function EditElectionModal({
         description: "Invalid Request.....",
       });
     } else {
+      // If election is now closed → Generate results snapshot
+      if (values.status === "closed") {
+        await saveElectionResultsSnapshot(election?.id ?? "");
+      }
       toast.success("Election updated successfully!", {
         description: `${payload.election} has been edited..`,
       });

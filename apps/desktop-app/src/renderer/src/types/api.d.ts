@@ -22,10 +22,10 @@ export interface Election {
   max_votes_allowed?: number;
   candidate_count?: number;
   duration?: string;
-  synced_at?: string;
-  deleted_at?: string | null;
   updated_at?: string;
   created_at?: string;
+  deleted_at?: string | null;
+  synced_at?: number;
 }
 
 // CANDIDATES

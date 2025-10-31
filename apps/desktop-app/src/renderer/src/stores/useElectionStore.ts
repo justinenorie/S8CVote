@@ -252,7 +252,6 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
 
   // SAVE ELECTION RESULTS
   saveElectionResultsSnapshot: async (electionId) => {
-    console.log("I got called", electionId);
     const { data, error } = await supabase
       .from("election_results_with_percent")
       .select(
@@ -279,14 +278,14 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
       partylist_color: r.partylist_color ?? null,
     }));
 
-    console.log(data);
-
-    await window.electronAPI.voteTalliesBulkUpsert(rows);
+    console.log("inserting row:", rows);
+    await window.electronAPI.voteTalliesInsertMany(rows);
   },
 
   // Called in useFullSync
   // Automatic closing the elections if end_date is reached
   autoCloseFinishedElections: async () => {
+    console.log("me first");
     const dbElections = (await window.electronAPI.getElections()) as Election[];
     const now = new Date();
 
@@ -297,6 +296,7 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
           await window.electronAPI.updateElection(elec.id, {
             status: "closed",
           });
+          console.log("I get");
           await get().saveElectionResultsSnapshot(elec.id);
         }
       }

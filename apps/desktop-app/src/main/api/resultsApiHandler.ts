@@ -18,7 +18,34 @@ export function resultsApiHandlers(): void {
   // IPC - Insert Many Vote Tallies
   ipcMain.handle("voteTallies:insertMany", async (_, rows) => {
     const db = getDatabase();
-    await db.insert(voteTallies).values(rows);
+    const now = new Date().toISOString();
+
+    for (const row of rows) {
+      const [local] = await db
+        .select()
+        .from(voteTallies)
+        .where(eq(voteTallies.id, row.id));
+
+      if (!local) {
+        await db.insert(voteTallies).values({
+          ...row,
+          synced_at: 0,
+          created_at: now,
+          updated_at: now,
+        });
+      } else {
+        await db
+          .update(voteTallies)
+          .set({
+            ...row,
+            synced_at: 0,
+            created_at: now,
+            updated_at: now,
+          })
+          .where(eq(voteTallies.id, row.id));
+      }
+    }
+
     return { success: true };
   });
 
@@ -54,32 +81,6 @@ export function resultsApiHandlers(): void {
   ipcMain.handle("voteTallies:bulkUpsert", async (_, records) => {
     const db = getDatabase();
 
-    // for (const record of records) {
-    //   const [local] = await db
-    //     .select()
-    //     .from(voteTallies)
-    //     .where(eq(voteTallies.id, record.id));
-
-    //   if (!local) {
-    //     await db.insert(voteTallies).values({ ...record, synced_at: 1 });
-    //     continue;
-    //   }
-
-    //   const localUpdated = local.updated_at
-    //     ? new Date(local.updated_at).getTime()
-    //     : 0;
-    //   const serverUpdated = record.updated_at
-    //     ? new Date(record.updated_at).getTime()
-    //     : 0;
-
-    //   if (serverUpdated > localUpdated) {
-    //     await db
-    //       .update(voteTallies)
-    //       .set({ ...record, synced_at: 1 })
-    //       .where(eq(voteTallies.id, record.id));
-    //   }
-    // }
-
     for (const record of records) {
       const [local] = await db
         .select()
@@ -87,12 +88,8 @@ export function resultsApiHandlers(): void {
         .where(eq(voteTallies.id, record.id));
 
       if (!local) {
-        await db.insert(voteTallies).values({ ...record, synced_at: 0 });
-      } else {
-        await db
-          .update(voteTallies)
-          .set({ ...record })
-          .where(eq(voteTallies.id, record.id));
+        await db.insert(voteTallies).values({ ...record, synced_at: 1 });
+        continue;
       }
 
       const localUpdated = local.updated_at
@@ -109,6 +106,36 @@ export function resultsApiHandlers(): void {
           .where(eq(voteTallies.id, record.id));
       }
     }
+
+    // for (const record of records) {
+    //   const [local] = await db
+    //     .select()
+    //     .from(voteTallies)
+    //     .where(eq(voteTallies.id, record.id));
+
+    //   if (!local) {
+    //     await db.insert(voteTallies).values({ ...record, synced_at: 0 });
+    //   } else {
+    //     await db
+    //       .update(voteTallies)
+    //       .set({ ...record, updated_at: new Date().toISOString() })
+    //       .where(eq(voteTallies.id, record.id));
+    //   }
+
+    //   const localUpdated = local.updated_at
+    //     ? new Date(local.updated_at).getTime()
+    //     : 0;
+    //   const serverUpdated = record.updated_at
+    //     ? new Date(record.updated_at).getTime()
+    //     : 0;
+
+    //   if (serverUpdated > localUpdated) {
+    //     await db
+    //       .update(voteTallies)
+    //       .set({ ...record, synced_at: 1 })
+    //       .where(eq(voteTallies.id, record.id));
+    //   }
+    // }
 
     return { success: true };
   });
