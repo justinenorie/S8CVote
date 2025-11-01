@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useEffect } from "react";
 import { useAuthStore, AuthState } from "@renderer/stores/useAuthStore";
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -8,8 +8,21 @@ export function AuthProvider({
 }: {
   children: ReactNode;
 }): React.ReactElement {
-  const { user, session, loading, error, signInWithPassword, signOut } =
-    useAuthStore();
+  const {
+    user,
+    session,
+    loading,
+    error,
+    signInWithPassword,
+    signOut,
+    loadAdminData,
+  } = useAuthStore();
+
+  // Load admin from SQLite on startup
+  useEffect(() => {
+    loadAdminData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const value: AuthState = {
     user,
@@ -18,8 +31,8 @@ export function AuthProvider({
     loading,
     error,
     signInWithPassword,
-    loadAdminData: () => Promise.resolve({ data: null, error: null }),
     signOut,
+    loadAdminData,
   };
 
   return (
