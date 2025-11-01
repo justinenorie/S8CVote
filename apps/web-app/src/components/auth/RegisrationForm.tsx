@@ -53,7 +53,7 @@ export default function RegisterForm() {
 
     if (error) {
       form.setError("student_id", { type: "manual", message: error });
-      form.setValue("name", error as string);
+      // form.setValue("name", error as string);
       return;
     }
 
@@ -74,8 +74,11 @@ export default function RegisterForm() {
       return;
     }
 
-    toast.success("Registration successful!");
-    router.push("/dashboard");
+    // toast.success("Registration successful!");
+    // router.push("/dashboard");
+
+    toast.success("Account created! Please verify your email.");
+    router.push(`/verify-otp?email=${values.email}`);
   };
 
   return (

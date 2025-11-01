@@ -20,6 +20,8 @@ interface AuthState {
   error: string | null;
 
   // Actions
+  verifyEmailOtp: (email: string, token: string) => Promise<SignInResult>;
+  resendEmailOtp: (email: string) => Promise<SignInResult>;
   signInWithPassword: (
     email: string,
     password: string
@@ -43,6 +45,44 @@ export const useAuthStore = create<AuthState>((set) => ({
   loading: false,
   error: null,
 
+  // Verify Email using OTP
+  verifyEmailOtp: async (email, token) => {
+    set({ loading: true, error: null });
+
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: "email",
+    });
+
+    set({ loading: false });
+
+    if (error) {
+      return { data: null, error: error.message };
+    }
+
+    return { data, error: null };
+  },
+
+  // Resend Email OTP
+  resendEmailOtp: async (email: string) => {
+    set({ loading: true, error: null });
+    console.log("Got Resended:", email);
+
+    const { data, error } = await supabase.auth.resend({
+      type: "signup",
+      email: `${email}`,
+    });
+
+    set({ loading: false });
+
+    if (error) {
+      return { data: null, error: error.message };
+    }
+
+    return { data, error: null };
+  },
+
   // Login
   signInWithPassword: async (email, password) => {
     set({ loading: true, error: null });
@@ -51,6 +91,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       email,
       password,
     });
+
+    if (!data?.user?.email_confirmed_at) {
+      set({
+        loading: false,
+        error: "Please verify your email before logging in",
+      });
+      return { data: null, error: "Email not verified" };
+    }
 
     if (error) {
       set({ error: error.message, loading: false });
@@ -154,6 +202,31 @@ export const useAuthStore = create<AuthState>((set) => ({
     return { data: null, error: null };
   },
 
+  // Verify Student ID
+  verifyStudent: async (student_id) => {
+    if (!student_id) return { data: null, error: "Please enter a student ID" };
+
+    set({ loading: true, error: null });
+
+    const { data: student, error: studentError } = await supabase
+      .from("students")
+      .select("fullname, isRegistered")
+      .eq("student_id", student_id)
+      .single();
+
+    set({ loading: false });
+
+    if (studentError || !student) {
+      return { data: null, error: "Student ID not found or not enrolled..." };
+    }
+
+    if (student.isRegistered === 1) {
+      return { data: null, error: "This student ID is already registered" };
+    }
+
+    return { data: { fullname: student.fullname }, error: null };
+  },
+
   getCurrentUser: async () => {
     set({ loading: true, error: null });
 
@@ -186,31 +259,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       },
       error: null,
     };
-  },
-
-  // Verify Student ID
-  verifyStudent: async (student_id) => {
-    if (!student_id) return { data: null, error: "Please enter a student ID" };
-
-    set({ loading: true, error: null });
-
-    const { data: student, error: studentError } = await supabase
-      .from("students")
-      .select("fullname, isRegistered")
-      .eq("student_id", student_id)
-      .single();
-
-    set({ loading: false });
-
-    if (studentError || !student) {
-      return { data: null, error: "Student ID not found or not enrolled..." };
-    }
-
-    if (student.isRegistered === 1) {
-      return { data: null, error: "This student ID is already registered" };
-    }
-
-    return { data: { fullname: student.fullname }, error: null };
   },
 
   // Sign out

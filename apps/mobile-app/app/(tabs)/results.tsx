@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { Text } from "@/components/ui/text";
-import ThemeToggle from "@/components/ThemeToggle";
 import YearsSelectionPeriod from "@/components/results/YearsSelectionPeriod";
 import ResultsCard from "@/components/results/ResultsCard";
 import { useResultsStore } from "@/store/useResultsStore";
@@ -31,7 +30,6 @@ export default function Results() {
         <Text variant="h1" className="text-TEXTdark dark:text-TEXTlight">
           Election Results
         </Text>
-        <ThemeToggle />
       </View>
 
       <YearsSelectionPeriod

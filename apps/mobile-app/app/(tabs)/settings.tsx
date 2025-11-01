@@ -1,6 +1,7 @@
 import { View, ScrollView } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Settings() {
@@ -21,6 +22,7 @@ export default function Settings() {
         >
           Settings
         </Text>
+        <ThemeToggle />
         <Button onPress={handleSignOut}>
           <Text>Sign Out</Text>
         </Button>
