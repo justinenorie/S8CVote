@@ -3,7 +3,7 @@ export interface Admin {
   id?: string;
   fullname: string;
   email?: string;
-  role: string;
+  role?: string;
   status?: string;
   synced_at?: string;
   deleted_at?: string | null;

@@ -12,6 +12,7 @@ export type SignInResult<T = void> =
       error: null;
     };
 
+// For Validations
 export interface AuthState {
   user: User | null;
   session: Session | null;
@@ -28,7 +29,26 @@ export interface AuthState {
   signOut: () => Promise<void>;
 }
 
-// Zustand store
+// For Updating Data
+interface UpdateInfoState {
+  loading: boolean;
+  error: string | null;
+
+  updateAccountDetails: (
+    fullname: string,
+    email: string
+  ) => Promise<SignInResult>;
+  verifyEmailChangeOtp: (
+    newEmail: string,
+    code: string
+  ) => Promise<SignInResult>;
+  resendEmailChangeOtp: (newEmail: string) => Promise<SignInResult>;
+  updatePassword: (
+    newPassword: string,
+    currentPassword: string
+  ) => Promise<SignInResult>;
+}
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   session: null,
@@ -136,3 +156,125 @@ supabase.auth.onAuthStateChange((_event, session) => {
     loading: false,
   });
 });
+
+export const useUpdateAuthStore = create<UpdateInfoState>((set) => ({
+  loading: false,
+  error: null,
+
+  // ADMIN UPDATE
+  updateAccountDetails: async (fullname, newEmail) => {
+    set({ loading: true, error: null });
+
+    try {
+      const state = useAuthStore.getState();
+
+      // ✅ Update fullname immediately
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ fullname })
+        .eq("id", state.user?.id);
+
+      if (profileError) {
+        set({ loading: false, error: profileError.message });
+        return { data: null, error: profileError.message };
+      }
+
+      // ✅ Trigger Supabase email confirmation flow
+      const { error: emailError } = await supabase.auth.updateUser({
+        email: newEmail,
+      });
+
+      if (emailError) {
+        set({ loading: false, error: emailError.message });
+        return { data: null, error: emailError.message };
+      }
+
+      // ✅ Don't update SQLite yet — wait for confirmation
+      // We will update local admin data after email is confirmed
+      // (session change event listener will handle it)
+
+      set({ loading: false });
+      return { data: null, error: null };
+    } catch (error: unknown) {
+      set({ error: error as string, loading: false });
+      return { data: null, error: "Unexpected error" };
+    }
+  },
+
+  // VERIFY EMAIL OTP
+  verifyEmailChangeOtp: async (newEmail, code) => {
+    set({ loading: true, error: null });
+
+    const { data, error } = await supabase.auth.verifyOtp({
+      type: "email_change",
+      token: code,
+      email: newEmail,
+    });
+
+    if (error) {
+      set({ loading: false, error: error.message });
+      return { data: null, error: error.message };
+    }
+
+    // ✅ Update Local SQLite After Supabase Confirmed
+    const state = useAuthStore.getState();
+    const updatedAdmin = {
+      ...state.adminData!,
+      email: newEmail,
+      updated_at: new Date().toISOString(),
+    };
+
+    // await window.electronAPI.updateAdminUser(updatedAdmin);
+    useAuthStore.setState({ adminData: updatedAdmin });
+
+    set({ loading: false });
+    return { data, error: null };
+  },
+
+  // RESEND OTP
+  resendEmailChangeOtp: async (newEmail) => {
+    const { error } = await supabase.auth.resend({
+      type: "email_change",
+      email: newEmail,
+    });
+
+    if (error) return { data: null, error: error.message };
+    return { data: null, error: null };
+  },
+
+  // Update Password
+  updatePassword: async (currentPassword, newPassword) => {
+    set({ loading: true, error: null });
+
+    const state = useAuthStore.getState();
+    const currentEmail = state.user?.email;
+    if (!currentEmail) {
+      set({ loading: false, error: "No logged-in user" });
+      return { data: null, error: "No logged-in user" };
+    }
+
+    // 1. Re-authenticate to verify old password
+    const { error: reauthError } = await supabase.auth.signInWithPassword({
+      email: currentEmail,
+      password: currentPassword,
+    });
+
+    if (reauthError) {
+      set({ loading: false, error: "Incorrect current password" });
+      return { data: null, error: "Incorrect current password" };
+    }
+
+    // 2. Update password
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (updateError) {
+      set({ loading: false, error: updateError.message });
+      return { data: null, error: updateError.message };
+    }
+
+    set({ loading: false });
+    return { data: null, error: null };
+  },
+}));

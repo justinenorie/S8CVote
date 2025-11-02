@@ -3,11 +3,18 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/Button";
 import { Eye, EyeOff, UserRound, Save } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Drawer, DrawerContent } from "@renderer/components/ui/drawer";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@renderer/components/ui/input-otp";
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useUpdateAuthStore } from "@renderer/stores/useAuthStore";
 
 import {
   Form,
@@ -21,8 +28,8 @@ import { toast } from "sonner";
 
 // Account Details Schema
 const accountDetailsSchema = z.object({
-  profile: z.string().min(1, { message: "Full Name is required" }),
-  name: z.string().min(1, { message: "Full Name is required" }),
+  profile: z.string().optional(),
+  name: z.string().optional(),
   email: z.string().email({ message: "Invalid email address" }),
 });
 type AccountDetailsForm = z.infer<typeof accountDetailsSchema>;
@@ -47,12 +54,24 @@ const changePasswordSchema = z
 type PasswordDetailsForm = z.infer<typeof changePasswordSchema>;
 
 const GeneralTab = (): React.ReactElement => {
+  const {
+    updateAccountDetails,
+    verifyEmailChangeOtp,
+    resendEmailChangeOtp,
+    updatePassword,
+  } = useUpdateAuthStore();
+  const [isLoadingPassword, setIsLoadingPassword] = useState(false);
+  const [openEmailConfirmDrawer, setOpenEmailConfirmDrawer] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [resendTimer, setResendTimer] = useState(0);
+
   const [showPassword, setShowPassword] = useState({
     current: false,
     new: false,
     confirm: false,
   });
 
+  // Account details default form value
   const accountDetailsForm = useForm<AccountDetailsForm>({
     resolver: zodResolver(accountDetailsSchema),
     defaultValues: {
@@ -62,6 +81,7 @@ const GeneralTab = (): React.ReactElement => {
     },
   });
 
+  // Change Password default form value
   const changePasswordForm = useForm<PasswordDetailsForm>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
@@ -71,19 +91,132 @@ const GeneralTab = (): React.ReactElement => {
     },
   });
 
-  const onSubmitAccountDetails = (values: AccountDetailsForm): void => {
-    console.log("Account Details:", values);
-    toast.success("Account details updated successfully!");
+  useEffect(() => {
+    if (!openEmailConfirmDrawer) return;
+    if (resendTimer <= 0) return;
+
+    const interval = setInterval(() => {
+      setResendTimer((t) => t - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [openEmailConfirmDrawer, resendTimer]);
+
+  const onSubmitAccountDetails = async (values: AccountDetailsForm) => {
+    const loading = toast.loading("Updating account...");
+    const name = values.name ?? "";
+    const res = await updateAccountDetails(name, values.email);
+
+    toast.dismiss(loading);
+
+    if (res.error) {
+      toast.error(res.error);
+    } else {
+      setOtpCode("");
+      setResendTimer(60);
+      setOpenEmailConfirmDrawer(true);
+      accountDetailsForm.reset();
+    }
+
+    // console.log("Account Details:", values);
+    // toast.success("Account details updated successfully!");
   };
-  const onSubmitChangePassword = (values: PasswordDetailsForm): void => {
-    console.log("Change Password:", values);
-    toast.success("Password updated successfully!");
+
+  const onSubmitChangePassword = async (values: PasswordDetailsForm) => {
+    setIsLoadingPassword(true);
+    const loading = toast.loading("Updating password...");
+    const res = await updatePassword(
+      values.currentPassword,
+      values.newPassword
+    );
+
+    toast.dismiss(loading);
+
+    if (res.error) {
+      toast.error(res.error);
+    } else {
+      toast.success("Password updated successfully!");
+      changePasswordForm.reset();
+    }
+    setIsLoadingPassword(false);
+    // console.log("Change Password:", values);
+    // toast.success("Password updated successfully!");
   };
 
   return (
     <div className="space-y-8">
       {/* Account Details */}
       <div className="bg-PRIMARY-100 dark:bg-PRIMARY-900 rounded-lg p-6 shadow-sm">
+        <Drawer open={openEmailConfirmDrawer} onOpenChange={() => {}}>
+          <DrawerContent className="text-TEXTdark dark:text-TEXTlight space-y-6 p-6 pb-10">
+            <Typography variant="h3" className="text-center">
+              Verify Your Email
+            </Typography>
+            <Typography
+              variant="small"
+              className="text-muted-foreground text-center"
+            >
+              Enter the 6-digit code sent to{" "}
+              <b>{accountDetailsForm.getValues("email")}</b>
+            </Typography>
+
+            <div className="text-TEXTdark dark:text-TEXTlight mt-4 flex justify-center">
+              <InputOTP
+                maxLength={6}
+                value={otpCode}
+                onChange={(value) => setOtpCode(value)}
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
+
+            <Button
+              className="w-full"
+              disabled={otpCode.length !== 6}
+              onClick={async () => {
+                const email = accountDetailsForm.getValues("email");
+                const loading = toast.loading("Verifying...");
+                const res = await verifyEmailChangeOtp(email, otpCode);
+                toast.dismiss(loading);
+
+                if (res.error) {
+                  toast.error(res.error);
+                } else {
+                  toast.success("Email successfully changed!");
+                  setOpenEmailConfirmDrawer(false);
+                  setOtpCode("");
+                }
+              }}
+            >
+              Verify Email Change
+            </Button>
+
+            {/* Resend Code Button */}
+            <Button
+              variant="ghost"
+              className="text-muted-foreground w-full"
+              disabled={resendTimer > 0}
+              onClick={async () => {
+                const email = accountDetailsForm.getValues("email");
+                await resendEmailChangeOtp(email);
+                toast.success("OTP Resent!");
+                setResendTimer(30);
+              }}
+            >
+              {resendTimer > 0
+                ? `Resend Code in ${resendTimer}s`
+                : "Resend Code"}
+            </Button>
+          </DrawerContent>
+        </Drawer>
+
         <div className="mb-5">
           <Typography variant="h3" className="font-semibold">
             Account Details
@@ -307,9 +440,10 @@ const GeneralTab = (): React.ReactElement => {
             <Button
               type="submit"
               className="px-6 md:col-span-2 md:justify-self-end"
+              disabled={isLoadingPassword}
             >
               <Save className="h-10 w-10" />
-              Update Password
+              {isLoadingPassword ? "Updating Password...." : "Update Password"}
             </Button>
           </form>
         </Form>

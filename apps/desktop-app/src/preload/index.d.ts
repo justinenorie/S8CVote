@@ -13,6 +13,7 @@ declare global {
     // Tandaan mo toh: Use for type safes for calling api (sige)
     electronAPI: {
       // RESULTS
+      onEmailConfirmedURL: (callback) => Promise<void>;
       voteTalliesInsertMany: (rows: CandidateResult[]) => Promise<void>;
       voteTalliesDeleteByElectionId: (id: string) => Promise<void>;
       voteTalliesGetAll: () => Promise<>;

@@ -69,6 +69,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true, error: null });
     console.log("Got Resended:", email);
 
+    // TODO: Not working properly
+
     const { data, error } = await supabase.auth.resend({
       type: "signup",
       email: `${email}`,
