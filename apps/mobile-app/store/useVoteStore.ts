@@ -38,7 +38,11 @@ interface VoteState {
     VoteResult<{ is_valid: boolean; student_name: string; has_voted: boolean }>
   >;
   triggerRefresh: () => void;
+  subscribeToVotes: () => void;
+  unsubscribeFromVotes: () => void;
 }
+
+let votesChannel: ReturnType<typeof supabase.channel> | null = null;
 
 export const useVoteStore = create<VoteState>((set, get) => ({
   elections: [],
@@ -257,5 +261,37 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     console.log("🔄 Triggering UI refresh from background sync...");
     set({ lastUpdated: Date.now() });
     get().loadElections();
+  },
+
+  // REAL-TIME VOTE COUNTING
+  subscribeToVotes: () => {
+    if (votesChannel) {
+      console.log("🔁 Realtime votes already active");
+      return votesChannel;
+    }
+
+    console.log("📡 Subscribing to realtime votes...");
+
+    votesChannel = supabase
+      .channel("votes-realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "votes" },
+        async () => {
+          console.log("🔃 Vote detected → refreshing UI");
+          await get().loadElections();
+        }
+      )
+      .subscribe();
+
+    return votesChannel;
+  },
+
+  unsubscribeFromVotes: () => {
+    if (votesChannel) {
+      console.log("🔌 Unsubscribing realtime votes...");
+      supabase.removeChannel(votesChannel);
+      votesChannel = null;
+    }
   },
 }));
