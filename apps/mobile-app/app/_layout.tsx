@@ -30,7 +30,6 @@ import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 //   syncStudentsFromSupabase,
 //   syncVotesToSupabase,
 // } from "@/db/queries/syncQuery";
-import { useAppSync } from "@/hooks/useAppSync";
 
 const RootLayout = () => {
   const [loaded, error] = useFonts({
@@ -86,9 +85,6 @@ const RootLayout = () => {
     loadSession(); // check auth state on app start
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Sync
-  useAppSync();
 
   configureReanimatedLogger({
     level: ReanimatedLogLevel.warn,

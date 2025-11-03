@@ -166,27 +166,47 @@ export const useUpdateAuthStore = create<UpdateInfoState>((set) => ({
     set({ loading: true, error: null });
 
     try {
+      // get current session
       const state = useAuthStore.getState();
+      const currentEmail = state.user?.email;
 
-      // ✅ Update fullname immediately
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({ fullname })
-        .eq("id", state.user?.id);
+      //  Update fullname immediately
+      if (fullname && fullname !== state.adminData?.fullname) {
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .update({ fullname })
+          .eq("id", state.user?.id);
 
-      if (profileError) {
-        set({ loading: false, error: profileError.message });
-        return { data: null, error: profileError.message };
+        if (profileError) {
+          set({ loading: false, error: profileError.message });
+          return { data: null, error: profileError.message };
+        }
       }
 
-      // ✅ Trigger Supabase email confirmation flow
-      const { error: emailError } = await supabase.auth.updateUser({
+      // If email is unchanged, no OTP needed
+      if (newEmail === currentEmail) {
+        set({ loading: false });
+        return { data: null, error: null };
+      }
+
+      // 1) Request email change (sets pending email)
+      const { error: requestError } = await supabase.auth.updateUser({
         email: newEmail,
       });
+      if (requestError) {
+        set({ loading: false, error: requestError.message });
+        return { data: null, error: requestError.message };
+      }
 
-      if (emailError) {
-        set({ loading: false, error: emailError.message });
-        return { data: null, error: emailError.message };
+      // 2) Send OTP to NEW email
+      // Send OTP to NEW email
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email: newEmail,
+        options: { shouldCreateUser: false },
+      });
+      if (otpError) {
+        set({ loading: false, error: otpError.message });
+        return { data: null, error: otpError.message };
       }
 
       // ✅ Don't update SQLite yet — wait for confirmation
@@ -216,6 +236,13 @@ export const useUpdateAuthStore = create<UpdateInfoState>((set) => ({
       return { data: null, error: error.message };
     }
 
+    //  Now safely apply the email change
+    const { error: updateError } = await supabase.auth.updateUser({
+      email: newEmail,
+    });
+
+    if (updateError) return { data: null, error: updateError.message };
+
     // ✅ Update Local SQLite After Supabase Confirmed
     const state = useAuthStore.getState();
     const updatedAdmin = {
@@ -224,6 +251,7 @@ export const useUpdateAuthStore = create<UpdateInfoState>((set) => ({
       updated_at: new Date().toISOString(),
     };
 
+    // TODO: update the admin user in sqlite
     // await window.electronAPI.updateAdminUser(updatedAdmin);
     useAuthStore.setState({ adminData: updatedAdmin });
 

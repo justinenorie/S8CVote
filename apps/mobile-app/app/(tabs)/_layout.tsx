@@ -5,10 +5,13 @@ import { LayoutDashboard, ChartGantt, Settings } from "lucide-react-native";
 import { useTheme } from "@/components/ThemeProvider";
 import { COLORS } from "@/constants/Colors";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useAppSync } from "@/hooks/useAppSync";
 
 export default function TabsLayout() {
   const { theme } = useTheme();
   const { session, loading } = useAuthStore();
+  // Sync
+  useAppSync();
 
   if (loading) return null;
   if (!session) return <Redirect href="/(auth)" />;

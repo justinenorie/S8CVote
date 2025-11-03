@@ -156,7 +156,9 @@ export function electionsApiHandlers(): void {
     // Delete candidates whose election is soft-deleted
     await db
       .delete(candidates)
-      .where(sql`${candidates.deleted_at} IS NOT NULL`);
+      .where(
+        sql`${candidates.election_id} IS NULL OR ${candidates.deleted_at} IS NOT NULL`
+      );
 
     return { success: true };
   });
