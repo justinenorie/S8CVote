@@ -30,7 +30,7 @@ import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 //   syncStudentsFromSupabase,
 //   syncVotesToSupabase,
 // } from "@/db/queries/syncQuery";
-// import { useAppSync } from "@/hooks/useAppSync";
+import { useAppSync } from "@/hooks/useAppSync";
 
 const RootLayout = () => {
   const [loaded, error] = useFonts({
@@ -88,7 +88,7 @@ const RootLayout = () => {
   }, []);
 
   // Sync
-  // useAppSync();
+  useAppSync();
 
   configureReanimatedLogger({
     level: ReanimatedLogLevel.warn,

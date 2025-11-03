@@ -3,6 +3,7 @@ import { ScrollView, View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { ElectionCard } from "@/components/dashboard/ElectionCard";
 import { useVoteStore } from "@/store/useVoteStore";
+import { useRealtime } from "@/hooks/useRealtimeSync";
 
 export default function Dashboard() {
   const { elections, loadElections, error, lastUpdated } = useVoteStore();
@@ -10,6 +11,8 @@ export default function Dashboard() {
   useEffect(() => {
     loadElections();
   }, [loadElections, lastUpdated]);
+
+  useRealtime();
 
   return (
     <ScrollView className="py-10 px-3 bg-BGlight dark:bg-BGdark">

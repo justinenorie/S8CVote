@@ -26,9 +26,18 @@ export default function Results() {
 
   return (
     <ScrollView className="py-10 px-3 bg-BGlight dark:bg-BGdark">
-      <View className="flex flex-row justify-between items-center mb-6">
-        <Text variant="h1" className="text-TEXTdark dark:text-TEXTlight">
+      <View className="flex flex-col justify-between mb-6">
+        <Text
+          variant="h1"
+          className="text-left text-TEXTdark dark:text-TEXTlight"
+        >
           Election Results
+        </Text>
+        <Text
+          variant="p"
+          className="text-left text-TEXTdark dark:text-TEXTlight"
+        >
+          View detailed results from the elections
         </Text>
       </View>
 
