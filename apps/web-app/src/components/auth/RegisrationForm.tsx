@@ -33,6 +33,7 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
+  const [verified, setVerfied] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { registerStudent, verifyStudent, loading, error } = useAuthStore();
@@ -52,12 +53,14 @@ export default function RegisterForm() {
     const { error } = await verifyStudent(student_id);
 
     if (error) {
+      setVerfied(false);
       form.setError("student_id", { type: "manual", message: error });
       // form.setValue("name", error as string);
       return;
     }
 
     form.clearErrors("student_id");
+    setVerfied(true);
     // form.setValue("name", (data as { fullname: string }).fullname);
     toast.success("Student verified!");
   };
@@ -168,7 +171,18 @@ export default function RegisterForm() {
               name="student_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Student ID</FormLabel>
+                  <FormLabel className="flex flex-row items-center justify-between">
+                    Student ID{" "}
+                    {verified && !form.formState.errors.student_id && (
+                      <Typography
+                        variant="p"
+                        className="mt-1 text-sm text-green-600"
+                      >
+                        Verified
+                      </Typography>
+                    )}
+                  </FormLabel>
+
                   <FormControl>
                     <div className="relative">
                       <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
@@ -178,12 +192,18 @@ export default function RegisterForm() {
                         {...field}
                         type="name"
                         placeholder="eg. 20-0001"
-                        className="px-10"
+                        className={`border-2 px-10 ${
+                          verified
+                            ? "border-green-500 focus:border-green-600"
+                            : form.formState.errors.student_id
+                              ? "border-red-500 focus:border-red-600"
+                              : ""
+                        }`}
                         onBlur={(e) => handleVerifyStudent(e.target.value)}
                       />
                     </div>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage></FormMessage>
                 </FormItem>
               )}
             />

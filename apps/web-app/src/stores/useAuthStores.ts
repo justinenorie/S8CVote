@@ -56,6 +56,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     });
 
     set({ loading: false });
+    const user = data.user;
+    const fullname = localStorage.getItem("pending_fullname");
+    const student_id = localStorage.getItem("pending_student_id");
+
+    await supabase
+      .from("profiles")
+      .update({ fullname: fullname, student_id: student_id })
+      .eq("id", user?.id);
+
+    // Clear after verification
+    localStorage.removeItem("pending_fullname");
+    localStorage.removeItem("pending_student_id");
 
     if (error) {
       return { data: null, error: error.message };
@@ -178,20 +190,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       return { data: null, error: authError?.message || "Registration failed" };
     }
 
-    // Step 3: Create Profile
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: authData.user.id,
-      fullname: student.fullname,
-      student_id,
-      role: "student",
-    });
-
-    if (profileError) {
-      set({ loading: false, error: "Failed to create profile" });
-      return { data: null, error: "Failed to create profile" };
-    }
-
-    // Step 4: Mark student as registered
     await supabase
       .from("students")
       .update({
@@ -199,6 +197,10 @@ export const useAuthStore = create<AuthState>((set) => ({
         email,
       })
       .eq("student_id", student_id);
+
+    // store temporarily after registration
+    localStorage.setItem("pending_fullname", student.fullname);
+    localStorage.setItem("pending_student_id", student_id);
 
     set({ loading: false });
     return { data: null, error: null };

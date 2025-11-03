@@ -209,7 +209,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                     <Button
                       variant="link"
                       className="w-full justify-start text-left"
-                      onClick={() => router.push("/profile")}
+                      onClick={() => router.push("/dashboard/profile")}
                     >
                       <div className="flex flex-col items-start">
                         {loading ? (
