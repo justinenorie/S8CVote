@@ -15,6 +15,13 @@
       "when": 1761940588469,
       "tag": "0001_hot_tana_nile",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1762283034302,
+      "tag": "0002_open_inhumans",
+      "breakpoints": true
     }
   ]
 }

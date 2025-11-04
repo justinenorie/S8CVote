@@ -27,6 +27,7 @@ export const elections = sqliteTable("elections", {
   title: text("title").notNull(),
   has_voted: integer("has_voted").notNull().default(0), // boolean (0/1)
   status: text("status").notNull().default("active"),
+  position_order: integer("position_order").default(99),
   synced_at: integer("synced_at").default(0),
 });
 

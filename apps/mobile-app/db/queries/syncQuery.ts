@@ -10,7 +10,7 @@ export async function syncElectionsAndCandidates() {
     // 1️⃣ Fetch elections from Supabase view
     const { data: electionsRaw, error: e1 } = await supabase
       .from("elections_with_user_flag")
-      .select("id, election, has_voted, status")
+      .select("id, election, has_voted, status, position_order")
       .eq("status", "active");
 
     if (e1 || !electionsRaw)
@@ -22,6 +22,7 @@ export async function syncElectionsAndCandidates() {
       electionsRaw.map((e) => ({
         id: e.id,
         title: e.election,
+        position_order: e.position_order ?? 99,
         has_voted: e.has_voted ? 1 : 0,
         status: e.status,
         synced_at: Date.now(),

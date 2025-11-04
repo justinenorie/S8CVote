@@ -14,11 +14,13 @@ export async function getElectionsWithCandidates() {
       title: election.title,
       has_voted: Boolean(election.has_voted),
       status: election.status,
+      position_order: election.position_order ?? 99,
       candidates: candidateRows
         .filter((c) => c.election_id === election.id)
         .sort((a, b) => b.votes_count - a.votes_count),
     })
   );
+  grouped.sort((a, b) => (a.position_order ?? 99) - (b.position_order ?? 99));
 
   return grouped;
 }

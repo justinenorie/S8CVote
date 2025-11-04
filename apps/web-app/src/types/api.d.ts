@@ -28,6 +28,7 @@ export interface Election {
   id: string;
   title: string;
   has_voted: boolean;
+  position_order?: number;
   candidates: CandidateResult[];
 }
 
