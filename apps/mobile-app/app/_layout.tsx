@@ -1,15 +1,15 @@
-import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
 } from "react-native-reanimated";
 
-import "./../global.css";
 import { PortalHost } from "@rn-primitives/portal";
 import Toast from "react-native-toast-message";
+import "./../global.css";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import toastConfig from "@/components/toastConfig";
@@ -17,9 +17,9 @@ import toastConfig from "@/components/toastConfig";
 import { useAuthStore } from "@/store/useAuthStore";
 
 // local db imports
-import { db, expo_sqlite } from "@/db/client";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import { db } from "@/db/client";
 import migrations from "@/db/drizzle/migrations";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 // import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 
 // // autosync imports
