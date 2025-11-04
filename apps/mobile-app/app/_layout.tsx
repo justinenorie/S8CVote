@@ -17,8 +17,8 @@ import toastConfig from "@/components/toastConfig";
 import { useAuthStore } from "@/store/useAuthStore";
 
 // local db imports
-import { db, expo_sqlite } from "@/db/client";
-import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import { db } from "@/db/client";
+// import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import migrations from "@/db/drizzle/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 
@@ -47,7 +47,7 @@ const RootLayout = () => {
   });
 
   const { success, error: migrationError } = useMigrations(db, migrations);
-  useDrizzleStudio(expo_sqlite);
+  // useDrizzleStudio(expo_sqlite);
 
   //   if (__DEV__) {
   //   useDrizzleStudio(expo_sqlite);

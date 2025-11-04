@@ -1,24 +1,24 @@
-import { useState } from "react";
+import { CircleAlert, CircleCheck } from "lucide-react-native";
+import { useEffect, useState } from "react";
 import {
-  View,
-  TouchableOpacity,
+  ActivityIndicator,
   Image,
   ScrollView,
-  ActivityIndicator,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { CircleCheck, CircleAlert } from "lucide-react-native";
 import Toast from "react-native-toast-message";
 
-import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Text } from "@/components/ui/text";
 import { useVoteStore } from "@/store/useVoteStore";
 import { Candidate } from "@/types/api";
 import { getTextColor } from "@/utils/getTextColor";
@@ -31,7 +31,22 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { verifyStudent, castVote } = useVoteStore();
+  const {
+    verifyStudent,
+    castVote,
+    setStudentSession,
+    studentSessionId,
+    studentSessionName,
+  } = useVoteStore();
+
+  // Stays the student Session
+  useEffect(() => {
+    if (studentSessionId && studentSessionName) {
+      setStudentId(studentSessionId);
+      setStudentName(studentSessionName);
+      setStep("success"); // Skip straight to candidate selection
+    }
+  }, [studentSessionId, studentSessionName]);
 
   const handleSubmitStudentId = async () => {
     if (studentId.trim() === "") {
@@ -75,6 +90,10 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
       return;
     }
 
+    if (data?.is_valid && !data?.has_voted) {
+      setStudentSession(studentId, data.student_name);
+    }
+
     setStudentName(data.student_name);
     setErrorMessage("");
     setStep("success");
@@ -90,16 +109,19 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
       studentId
     );
 
+    if (error) {
+      setErrorMessage(error);
+      setLoading(false);
+      return;
+    }
+
+    await useVoteStore.getState().loadElections();
+
     Toast.show({
       type: "success",
       text1: `Vote Submitted!`,
       text2: `Thank you, ${studentName}! Your vote has been recorded..`,
     });
-
-    if (error) {
-      setErrorMessage(error);
-      return;
-    }
 
     setLoading(false);
     onClose();
@@ -113,8 +135,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
   };
 
   const handleCancelVote = () => {
-    setSelectedCandidate(null);
-    setStep("input");
+    // setStep("input");
     setErrorMessage("");
     reset();
   };

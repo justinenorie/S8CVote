@@ -1,10 +1,10 @@
+import { Text } from "@/components/ui/text";
+import { Candidate, Election } from "@/types/api";
 import { useState } from "react";
 import { View } from "react-native";
-import { Text } from "@/components/ui/text";
 import { Button } from "../ui/button";
 import { CandidateCard } from "./CandidateCard";
 import { VotingModal } from "./VotingModal";
-import { Candidate, Election } from "@/types/api";
 
 const getOrdinalNumber = (n: number): string => {
   const suffixes = ["th", "st", "nd", "rd"];

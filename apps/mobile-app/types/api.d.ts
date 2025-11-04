@@ -15,7 +15,7 @@ export interface Candidate {
 export interface Election {
   id: string;
   title: string;
-  has_voted: boolean;
+  has_voted?: boolean;
   status?: string;
   elections?: any;
   position_order?: number;

@@ -1,6 +1,3 @@
-import { create } from "zustand";
-import { supabase } from "@/lib/supabaseClient";
-import { Candidate, Election } from "@/types/api";
 import {
   syncElectionsAndCandidates,
   syncStudentsFromSupabase,
@@ -8,9 +5,12 @@ import {
 } from "@/db/queries/syncQuery";
 import {
   getElectionsWithCandidates,
-  insertLocalVote,
   hasLocalVote,
+  insertLocalVote,
 } from "@/db/queries/voteQuery";
+import { supabase } from "@/lib/supabaseClient";
+import { Candidate, Election } from "@/types/api";
+import { create } from "zustand";
 
 import { hybridSync } from "@/utils/hybridSync";
 
@@ -24,6 +24,8 @@ interface VoteState {
   loading: boolean;
   error: string | null;
   lastUpdated?: number;
+  studentSessionId: string | null;
+  studentSessionName: string | null;
 
   loadElections: () => Promise<VoteResult<Election[]>>;
   castVote: (
@@ -40,6 +42,10 @@ interface VoteState {
   triggerRefresh: () => void;
   subscribeToVotes: () => void;
   unsubscribeFromVotes: () => void;
+  setStudentSession: (id: string, name: string) => Promise<void>;
+  clearLocalVotes: () => Promise<void>;
+  markElectionVoted: (electionId: string) => Promise<void>;
+  localVoted: { [electionId: string]: boolean };
 }
 
 let votesChannel: ReturnType<typeof supabase.channel> | null = null;
@@ -49,6 +55,29 @@ export const useVoteStore = create<VoteState>((set, get) => ({
   loading: false,
   lastUpdated: Date.now(),
   error: null,
+  studentSessionId: null,
+  studentSessionName: null,
+  localVoted: {},
+
+  markElectionVoted: (electionId) => {
+    set((state) => ({
+      localVoted: { ...state.localVoted, [electionId]: true },
+      elections: state.elections.map((e) =>
+        e.id === electionId ? { ...e, has_voted: true } : e
+      ),
+    }));
+    return Promise.resolve();
+  },
+
+  setStudentSession: (id: string, name: string) => {
+    set({ studentSessionId: id, studentSessionName: name });
+    return Promise.resolve();
+  },
+
+  clearLocalVotes: () => {
+    set({ localVoted: {}, studentSessionId: null, studentSessionName: null });
+    return Promise.resolve();
+  },
 
   loadElections: async () => {
     try {
@@ -106,7 +135,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
             id: e.id,
             title: e.election,
             position_order: e.position_order ?? 99,
-            has_voted: !!e.has_voted,
+            has_voted: get().localVoted[e.id] ? true : !!e.has_voted,
             candidates: (byElection[e.id] || []).sort(
               (a, b) => b.votes_count - a.votes_count
             ),
@@ -125,7 +154,12 @@ export const useVoteStore = create<VoteState>((set, get) => ({
         async () => {
           console.log("📴 Fetching elections from SQLite cache...");
           const localElections = await getElectionsWithCandidates();
-          return localElections;
+          const localVoted = get().localVoted;
+
+          return localElections.map((e) => ({
+            ...e,
+            has_voted: localVoted[e.id] ? true : e.has_voted,
+          }));
         },
 
         // Optional: run cache sync when new data comes
@@ -135,6 +169,12 @@ export const useVoteStore = create<VoteState>((set, get) => ({
       );
 
       set({ elections, loading: false });
+
+      const allDone = elections.every((e) => e.has_voted === true);
+      if (allDone) {
+        get().clearLocalVotes();
+      }
+
       return { data: elections, error: null };
     } catch (err: any) {
       console.error("❌ loadElections error:", err);
@@ -171,6 +211,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
           if (error) throw new Error(error.message);
 
           // ✅ If RPC succeeds, sync any pending offline votes
+          get().markElectionVoted(electionId); // ✅ locally update UI immediately
           await get().loadElections();
           await syncVotesToSupabase();
 
@@ -181,6 +222,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
         async () => {
           console.log("📴 Offline mode: saving vote locally...");
           await insertLocalVote(electionId, candidateId, studentId);
+          get().markElectionVoted(electionId);
           await get().loadElections();
           console.log("💾 Vote saved to local SQLite for later sync");
         },

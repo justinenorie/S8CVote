@@ -86,7 +86,7 @@ const ElectionCard = ({
                 key={c.id}
                 className={`hover:bg-muted/30 rounded-md border p-3 transition ${
                   isFirstRunnerUp
-                    ? "bg-SUCCESSlight/20 border-SUCCESSlight/40 border-1"
+                    ? "bg-SUCCESSlight/20 border-SUCCESSlight/40 border"
                     : "bg-muted/20"
                 }`}
               >

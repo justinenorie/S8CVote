@@ -1,16 +1,28 @@
+import { ElectionCard } from "@/components/dashboard/ElectionCard";
+import { Text } from "@/components/ui/text";
+import { useRealtime } from "@/hooks/useRealtimeSync";
+import { useVoteStore } from "@/store/useVoteStore";
 import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
-import { Text } from "@/components/ui/text";
-import { ElectionCard } from "@/components/dashboard/ElectionCard";
-import { useVoteStore } from "@/store/useVoteStore";
-import { useRealtime } from "@/hooks/useRealtimeSync";
+import Toast from "react-native-toast-message";
 
 export default function Dashboard() {
-  const { elections, loadElections, error, lastUpdated } = useVoteStore();
+  const { elections, loadElections, error, lastUpdated, studentSessionId } =
+    useVoteStore();
 
   useEffect(() => {
     loadElections();
   }, [loadElections, lastUpdated]);
+
+  useEffect(() => {
+    if (!studentSessionId) {
+      Toast.show({
+        type: "success",
+        text1: "All elections completed",
+        text2: "Thank you for participating!",
+      });
+    }
+  }, [studentSessionId]);
 
   useRealtime();
 
