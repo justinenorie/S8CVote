@@ -33,6 +33,7 @@ const formSchema = z.object({
     }),
   date: z.date().min(1, { message: "Date is required" }),
   time: z.string().time().min(1, { message: "Time is required" }),
+  order: z.number().min(1, { message: "Order is required" }), // Update the type here
   description: z.string().optional(),
 });
 
@@ -49,6 +50,7 @@ export function AddElectionModal({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      order: 99,
       status: "active",
       date: new Date(),
       time: `${new Date().getHours().toString().padStart(2, "0")}:${new Date().getMinutes().toString().padStart(2, "0")}`,
@@ -66,6 +68,7 @@ export function AddElectionModal({
   const onSubmit = async (values: AddElectionForm): Promise<void> => {
     const payload = {
       election: values.name,
+      position_order: Number(values.order),
       status: values.status,
       end_date: values.date.toISOString().split("T")[0],
       end_time: values.time.toString(),
@@ -124,6 +127,27 @@ export function AddElectionModal({
                       {...field}
                     />
                   </FormControl>
+                </FormItem>
+              )}
+            />
+
+            {/* ORDER ARRANGEMENT */}
+            <FormField
+              control={form.control}
+              name="order"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Hierarchy Order (1 = highest priority)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min={1}
+                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 border-1"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />

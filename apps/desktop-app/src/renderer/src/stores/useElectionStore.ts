@@ -93,10 +93,15 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
           candidates: e.candidate_count ?? 0,
           end_date: e.end_date,
           end_time: e.end_time,
+          position_order: e.position_order,
           duration,
           description: e.description,
         };
       });
+
+      // const positionInOrder = transformed.sort(
+      //   (a, b) => (a.position_order ?? 99) - (b.position_order ?? 99)
+      // );
 
       set({ elections: transformed, loading: false });
       return { data: transformed, error: null };

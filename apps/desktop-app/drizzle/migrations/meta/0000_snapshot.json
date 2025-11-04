@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "5366b34a-7eae-46ea-9680-0caf73e2889f",
+  "id": "0fa5ca8d-f6e4-48b0-b95f-e1b200202a2c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "adminAuth": {
@@ -55,7 +55,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-31T23:37:02.438Z'"
+          "default": "'2025-11-04T11:52:28.821Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -188,7 +188,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-31T23:37:02.440Z'"
+          "default": "'2025-11-04T11:52:28.824Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -300,13 +300,21 @@
           "notNull": false,
           "autoincrement": false
         },
+        "position_order": {
+          "name": "position_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 99
+        },
         "created_at": {
           "name": "created_at",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-31T23:37:02.440Z'"
+          "default": "'2025-11-04T11:52:28.823Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -388,7 +396,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-31T23:37:02.441Z'"
+          "default": "'2025-11-04T11:52:28.826Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -464,7 +472,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-31T23:37:02.440Z'"
+          "default": "'2025-11-04T11:52:28.825Z'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -603,7 +611,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-10-31T23:37:02.441Z'"
+          "default": "'2025-11-04T11:52:28.826Z'"
         },
         "updated_at": {
           "name": "updated_at",

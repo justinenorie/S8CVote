@@ -189,7 +189,7 @@ export const AddCandidatesModal = ({
                       type="file"
                       accept="image/*"
                       onChange={(e) => field.onChange(e.target.files?.[0])}
-                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 cursor-pointer border-1"
+                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 cursor-pointer border"
                     />
                   </div>
                 </FormControl>
@@ -209,7 +209,7 @@ export const AddCandidatesModal = ({
                   <Input
                     placeholder="e.g. Juan Dela Cruz"
                     {...field}
-                    className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 border-1"
+                    className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 border"
                   />
                 </FormControl>
                 <FormMessage />
@@ -231,7 +231,7 @@ export const AddCandidatesModal = ({
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border-1">
+                      <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border">
                         <SelectValue placeholder="Select Election Postion" />
                       </SelectTrigger>
                       <SelectContent className="bg-PRIMARY-100 dark:bg-PRIMARY-800 text-TEXTdark dark:text-TEXTlight">
@@ -276,7 +276,7 @@ export const AddCandidatesModal = ({
                       }}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border-1">
+                      <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border">
                         <SelectValue placeholder="Select Partylist Group" />
                       </SelectTrigger>
                       <SelectContent className="bg-PRIMARY-100 dark:bg-PRIMARY-800 text-TEXTdark dark:text-TEXTlight">
@@ -320,7 +320,7 @@ export const AddCandidatesModal = ({
                     rows={3}
                     placeholder="Candidate description"
                     {...field}
-                    className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 border-1"
+                    className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 border"
                   />
                 </FormControl>
                 <FormMessage />

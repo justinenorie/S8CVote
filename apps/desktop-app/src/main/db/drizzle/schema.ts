@@ -24,6 +24,7 @@ export const elections = sqliteTable("elections", {
   status: text("status").default("active").notNull(),
   end_time: text("end_time"),
   end_date: text("end_date"),
+  position_order: integer("position_order").default(99),
 
   created_at: text("created_at").default(new Date().toISOString()),
   updated_at: text("updated_at"),

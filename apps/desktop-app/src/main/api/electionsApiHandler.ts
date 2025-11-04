@@ -93,6 +93,7 @@ export function electionsApiHandlers(): void {
         status: elections.status,
         end_time: elections.end_time,
         end_date: elections.end_date,
+        position_order: elections.position_order,
         description: elections.description,
         candidate_count:
           sql<number>`COUNT(CASE WHEN ${candidates.deleted_at} IS NULL THEN ${candidates.id} ELSE NULL END)`.as(

@@ -5,7 +5,7 @@ CREATE TABLE `adminAuth` (
 	`role` text,
 	`access_token` text,
 	`refresh_token` text,
-	`created_at` text DEFAULT '2025-10-31T23:37:02.438Z',
+	`created_at` text DEFAULT '2025-11-04T11:52:28.821Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` text
@@ -27,7 +27,7 @@ CREATE TABLE `candidates` (
 	`profile_path` text,
 	`election_id` text NOT NULL,
 	`partylist_id` text,
-	`created_at` text DEFAULT '2025-10-31T23:37:02.440Z',
+	`created_at` text DEFAULT '2025-11-04T11:52:28.824Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0,
@@ -43,7 +43,8 @@ CREATE TABLE `elections` (
 	`status` text DEFAULT 'active' NOT NULL,
 	`end_time` text,
 	`end_date` text,
-	`created_at` text DEFAULT '2025-10-31T23:37:02.440Z',
+	`position_order` integer DEFAULT 99,
+	`created_at` text DEFAULT '2025-11-04T11:52:28.823Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -56,7 +57,7 @@ CREATE TABLE `partylist` (
 	`color` text NOT NULL,
 	`logo` text,
 	`logo_path` text,
-	`created_at` text DEFAULT '2025-10-31T23:37:02.441Z',
+	`created_at` text DEFAULT '2025-11-04T11:52:28.826Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -68,7 +69,7 @@ CREATE TABLE `students` (
 	`fullname` text NOT NULL,
 	`email` text,
 	`isRegistered` integer DEFAULT 0,
-	`created_at` text DEFAULT '2025-10-31T23:37:02.440Z',
+	`created_at` text DEFAULT '2025-11-04T11:52:28.825Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
@@ -89,7 +90,7 @@ CREATE TABLE `voteTallies` (
 	`votes_count` integer NOT NULL,
 	`percentage` numeric NOT NULL,
 	`total_votes` integer NOT NULL,
-	`created_at` text DEFAULT '2025-10-31T23:37:02.441Z',
+	`created_at` text DEFAULT '2025-11-04T11:52:28.826Z',
 	`updated_at` text,
 	`deleted_at` text,
 	`synced_at` integer DEFAULT 0
