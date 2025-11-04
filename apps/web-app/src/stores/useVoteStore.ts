@@ -35,7 +35,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     // 1) list active elections (+ has_voted) from the view
     const { data: electionsRaw, error: e1 } = await supabase
       .from("elections_with_user_flag")
-      .select("id, election, has_voted, status")
+      .select("id, election, has_voted, status, position_order")
       .eq("status", "active")
       .order("created_at", { ascending: true });
 
@@ -86,14 +86,17 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     const elections: Election[] = electionsRaw.map((e) => ({
       id: e.id,
       title: e.election,
+      position_order: e.position_order ?? 99,
       has_voted: !!e.has_voted,
       candidates: (byElection[e.id] || []).sort(
         (a, b) => b.votes_count - a.votes_count
       ),
     }));
+    elections.sort(
+      (a, b) => (a.position_order ?? 99) - (b.position_order ?? 99)
+    );
 
     set({ elections, loading: false, error: null });
-
     return { data: elections, error: null };
   },
 
