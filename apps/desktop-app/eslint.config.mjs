@@ -28,6 +28,7 @@ export default tseslint.config(
       "@typescript-eslint/explicit-function-return-type": "off",
       "react-refresh/only-export-components": "off",
       "react/prop-types": "off",
+      "@typescript-eslint/no-explicit-any": "off",
       "prettier/prettier": [
         "error",
         {

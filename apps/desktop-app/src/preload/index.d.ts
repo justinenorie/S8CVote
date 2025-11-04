@@ -13,11 +13,10 @@ declare global {
     // Tandaan mo toh: Use for type safes for calling api (sige)
     electronAPI: {
       // RESULTS
-      onEmailConfirmedURL: (callback) => Promise<void>;
       voteTalliesInsertMany: (rows: CandidateResult[]) => Promise<void>;
       voteTalliesDeleteByElectionId: (id: string) => Promise<void>;
-      voteTalliesGetAll: () => Promise<>;
-      voteTalliesGetUnsynced: () => Promise<>;
+      voteTalliesGetAll: () => Promise<any>;
+      voteTalliesGetUnsynced: () => Promise<any>;
       voteTalliesMarkSynced: (ids: string[]) => Promise<void>;
       voteTalliesBulkUpsert: (records: CandidateResult[]) => Promise<void>;
 
@@ -60,7 +59,7 @@ declare global {
       cleanupRemovedRecords: () => Promise<void>;
 
       // Elections
-      getElections: () => Promise<>;
+      getElections: () => Promise<any>;
       addElection: (data: Election) => Promise<void>;
       updateElection: (id, updates: Election) => Promise<void>;
       deleteElection: (id: string) => Promise<void>;

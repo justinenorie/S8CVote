@@ -20,7 +20,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { db, expo_sqlite } from "@/db/client";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "@/db/drizzle/migrations";
-import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+// import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 
 // // autosync imports
 // import { AppState } from "react-native";
@@ -47,7 +47,11 @@ const RootLayout = () => {
   });
 
   const { success, error: migrationError } = useMigrations(db, migrations);
-  useDrizzleStudio(expo_sqlite);
+  // useDrizzleStudio(expo_sqlite);
+
+  //   if (__DEV__) {
+  //   useDrizzleStudio(expo_sqlite);
+  // }
 
   const { session, loadSession } = useAuthStore();
   // const [dbReady, setDbReady] = useState(false);
