@@ -65,7 +65,6 @@ export const useVoteStore = create<VoteState>((set, get) => ({
 
   setStudentSession: (id: string, name: string) => {
     set({ studentSessionId: id, studentSessionName: name });
-    console.log(id);
     return Promise.resolve();
   },
 
@@ -107,10 +106,6 @@ export const useVoteStore = create<VoteState>((set, get) => ({
         return await get().loadElections();
       }
 
-      console.log(elections);
-
-      console.log(allDone);
-
       set({ elections, loading: false });
       return { data: elections, error: null };
     } catch (err: any) {
@@ -147,8 +142,6 @@ export const useVoteStore = create<VoteState>((set, get) => ({
       set({ loading: true, error: null });
 
       const local = await hasLocalVote(studentId, electionId);
-
-      console.log(local);
 
       if (!local) {
         return {
@@ -192,8 +185,8 @@ export const useVoteStore = create<VoteState>((set, get) => ({
         { event: "INSERT", schema: "public", table: "votes" },
         async () => {
           console.log("🔃 Vote detected → refreshing UI");
-          await get().loadElections();
           await syncElectionsAndCandidates();
+          await get().loadElections();
         }
       )
       .subscribe();

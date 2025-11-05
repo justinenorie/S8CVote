@@ -175,6 +175,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
             <Input
               placeholder="Student ID"
               value={studentId}
+              keyboardType="numeric"
               onChangeText={(text) => {
                 setStudentId(text);
                 if (errorMessage) setErrorMessage("");

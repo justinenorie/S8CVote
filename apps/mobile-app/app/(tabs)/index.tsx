@@ -1,18 +1,16 @@
 import { ElectionCard } from "@/components/dashboard/ElectionCard";
 import { Text } from "@/components/ui/text";
-import { useRealtime } from "@/hooks/useRealtimeSync";
 import { useVoteStore } from "@/store/useVoteStore";
 import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function Dashboard() {
-  const { elections, loadElections, error, lastUpdated, studentSessionId } =
-    useVoteStore();
+  const { elections, loadElections, error, studentSessionId } = useVoteStore();
 
   useEffect(() => {
     loadElections();
-  }, [loadElections, lastUpdated]);
+  }, [loadElections]);
 
   useEffect(() => {
     if (!studentSessionId) {
@@ -23,8 +21,6 @@ export default function Dashboard() {
       });
     }
   }, [studentSessionId]);
-
-  useRealtime();
 
   return (
     <ScrollView className="py-10 px-3 bg-BGlight dark:bg-BGdark">
