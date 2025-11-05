@@ -17,19 +17,10 @@ import toastConfig from "@/components/toastConfig";
 import { useAuthStore } from "@/store/useAuthStore";
 
 // local db imports
-import { db } from "@/db/client";
-// import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import { db, expo_sqlite } from "@/db/client";
 import migrations from "@/db/drizzle/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-
-// // autosync imports
-// import { AppState } from "react-native";
-// import { isOnline } from "@/utils/network";
-// import {
-//   syncElectionsAndCandidates,
-//   syncStudentsFromSupabase,
-//   syncVotesToSupabase,
-// } from "@/db/queries/syncQuery";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 
 const RootLayout = () => {
   const [loaded, error] = useFonts({
@@ -47,7 +38,7 @@ const RootLayout = () => {
   });
 
   const { success, error: migrationError } = useMigrations(db, migrations);
-  // useDrizzleStudio(expo_sqlite);
+  useDrizzleStudio(expo_sqlite);
 
   //   if (__DEV__) {
   //   useDrizzleStudio(expo_sqlite);

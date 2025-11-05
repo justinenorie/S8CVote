@@ -1,7 +1,7 @@
-import { db } from "../client";
-import { elections, candidates, students, votes, voteTallies } from "../schema";
-import { eq } from "drizzle-orm";
 import { supabase } from "@/lib/supabaseClient";
+import { eq } from "drizzle-orm";
+import { db } from "../client";
+import { candidates, elections, students, votes, voteTallies } from "../schema";
 
 export async function syncElectionsAndCandidates() {
   try {
@@ -16,6 +16,7 @@ export async function syncElectionsAndCandidates() {
     if (e1 || !electionsRaw)
       throw new Error(e1?.message ?? "Failed to fetch elections");
 
+    // TODO: kinda huge issue in big datas
     // 2️⃣ Save elections locally
     await db.delete(elections);
     await db.insert(elections).values(
@@ -96,7 +97,6 @@ export async function syncStudentsFromSupabase() {
 }
 
 export async function syncVotesToSupabase() {
-  console.log("SYNC FOR VOTE GOT CALLED");
   const unsyncedVotes = await db
     .select()
     .from(votes)

@@ -74,6 +74,7 @@ export function AddElectionModal({
       end_time: values.time.toString(),
       description: values.description ?? "",
     };
+    console.log(payload);
 
     const result = await addElection(payload);
 
@@ -122,7 +123,7 @@ export function AddElectionModal({
                   </div>
                   <FormControl>
                     <Input
-                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 border-1"
+                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 border"
                       placeholder="e.g. President"
                       {...field}
                     />
@@ -142,7 +143,7 @@ export function AddElectionModal({
                     <Input
                       type="number"
                       min={1}
-                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 border-1"
+                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 border"
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
@@ -164,14 +165,14 @@ export function AddElectionModal({
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className={`bg-PRIMARY-50/50 dark:bg-input/20 text-TEXTdark dark:text-TEXTlight hover:dark:text-TEXTlight border-PRIMARY-800/50 dark:border-PRIMARY-400/50 w-full justify-between border-1 ${
+                          className={`bg-PRIMARY-50/50 dark:bg-input/20 text-TEXTdark dark:text-TEXTlight hover:dark:text-TEXTlight border-PRIMARY-800/50 dark:border-PRIMARY-400/50 w-full justify-between border ${
                             field.value
-                              ? field.value.toLocaleDateString()
+                              ? field.value.toDateString()
                               : "text-TEXTdark/40 dark:text-TEXTlight/50"
                           }`}
                         >
                           {field.value
-                            ? field.value.toLocaleDateString()
+                            ? field.value.toDateString()
                             : "Select date"}
                           <ChevronDownIcon />
                         </Button>
@@ -204,7 +205,7 @@ export function AddElectionModal({
                     <FormLabel>End Time</FormLabel>
                     <FormControl>
                       <Input
-                        className="bg-PRIMARY-50 border-PRIMARY-800/50 dark:border-PRIMARY-400/50 appearance-none border-1 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                        className="bg-PRIMARY-50 border-PRIMARY-800/50 dark:border-PRIMARY-400/50 appearance-none border [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                         type="time"
                         id="time-picker"
                         step="1"
@@ -278,7 +279,7 @@ export function AddElectionModal({
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea
-                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 max-h-30 max-w-full border-1"
+                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 max-h-30 max-w-full border"
                       placeholder="Add Description here......"
                       {...field}
                     />

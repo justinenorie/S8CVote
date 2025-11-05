@@ -6,6 +6,14 @@ import { Button } from "../ui/button";
 import { CandidateCard } from "./CandidateCard";
 import { VotingModal } from "./VotingModal";
 
+interface ElectionCardProps {
+  id: string;
+  title: string;
+  has_voted: boolean;
+  candidates: Candidate[];
+  elections: Election;
+}
+
 const getOrdinalNumber = (n: number): string => {
   const suffixes = ["th", "st", "nd", "rd"];
   const v = n % 100;
@@ -18,7 +26,7 @@ export function ElectionCard({
   has_voted,
   candidates,
   elections,
-}: Election) {
+}: ElectionCardProps) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (

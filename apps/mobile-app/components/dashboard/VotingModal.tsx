@@ -115,8 +115,6 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
       return;
     }
 
-    await useVoteStore.getState().loadElections();
-
     Toast.show({
       type: "success",
       text1: `Vote Submitted!`,

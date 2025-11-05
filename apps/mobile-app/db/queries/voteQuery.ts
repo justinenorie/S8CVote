@@ -1,8 +1,8 @@
 // db/queries/voteQueries.ts
-import { db } from "../client";
-import { elections, candidates, students, votes } from "../schema";
-import { eq, and } from "drizzle-orm";
 import { Election } from "@/types/api";
+import { and, eq } from "drizzle-orm";
+import { db } from "../client";
+import { candidates, elections, students, votes } from "../schema";
 
 export async function getElectionsWithCandidates() {
   const electionRows = await db.select().from(elections);
@@ -67,24 +67,30 @@ export async function insertLocalVote(
 
 // Check if student already voted locally
 export async function hasLocalVote(studentId: string, electionId: string) {
-  const localStudent = await db
+  const student = await db
     .select()
     .from(students)
     .where(eq(students.student_id, studentId))
     .limit(1);
 
-  if (localStudent.length > 0) {
-    const voted = await db
-      .select()
-      .from(votes)
-      .where(
-        and(eq(votes.student_id, studentId), eq(votes.election_id, electionId))
-      );
-
+  if (student.length === 0) {
     return {
-      is_valid: true,
-      student_name: localStudent[0].fullname,
-      has_voted: voted.length > 0,
+      is_valid: false,
+      student_name: "",
+      has_voted: false,
     };
   }
+
+  const voteRecord = await db
+    .select()
+    .from(votes)
+    .where(
+      and(eq(votes.student_id, studentId), eq(votes.election_id, electionId))
+    );
+
+  return {
+    is_valid: true,
+    student_name: student[0].fullname,
+    has_voted: voteRecord.length > 0, // ✅ Per election
+  };
 }

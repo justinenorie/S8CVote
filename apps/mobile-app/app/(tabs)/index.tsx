@@ -54,7 +54,7 @@ export default function Dashboard() {
             elections={elec}
             id={elec.id}
             title={elec.title}
-            has_voted={elec.has_voted}
+            has_voted={elec.has_voted ?? false}
             candidates={elec.candidates.map((candi) => ({
               candidate_id: candi.candidate_id,
               candidate_name: candi.candidate_name,

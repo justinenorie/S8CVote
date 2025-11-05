@@ -63,11 +63,9 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
         let duration = "Not set";
 
         if (e.end_date && e.end_time) {
-          // Combine date + time into a single Date
-          const endDateTime = new Date(`${e.end_date}T${e.end_time}`);
+          const endDateTime = toLocalDate(e.end_date, e.end_time);
           const now = new Date();
 
-          // Difference in ms
           const diffMs = endDateTime.getTime() - now.getTime();
 
           if (diffMs > 0) {
@@ -296,11 +294,13 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
 
     for (const elec of dbElections) {
       if (elec.end_date && elec.end_time && elec.id) {
-        const end = new Date(`${elec.end_date}T${elec.end_time}`);
+        const end = toLocalDate(elec.end_date, elec.end_time);
+
         if (now > end && elec.status !== "closed") {
           await window.electronAPI.updateElection(elec.id, {
             status: "closed",
           });
+
           console.log("I get");
           await get().saveElectionResultsSnapshot(elec.id);
         }
@@ -308,3 +308,34 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     }
   },
 }));
+
+function toLocalDate(dateStr: string, timeStr: string): Date {
+  // dateStr: "YYYY-MM-DD"
+  // timeStr: "HH:mm" | "HH:mm:ss" | "hh:mm AM/PM" | "hh:mm:ss AM/PM"
+  let h = 0,
+    m = 0,
+    s = 0;
+
+  const ampm =
+    timeStr.trim().toUpperCase().includes("AM") ||
+    timeStr.trim().toUpperCase().includes("PM");
+  const clean = timeStr
+    .trim()
+    .toUpperCase()
+    .replace(/\s*(AM|PM)\s*$/, "");
+  const parts = clean.split(":").map(Number);
+  h = parts[0] ?? 0;
+  m = parts[1] ?? 0;
+  s = parts[2] ?? 0;
+
+  if (ampm) {
+    const isPM = timeStr.toUpperCase().includes("PM");
+    // Convert 12-hour to 24-hour
+    if (isPM && h < 12) h += 12;
+    if (!isPM && h === 12) h = 0;
+  }
+
+  const [year, month, day] = dateStr.split("-").map(Number);
+  // Construct as LOCAL time
+  return new Date(year, month - 1, day, h, m, s, 0);
+}
