@@ -18,10 +18,10 @@ import { useRealtime } from "@/hooks/useRealtimeSync";
 import { useAuthStore } from "@/store/useAuthStore";
 
 // local db imports
-import { db, expo_sqlite } from "@/db/client";
+import { db } from "@/db/client";
 import migrations from "@/db/drizzle/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+// import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 
 const RootLayout = () => {
   const [loaded, error] = useFonts({
@@ -39,7 +39,7 @@ const RootLayout = () => {
   });
 
   const { success, error: migrationError } = useMigrations(db, migrations);
-  useDrizzleStudio(expo_sqlite);
+  // useDrizzleStudio(expo_sqlite);
 
   //   if (__DEV__) {
   //   useDrizzleStudio(expo_sqlite);

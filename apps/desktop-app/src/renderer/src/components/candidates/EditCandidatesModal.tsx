@@ -53,13 +53,6 @@ export const EditCandidatesModal = ({
 }): React.ReactElement | null => {
   const form = useForm<EditCandidatesModal>({
     resolver: zodResolver(formCandidateSchema),
-    defaultValues: {
-      profile: "",
-      name: "",
-      election_id: "",
-      partylist_id: "",
-      description: "",
-    },
   });
 
   const { reset } = form;
@@ -89,7 +82,7 @@ export const EditCandidatesModal = ({
         profile: candidates.profile || "",
         name: candidates.name || "",
         election_id: String(candidates.election_id),
-        partylist_id: String(candidates.partylist_id),
+        partylist_id: candidates.partylist_id || undefined,
         description: candidates.description || "",
       });
     }
@@ -145,7 +138,7 @@ export const EditCandidatesModal = ({
       profile_path: profilePath,
       name: values.name,
       election_id: values.election_id,
-      partylist_id: values.partylist_id,
+      partylist_id: values.partylist_id || undefined,
       description: values.description,
     };
 
@@ -301,6 +294,7 @@ export const EditCandidatesModal = ({
                           field.onChange(value);
                         }
                       }}
+                      defaultValue={field.value}
                     >
                       <SelectTrigger className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 dark:bg-muted/20 w-full rounded-md border-1">
                         <SelectValue placeholder="Select Partylist Group" />
