@@ -1,6 +1,6 @@
+import { desc } from "drizzle-orm";
 import { db } from "../client";
 import { voteTallies } from "../schema";
-import { desc } from "drizzle-orm";
 
 // Fetch from local DB
 export async function getLocalResults() {

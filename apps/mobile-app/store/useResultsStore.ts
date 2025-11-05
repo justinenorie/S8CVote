@@ -1,7 +1,5 @@
-import { create } from "zustand";
-import { syncVoteResults } from "@/db/queries/syncQuery";
 import { getLocalResults } from "@/db/queries/resultQuery";
-import { isOnline } from "@/utils/network";
+import { create } from "zustand";
 
 interface CandidateRow {
   id: string;
@@ -71,11 +69,11 @@ export const useResultsStore = create<ResultsStore>((set) => ({
     set({ results: groupResults(local), loading: false });
 
     //If online → sync → fetch again
-    if (await isOnline()) {
-      await syncVoteResults();
-      const fresh = await getLocalResults();
-      set({ results: groupResults(fresh) });
-    }
+    // if (await isOnline()) {
+    //   await syncVoteResults();
+    //   const fresh = await getLocalResults();
+    //   set({ results: groupResults(fresh) });
+    // }
   },
 }));
 
