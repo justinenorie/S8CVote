@@ -17,6 +17,7 @@ export async function syncElectionsAndCandidates() {
       throw new Error(e1?.message ?? "Failed to fetch elections");
 
     // TODO: kinda huge issue in big datas
+    // TODO: need to change in updating instead of delete then insert
     // 2️⃣ Save elections locally
     await db.delete(elections);
     await db.insert(elections).values(
@@ -103,6 +104,11 @@ export async function syncVotesToSupabase() {
     .where(eq(votes.synced_at, 0));
 
   for (const v of unsyncedVotes) {
+    if (!v.student_id || !v.election_id || !v.candidate_id) {
+      console.warn("❗ Skipping invalid vote:", v);
+      continue;
+    }
+
     const { error } = await supabase.rpc("admin_cast_vote", {
       p_election_id: v.election_id,
       p_candidate_id: v.candidate_id,
@@ -112,6 +118,45 @@ export async function syncVotesToSupabase() {
     if (!error) {
       await db.update(votes).set({ synced_at: 1 }).where(eq(votes.id, v.id));
     }
+  }
+}
+
+//Get all votes from supabase
+// TODO: much better if we get from supabase then marked it as voted so we don't need to import this huge data again.
+export async function syncVotesFromSupabase() {
+  try {
+    console.log("🌐 Syncing votes from Supabase...");
+
+    const { data, error } = await supabase
+      .from("votes")
+      .select(
+        "id, election_id, candidate_id, student_id, created_at, updated_at"
+      );
+
+    if (error || !data) {
+      throw new Error(error?.message ?? "Failed to fetch votes");
+    }
+
+    // Clear local votes to avoid inconsistencies
+    await db.delete(votes);
+
+    // Insert fresh copy from supabase
+    await db.insert(votes).values(
+      data.map((v) => ({
+        id: v.id,
+        election_id: v.election_id,
+        candidate_id: v.candidate_id,
+        student_id: v.student_id,
+        created_at: v.created_at ?? new Date().toISOString(),
+        updated_at: v.updated_at ?? null,
+        deleted_at: null,
+        synced_at: 1, // ✅ Mark synced because these came from server
+      }))
+    );
+
+    console.log(`✅ Synced ${data.length} votes to SQLite`);
+  } catch (err) {
+    console.error("❌ syncVotesFromSupabase failed:", err);
   }
 }
 

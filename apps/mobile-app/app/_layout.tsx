@@ -17,10 +17,10 @@ import toastConfig from "@/components/toastConfig";
 import { useAuthStore } from "@/store/useAuthStore";
 
 // local db imports
-import { db } from "@/db/client";
+import { db, expo_sqlite } from "@/db/client";
 import migrations from "@/db/drizzle/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-// import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 
 const RootLayout = () => {
   const [loaded, error] = useFonts({
@@ -38,7 +38,7 @@ const RootLayout = () => {
   });
 
   const { success, error: migrationError } = useMigrations(db, migrations);
-  // useDrizzleStudio(expo_sqlite);
+  useDrizzleStudio(expo_sqlite);
 
   //   if (__DEV__) {
   //   useDrizzleStudio(expo_sqlite);
@@ -52,9 +52,11 @@ const RootLayout = () => {
   }, [error, migrationError]);
 
   useEffect(() => {
-    loadSession(); // check auth state on app start
+    if (success) {
+      loadSession();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [success]);
 
   configureReanimatedLogger({
     level: ReanimatedLogLevel.warn,

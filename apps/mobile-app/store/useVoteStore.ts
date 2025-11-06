@@ -109,6 +109,13 @@ export const useVoteStore = create<VoteState>((set, get) => ({
         await get().clearLocalVotes();
         // ✅ Re-run loadElections AFTER clearing to update UI
         set({ elections: [], loading: false });
+
+        // TODO: Change this later on into manually sync instead of this
+        // if (await isOnline()) {
+        //   await syncVotesToSupabase();
+        //   await syncElectionsAndCandidates();
+        // }
+
         return await get().loadElections();
       }
 
@@ -127,6 +134,11 @@ export const useVoteStore = create<VoteState>((set, get) => ({
   castVote: async (electionId, candidateId, studentId) => {
     try {
       console.log("🗳️ Casting vote (offline-first)...");
+
+      if (!studentId) {
+        console.warn("❗ No student session — cannot store vote");
+        return { data: null, error: "No student session" };
+      }
 
       await insertLocalVote(electionId, candidateId, studentId);
       await get().loadElections();

@@ -7,6 +7,7 @@ import {
   syncElectionsAndCandidates,
   syncStudentsFromSupabase,
   syncVoteResults,
+  syncVotesFromSupabase,
   syncVotesToSupabase,
 } from "@/db/queries/syncQuery";
 
@@ -25,6 +26,7 @@ async function runFullSync(
     syncElectionsAndCandidates(),
     syncStudentsFromSupabase(),
     syncVotesToSupabase(),
+    syncVotesFromSupabase(),
     syncVoteResults(),
   ]);
   setSyncing(false);

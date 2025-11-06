@@ -1,9 +1,9 @@
 import {
+  integer,
+  numeric,
+  real,
   sqliteTable,
   text,
-  integer,
-  real,
-  numeric,
 } from "drizzle-orm/sqlite-core";
 
 // Save ADMIN AUTH Table

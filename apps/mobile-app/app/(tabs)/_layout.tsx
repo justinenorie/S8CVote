@@ -1,16 +1,16 @@
-import { Tabs, Redirect } from "expo-router";
-import React from "react";
-import { Platform } from "react-native";
-import { LayoutDashboard, ChartGantt, Settings } from "lucide-react-native";
 import { useTheme } from "@/components/ThemeProvider";
 import { COLORS } from "@/constants/Colors";
-import { useAuthStore } from "@/store/useAuthStore";
 import { useAppSync } from "@/hooks/useAppSync";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Redirect, Tabs } from "expo-router";
+import { ChartGantt, LayoutDashboard, Settings } from "lucide-react-native";
+import React from "react";
+import { Platform } from "react-native";
 
 export default function TabsLayout() {
   const { theme } = useTheme();
   const { session, loading } = useAuthStore();
-  // Sync
+
   useAppSync();
 
   if (loading) return null;
