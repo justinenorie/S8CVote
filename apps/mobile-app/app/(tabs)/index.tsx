@@ -3,24 +3,15 @@ import { Text } from "@/components/ui/text";
 import { useVoteStore } from "@/store/useVoteStore";
 import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 export default function Dashboard() {
-  const { elections, loadElections, error, studentSessionId } = useVoteStore();
+  const { elections, loadElections, error } = useVoteStore();
 
   useEffect(() => {
     loadElections();
   }, [loadElections]);
 
-  useEffect(() => {
-    if (!studentSessionId) {
-      Toast.show({
-        type: "success",
-        text1: "All elections completed",
-        text2: "Thank you for participating!",
-      });
-    }
-  }, [studentSessionId]);
+  // TODO: add election for example it should display as 1/8, 2/8 and so on to mark how many elections remaining to vote
 
   return (
     <ScrollView className="py-10 px-3 bg-BGlight dark:bg-BGdark">

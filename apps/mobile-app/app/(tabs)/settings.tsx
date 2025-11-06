@@ -1,9 +1,9 @@
-import { View, ScrollView } from "react-native";
-import { Text } from "@/components/ui/text";
-import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useSyncStatusStore } from "@/store/useSyncStatusStore";
+import { ScrollView, View } from "react-native";
 
 export default function Settings() {
   const { adminData, signOut } = useAuthStore();

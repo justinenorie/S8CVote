@@ -204,12 +204,6 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
                 className="bg-PRIMARY900 dark:bg-PRIMARY50 active:bg-PRIMARY800 active:dark:bg-PRIMARY200"
                 onPress={handleSubmitStudentId}
               >
-                {/* {loading ? (
-                            <ActivityIndicator color="#fff" />
-                          ) : (
-                            <Text className="text-TEXTlight dark:text-TEXTdark">Sign in</Text>
-                          )} */}
-
                 <Text className="text-TEXTlight dark:text-TEXTdark">
                   {loading ? (
                     <ActivityIndicator color="#fff" />

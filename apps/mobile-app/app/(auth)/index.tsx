@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, ActivityIndicator } from "react-native";
-import Toast from "react-native-toast-message";
-import { useForm, Controller } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
+import { z } from "zod";
 
-import { Text } from "@/components/ui/text";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react-native";
+import { Text } from "@/components/ui/text";
 import { useAuthStore } from "@/store/useAuthStore";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react-native";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email" }),
@@ -25,8 +24,6 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, loading, error, user } = useAuthStore();
-
-  const router = useRouter();
 
   const {
     control,
@@ -59,9 +56,8 @@ export default function LoginPage() {
         text1: `Welcome ${user.email}`,
         text2: "Successfully log in!",
       });
-      router.replace("/(tabs)");
+      // router.replace("/(tabs)");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, user]);
 
   return (

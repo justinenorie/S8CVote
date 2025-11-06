@@ -47,7 +47,7 @@ const RootLayout = () => {
 
   useRealtime();
 
-  const { session, loadSession } = useAuthStore();
+  const { session, loadSession, loading } = useAuthStore();
   // const [dbReady, setDbReady] = useState(false);
 
   // // listner to check if online
@@ -89,7 +89,8 @@ const RootLayout = () => {
     strict: false, // Reanimated runs in strict mode by default
   });
 
-  if (!loaded || !success) {
+  if (!loaded || !success || loading) {
+    // TODO: add a loading screen
     // Async font loading only occurs in development.
     return null;
   }
