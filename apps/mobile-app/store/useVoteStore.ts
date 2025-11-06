@@ -97,6 +97,12 @@ export const useVoteStore = create<VoteState>((set, get) => ({
         })
       );
 
+      // IF there are no elections, just return normally — do NOT trigger reset to prevent spamming in new data or fresh installed
+      if (elections.length === 0) {
+        set({ elections, loading: false });
+        return { data: elections, error: null };
+      }
+
       const allDone = elections.every((e) => e.has_voted === true);
       if (allDone) {
         console.log("🎉 All elections completed — resetting session...");

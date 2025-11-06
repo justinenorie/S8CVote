@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActivityIndicator, TouchableOpacity, View } from "react-native";
@@ -24,6 +25,8 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, loading, error, user } = useAuthStore();
+
+  const router = useRouter();
 
   const {
     control,
@@ -56,8 +59,9 @@ export default function LoginPage() {
         text1: `Welcome ${user.email}`,
         text2: "Successfully log in!",
       });
-      // router.replace("/(tabs)");
+      router.replace("/(tabs)");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, user]);
 
   return (

@@ -14,7 +14,6 @@ import "./../global.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import toastConfig from "@/components/toastConfig";
 // state imports
-import { useRealtime } from "@/hooks/useRealtimeSync";
 import { useAuthStore } from "@/store/useAuthStore";
 
 // local db imports
@@ -45,34 +44,7 @@ const RootLayout = () => {
   //   useDrizzleStudio(expo_sqlite);
   // }
 
-  useRealtime();
-
-  const { session, loadSession, loading } = useAuthStore();
-  // const [dbReady, setDbReady] = useState(false);
-
-  // // listner to check if online
-  // useEffect(() => {
-  //   const subscription = AppState.addEventListener("change", async (state) => {
-  //     if (state === "active") {
-  //       const online = await isOnline();
-  //       if (online) {
-  //         console.log("🔄 App active & online — syncing pending data...");
-  //         await Promise.all([
-  //           syncElectionsAndCandidates(),
-  //           syncStudentsFromSupabase(),
-  //           syncVotesToSupabase(),
-  //         ]);
-  //       } else {
-  //         console.log("📴 Offline mode detected");
-  //       }
-  //     }
-  //   });
-
-  //   // Cleanup when layout unmounts
-  //   return () => {
-  //     subscription.remove();
-  //   };
-  // }, []);
+  const { loadSession, initialized } = useAuthStore();
 
   useEffect(() => {
     if (error) throw error;
@@ -89,24 +61,16 @@ const RootLayout = () => {
     strict: false, // Reanimated runs in strict mode by default
   });
 
-  if (!loaded || !success || loading) {
+  if (!loaded || !success || !initialized) {
     // TODO: add a loading screen
-    // Async font loading only occurs in development.
     return null;
   }
 
   return (
     <ThemeProvider>
       <Stack>
-        {session ? (
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
-        )}
-
-        {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-        {/* <Stack.Screen name="(auth)/index" options={{ headerShown: false }} /> */}
-
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

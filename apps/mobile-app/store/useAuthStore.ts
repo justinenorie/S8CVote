@@ -21,6 +21,7 @@ interface AuthState {
   session: Session | null;
   adminData: AdminData | null;
   loading: boolean;
+  initialized: boolean;
   error: string | null;
 
   signIn: (email: string, password: string) => Promise<void>;
@@ -33,6 +34,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   session: null,
   adminData: null,
   loading: false,
+  initialized: false,
   error: null,
 
   signIn: async (email, password) => {
@@ -116,6 +118,7 @@ export const useAuthStore = create<AuthState>((set) => ({
             created_at: localAdmin.created_at!,
             updated_at: localAdmin.updated_at!,
           },
+          initialized: true,
           loading: false,
         });
         return;
@@ -130,6 +133,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         set({
           user: data.session.user,
           session: data.session,
+          initialized: true,
           loading: false,
         });
 
@@ -143,7 +147,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           refresh_token: data.session.refresh_token ?? "",
         });
       } else {
-        set({ user: null, session: null, loading: false });
+        set({ user: null, session: null, loading: false, initialized: true });
       }
 
       // Listen for auth changes (only while online)
@@ -163,7 +167,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       });
     } catch (err) {
       console.error("loadSession error:", err);
-      set({ user: null, session: null, loading: false });
+      set({ user: null, session: null, loading: false, initialized: true });
     }
   },
 

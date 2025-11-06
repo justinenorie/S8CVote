@@ -1,15 +1,18 @@
 import { ElectionCard } from "@/components/dashboard/ElectionCard";
 import { Text } from "@/components/ui/text";
+import { useRealtime } from "@/hooks/useRealtimeSync";
 import { useVoteStore } from "@/store/useVoteStore";
 import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 
 export default function Dashboard() {
-  const { elections, loadElections, error } = useVoteStore();
+  const { elections, loadElections, error, lastUpdated } = useVoteStore();
 
   useEffect(() => {
     loadElections();
-  }, [loadElections]);
+  }, [loadElections, lastUpdated]);
+
+  useRealtime();
 
   // TODO: add election for example it should display as 1/8, 2/8 and so on to mark how many elections remaining to vote
 

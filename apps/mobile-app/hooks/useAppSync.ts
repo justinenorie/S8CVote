@@ -1,19 +1,19 @@
+import { isOnline } from "@/utils/network";
+import NetInfo from "@react-native-community/netinfo";
 import { useEffect, useRef } from "react";
 import { AppState } from "react-native";
-import NetInfo from "@react-native-community/netinfo";
-import { isOnline } from "@/utils/network";
 
 import {
   syncElectionsAndCandidates,
   syncStudentsFromSupabase,
-  syncVotesToSupabase,
   syncVoteResults,
+  syncVotesToSupabase,
 } from "@/db/queries/syncQuery";
 
-import { useVoteStore } from "@/store/useVoteStore";
 import { useSyncStatusStore } from "@/store/useSyncStatusStore";
+import { useVoteStore } from "@/store/useVoteStore";
 
-const SYNC_COOLDOWN = 10 * 1000;
+const SYNC_COOLDOWN = 5 * 1000;
 
 async function runFullSync(
   setSyncing: any,
