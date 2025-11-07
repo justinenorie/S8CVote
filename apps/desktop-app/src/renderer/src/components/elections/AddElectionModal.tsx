@@ -22,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useElectionStore } from "@renderer/stores/useElectionStore";
+import { toHMLocal, toYMDLocal } from "@renderer/utils/DateTimeConverter";
 
 // Add Election Form Schema
 const formSchema = z.object({
@@ -70,11 +71,12 @@ export function AddElectionModal({
       election: values.name,
       position_order: Number(values.order),
       status: values.status,
-      end_date: values.date.toISOString().split("T")[0],
-      end_time: values.time.toString(),
+      end_date: toYMDLocal(values.date),
+      end_time: toHMLocal(values.time),
       description: values.description ?? "",
     };
-    console.log(payload);
+
+    console.log("ADDING ELECTION PAYLOAD:", payload.end_date);
 
     const result = await addElection(payload);
 
@@ -317,3 +319,18 @@ export function AddElectionModal({
     </div>
   );
 }
+
+// // Year month day converter
+// function toYMDLocal(d: Date) {
+//   const y = d.getFullYear();
+//   const m = String(d.getMonth() + 1).padStart(2, "0");
+//   const day = String(d.getDate()).padStart(2, "0");
+//   return `${y}-${m}-${day}`;
+// }
+// // Time converter
+// function toHMLocal(t: Date | string) {
+//   if (typeof t === "string") return t; // assume already "HH:mm"
+//   const h = String(t.getHours()).padStart(2, "0");
+//   const m = String(t.getMinutes()).padStart(2, "0");
+//   return `${h}:${m}`;
+// }

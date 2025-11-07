@@ -23,6 +23,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useElectionStore } from "@renderer/stores/useElectionStore";
 import { Election } from "@renderer/types/api";
+import {
+  toYMDLocal,
+  toHMLocal,
+  nowYMD,
+  nowHM,
+} from "@renderer/utils/DateTimeConverter";
 
 // Election Form Schema
 const formSchema = z.object({
@@ -86,23 +92,21 @@ export function EditElectionModal({
 
   // Submit the updated data
   const onSubmit = async (values: EditElectionForm): Promise<void> => {
-    let newDate = values.date;
-    let newTime = values.time;
+    const pickedDate: Date =
+      values.date instanceof Date ? values.date : new Date(values.date);
+    const pickedTime: Date | string = values.time;
 
-    if (values.status === "closed") {
-      newDate = new Date();
-      newTime = `${new Date().getHours().toString().padStart(2, "0")}:${new Date()
-        .getMinutes()
-        .toString()
-        .padStart(2, "0")}`;
-    }
+    const endDateLocal =
+      values.status === "closed" ? nowYMD() : toYMDLocal(pickedDate);
+    const endTimeLocal =
+      values.status === "closed" ? nowHM() : toHMLocal(pickedTime);
 
     const payload = {
       election: values.name,
       position_order: Number(values.order),
       status: values.status,
-      end_date: newDate.toISOString().split("T")[0],
-      end_time: newTime,
+      end_date: endDateLocal,
+      end_time: endTimeLocal,
       description: values.description ?? "",
     };
 
