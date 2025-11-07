@@ -8,7 +8,7 @@ type SignInResult<T = void> =
   | { data: T; error: null }
   | { data: null; error: null }
   | {
-      data: { user: User | null; session: Session | null };
+      data: { user: User | null; session?: Session | null };
       error: null;
     };
 
@@ -35,8 +35,10 @@ interface AuthState {
     student_id: string
   ) => Promise<SignInResult<{ fullname: string }>>;
   getCurrentUser: () => Promise<SignInResult<void>>;
-
   signOutStudent: () => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<SignInResult>;
+  verifyResetOtp: (email: string, token: string) => Promise<SignInResult>;
+  updatePassword: (newPassword: string) => Promise<SignInResult<void>>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -269,5 +271,50 @@ export const useAuthStore = create<AuthState>((set) => ({
   signOutStudent: async () => {
     await supabase.auth.signOut();
     set({ user: null, session: null });
+  },
+
+  // TODO: must check if the email exist in the database and verified
+  requestPasswordReset: async (email) => {
+    set({ loading: true, error: null });
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    set({ loading: false });
+
+    if (error) return { data: null, error: error.message };
+    return { data: null, error: null };
+  },
+
+  verifyResetOtp: async (email, token) => {
+    set({ loading: true, error: null });
+
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: "recovery",
+    });
+
+    set({ loading: false });
+
+    if (error) return { data: null, error: error.message };
+
+    // On success, user is now authenticated temporarily (session exists)
+    set({ user: data.user, session: data.session });
+    return { data, error: null };
+  },
+
+  updatePassword: async (newPassword) => {
+    set({ loading: true, error: null });
+
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    set({ loading: false });
+
+    if (error) return { data: null, error: error.message };
+    return { data, error: null };
   },
 }));

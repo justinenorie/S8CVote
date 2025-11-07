@@ -85,58 +85,59 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="bg-card flex w-full max-w-[1050px] overflow-hidden rounded-lg border shadow-lg">
-      {/* Left Side*/}
-      <div className="bg-card flex w-full flex-col items-center justify-center p-8 md:w-1/2">
-        <div>
-          <Typography variant="h2" className="">
-            Create an account
-          </Typography>
-          <Typography variant="p" className="text-muted-foreground mb-6">
-            Sign up now to get started with S8CVote
-          </Typography>
-        </div>
+    <div className="bg-BGlight dark:bg-BGdark flex min-h-screen items-center justify-center px-1 md:px-10">
+      <div className="md:bg-card flex w-full overflow-hidden rounded-lg shadow-lg md:max-w-[1050px] md:border">
+        {/* Left Side*/}
+        <div className="flex w-full flex-col items-center justify-center p-4 sm:p-6 md:w-1/2 md:p-8">
+          <div>
+            <Typography variant="h2" className="">
+              Create an account
+            </Typography>
+            <Typography variant="p" className="text-muted-foreground mb-6">
+              Sign up now to get started with S8CVote
+            </Typography>
+          </div>
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full space-y-4"
-          >
-            {/* Email */}
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
-                        <Mail className="h-5 w-5" />
-                      </span>
-                      <Input
-                        {...field}
-                        type="email"
-                        placeholder="email@example.com"
-                        className="px-10"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-full space-y-6"
+            >
+              {/* Email */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+                          <Mail className="h-5 w-5" />
+                        </span>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="email@example.com"
+                          className="px-10"
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Full Name */}
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <div className="flex flex-col gap-1">
-                      Full Name{" "}
-                      {/* <Typography
+              {/* Full Name */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <div className="flex flex-col gap-1">
+                        Full Name{" "}
+                        {/* <Typography
                         variant="small"
                         className="text-TEXTdark/50 dark:text-TEXTlight/50 text-xs"
                       >
@@ -144,143 +145,147 @@ export default function RegisterForm() {
                           "(Input your Student ID to automatically fill out your name)"
                         }
                       </Typography> */}
-                    </div>
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
-                        <UserRound className="h-5 w-5" />
-                      </span>
-                      <Input
-                        {...field}
-                        type="name"
-                        placeholder="eg. Juan Dela Cruz"
-                        className="px-10"
-                        // disabled
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                      </div>
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+                          <UserRound className="h-5 w-5" />
+                        </span>
+                        <Input
+                          {...field}
+                          type="name"
+                          placeholder="eg. Juan Dela Cruz"
+                          className="px-10"
+                          // disabled
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Student ID */}
+              <FormField
+                control={form.control}
+                name="student_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex flex-row items-center justify-between">
+                      Student ID{" "}
+                      {verified && !form.formState.errors.student_id && (
+                        <Typography
+                          variant="p"
+                          className="mt-1 text-sm text-green-600"
+                        >
+                          Verified
+                        </Typography>
+                      )}
+                    </FormLabel>
+
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+                          <IdCard className="h-5 w-5" />
+                        </span>
+                        <Input
+                          {...field}
+                          type="name"
+                          placeholder="eg. 20-0001"
+                          className={`border-2 px-10 ${
+                            verified
+                              ? "border-green-500 focus:border-green-600"
+                              : form.formState.errors.student_id
+                                ? "border-red-500 focus:border-red-600"
+                                : ""
+                          }`}
+                          onBlur={(e) => handleVerifyStudent(e.target.value)}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage></FormMessage>
+                  </FormItem>
+                )}
+              />
+
+              {/* Password */}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+                          <Lock className="h-5 w-5" />
+                        </span>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Password"
+                          className="px-10"
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {error && (
+                <Typography
+                  variant="small"
+                  className="text-center text-red-500"
+                >
+                  {error}
+                </Typography>
               )}
-            />
 
-            {/* Student ID */}
-            <FormField
-              control={form.control}
-              name="student_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex flex-row items-center justify-between">
-                    Student ID{" "}
-                    {verified && !form.formState.errors.student_id && (
-                      <Typography
-                        variant="p"
-                        className="mt-1 text-sm text-green-600"
-                      >
-                        Verified
-                      </Typography>
-                    )}
-                  </FormLabel>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Creating Account..." : "Create an account"}
+              </Button>
 
-                  <FormControl>
-                    <div className="relative">
-                      <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
-                        <IdCard className="h-5 w-5" />
-                      </span>
-                      <Input
-                        {...field}
-                        type="name"
-                        placeholder="eg. 20-0001"
-                        className={`border-2 px-10 ${
-                          verified
-                            ? "border-green-500 focus:border-green-600"
-                            : form.formState.errors.student_id
-                              ? "border-red-500 focus:border-red-600"
-                              : ""
-                        }`}
-                        onBlur={(e) => handleVerifyStudent(e.target.value)}
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage></FormMessage>
-                </FormItem>
-              )}
-            />
+              {/* Signup Link */}
+              <div className="grid w-full place-content-center justify-center">
+                <Typography
+                  variant="small"
+                  className="text-muted-foreground text-center"
+                >
+                  Already have an account?{" "}
+                  <Link href="/" className="text-primary hover:underline">
+                    Log in
+                  </Link>
+                </Typography>
+              </div>
+            </form>
+          </Form>
+        </div>
 
-            {/* Password */}
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
-                        <Lock className="h-5 w-5" />
-                      </span>
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password"
-                        className="px-10"
-                        {...field}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-5 w-5" />
-                        ) : (
-                          <Eye className="h-5 w-5" />
-                        )}
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {error && (
-              <Typography variant="small" className="text-center text-red-500">
-                {error}
-              </Typography>
-            )}
-
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating Account..." : "Create an account"}
-            </Button>
-
-            {/* Signup Link */}
-            <div className="grid w-full place-content-center justify-center">
-              <Typography
-                variant="small"
-                className="text-muted-foreground text-center"
-              >
-                Already have an account?{" "}
-                <Link href="/" className="text-primary hover:underline">
-                  Log in
-                </Link>
-              </Typography>
-            </div>
-          </form>
-        </Form>
-      </div>
-
-      {/* Right Side */}
-      <div className="hidden w-1/2 md:block">
-        <Image
-          // TODO: Change the image later on
-          src="/s8clogreg.jpg"
-          alt="Login illustration"
-          className="h-full w-full object-cover"
-          width={150}
-          height={150}
-          priority={true}
-        />
+        {/* Right Side */}
+        <div className="hidden w-1/2 md:block">
+          <Image
+            // TODO: Change the image later on
+            src="/s8clogreg.jpg"
+            alt="Login illustration"
+            className="h-full w-full object-cover"
+            width={150}
+            height={150}
+            priority={true}
+          />
+        </div>
       </div>
     </div>
   );

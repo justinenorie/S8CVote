@@ -45,7 +45,6 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (values: LoginFormValues) => {
-    // console.log("Form Data:", values);
     const result = await signInWithPassword(values.email, values.password);
 
     if (result.error) {
@@ -62,12 +61,11 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="bg-BGlight dark:bg-BGdark flex min-h-screen items-center justify-center px-5 sm:px-10">
-      <div className="bg-card flex w-full max-w-[1050px] overflow-hidden rounded-lg border shadow-lg">
+    <div className="bg-BGlight dark:bg-BGdark flex min-h-screen items-center justify-center px-1 md:px-10">
+      <div className="md:bg-card flex w-full overflow-hidden rounded-lg shadow-lg md:max-w-[1050px] md:border">
         {/* Left Side - Image */}
         <div className="hidden w-1/2 md:block">
           <Image
-            // TODO: Change the image later on
             src="/s8clogreg.jpg"
             alt="Login illustration"
             className="h-full w-full object-cover"
@@ -78,18 +76,20 @@ export default function LoginForm() {
         </div>
 
         {/* Right Side - Form */}
-        <div className="bg-card flex w-full flex-col items-center justify-center p-8 md:w-1/2">
-          <Typography variant="h2" className="">
-            Welcome back
-          </Typography>
-          <Typography variant="p" className="text-muted-foreground mb-6">
-            Login to your S8CVote account
-          </Typography>
+        <div className="flex w-full flex-col items-center justify-center p-4 sm:p-6 md:w-1/2 md:p-8">
+          <div className="text-center">
+            <Typography variant="h2" className="">
+              Welcome back
+            </Typography>
+            <Typography variant="p" className="text-muted-foreground mb-6">
+              Login to your S8CVote account
+            </Typography>
+          </div>
 
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full space-y-4"
+              className="w-full space-y-6"
             >
               {/* Email */}
               <FormField
@@ -127,7 +127,7 @@ export default function LoginForm() {
                       <Typography variant="small">
                         <Link
                           href="/forgot-password"
-                          className="text-primary hover:underline"
+                          className="dark:text-PRIMARY-300 text-PRIMARY-700 dark:hover:text-PRIMARY-50 hover:text-PRIMARY-500"
                         >
                           Forgot password?
                         </Link>

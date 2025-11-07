@@ -235,7 +235,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   <Button
                     variant="link"
                     className="w-full justify-start"
-                    onClick={() => console.log("Logout clicked")}
+                    onClick={() => signOut()}
                   >
                     <LogOut size={16} className="mr-2" />
                     Logout

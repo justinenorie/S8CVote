@@ -62,7 +62,6 @@ export default function VerifyOtpForm() {
         maxLength={6}
         value={otp}
         onChange={setOtp}
-        className="text-2xl"
         pattern={REGEXP_ONLY_DIGITS}
       >
         <InputOTPGroup>
