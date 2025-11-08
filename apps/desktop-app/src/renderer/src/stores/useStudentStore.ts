@@ -93,7 +93,7 @@ export const useStudentStore = create<StudentState>((set, get) => ({
         student_id: String(r.student_id).trim(),
         fullname: String(r.fullname).trim(),
         email: r.email,
-        isRegistered: 0,
+        // isRegistered: 0,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         synced_at: 0,

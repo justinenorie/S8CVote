@@ -64,7 +64,7 @@ export interface Student {
   student_id: string;
   fullname: string;
   email?: string;
-  isRegistered: number;
+  isRegistered?: number;
   synced_at?: number;
   deleted_at?: string | null;
   updated_at?: string;

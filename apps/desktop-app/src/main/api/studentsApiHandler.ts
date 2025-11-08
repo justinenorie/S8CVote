@@ -16,19 +16,50 @@ export function studentsApiHandlers(): void {
   // Existing bulk insert (upload)
   ipcMain.handle("students:bulkInsert", async (_, records) => {
     const db = getDatabase();
+
     for (const record of records) {
-      await db
-        .insert(students)
-        .values(record)
-        .onConflictDoUpdate({
-          target: students.student_id,
-          set: {
-            ...record,
+      const existing = await db
+        .select()
+        .from(students)
+        .where(eq(students.student_id, record.student_id))
+        .limit(1);
+
+      if (!existing.length) {
+        // New student entirely
+        await db.insert(students).values({
+          ...record,
+          isRegistered: 0,
+        });
+        continue;
+      }
+
+      const current = existing[0];
+
+      if (current.isRegistered === 1) {
+        // Registered student → only update allowed fields
+        await db
+          .update(students)
+          .set({
+            fullname: record.fullname,
             updated_at: new Date().toISOString(),
             synced_at: 0,
-          },
-        });
+          })
+          .where(eq(students.student_id, record.student_id));
+      } else {
+        // Unregistered student → safe to fully update
+        await db
+          .update(students)
+          .set({
+            fullname: record.fullname,
+            email: record.email || null,
+            // leave isRegistered = 0
+            updated_at: new Date().toISOString(),
+            synced_at: 0,
+          })
+          .where(eq(students.student_id, record.student_id));
+      }
     }
+
     return { success: true };
   });
 
