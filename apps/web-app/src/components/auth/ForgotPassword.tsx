@@ -25,7 +25,7 @@ export default function ForgotPassword() {
   return (
     <div className="flex h-screen flex-col items-center justify-center space-y-4 p-4">
       <div className="flex max-w-sm flex-col items-center justify-center space-y-5">
-        <div className="space-y-2 text-left">
+        <div className="space-y-2 text-center">
           <Typography variant="h2">Forgot Password?</Typography>
           <Typography variant="p">
             No worries! We will send an instructions to reset your password.

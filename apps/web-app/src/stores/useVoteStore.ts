@@ -55,7 +55,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     const { data: resultsRaw, error: e2 } = await supabase
       .from("election_results_with_percent")
       .select(
-        "election_id, election_title, candidate_id, candidate_name, votes_count, percentage, candidate_profile, partylist_id, partylist_name, partylist_acronym, partylist_color"
+        "election_id, election_title, candidate_id, candidate_name, votes_count, percentage, candidate_profile, partylist_id, partylist_name, partylist_acronym, partylist_color, description"
       )
       .in("election_id", ids);
 
@@ -73,6 +73,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
         candidate_name: row.candidate_name,
         votes_count: row.votes_count,
         percentage: Number(row.percentage),
+        description: row.description,
         candidate_profile: row.candidate_profile || null,
         partylist_id: row.partylist_id || null,
         partylist_name: row.partylist_name || null,
@@ -117,7 +118,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
     const { data: cRaw, error: e2 } = await supabase
       .from("election_results_with_percent")
       .select(
-        "election_id, election_title, candidate_id, candidate_name, votes_count, percentage, candidate_profile, partylist_id, partylist_name, partylist_acronym, partylist_color"
+        "election_id, election_title, candidate_id, candidate_name, votes_count, percentage, candidate_profile, partylist_id, partylist_name, partylist_acronym, partylist_color, description"
       )
       .eq("election_id", electionId);
 
@@ -136,6 +137,7 @@ export const useVoteStore = create<VoteState>((set, get) => ({
           votes_count: row.votes_count,
           percentage: Number(row.percentage),
           candidate_profile: row.candidate_profile || null,
+          description: row.description,
           partylist_id: row.partylist_id || null,
           partylist_name: row.partylist_name || null,
           partylist_acronym: row.partylist_acronym || null,

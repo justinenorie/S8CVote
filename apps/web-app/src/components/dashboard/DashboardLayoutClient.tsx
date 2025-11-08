@@ -58,7 +58,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="bg-BGlight dark:bg-BGdark min-h-screen">
       {/* Top Navigation Bar */}
       <header className="bg-card border-b shadow-sm">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-[1200px] items-center justify-between p-3 sm:p-6">
           {/* Left Section */}
           <div className="flex items-center gap-2">
             <Image
@@ -233,7 +233,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   </div>
 
                   <Button
-                    variant="link"
+                    variant="ghost"
                     className="w-full justify-start"
                     onClick={() => signOut()}
                   >
@@ -248,7 +248,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       </header>
 
       {/* Page Content */}
-      <main className="mx-auto max-w-[1200px] px-6 py-8">{children}</main>
+      <main className="mx-auto max-w-[1200px] p-3 sm:p-6">{children}</main>
     </div>
   );
 };

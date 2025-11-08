@@ -60,9 +60,7 @@ export default function ResetPasswordPage() {
     <div className="flex max-w-sm flex-col items-center justify-center space-y-5">
       <div className="space-y-2 text-center">
         <Typography variant="h2">Set New Password</Typography>
-        <Typography variant="small" className="text-muted-foreground">
-          Must be at least 8 characters.
-        </Typography>
+        <Typography variant="p">Must be at least 8 characters.</Typography>
       </div>
 
       <Form {...form}>

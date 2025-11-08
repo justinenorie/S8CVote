@@ -12,6 +12,7 @@ type Candidate = {
   id: number | string;
   name: string;
   image: string | null;
+  description: string | null;
   partylist?: string | null;
   acronym?: string | null;
   color?: string | null;
@@ -46,14 +47,17 @@ const CandidatesModal = ({
   onClose,
 }: CandidatesModalProps) => {
   const [selected, setSelected] = useState<number | string>("");
+  const selectedCandidate = candidates.find((c) => c.id === selected);
   const [isLoading, setIsLoading] = useState(false);
   const { castVote } = useVoteStore();
 
   const onSubmit = async () => {
+    if (!selected) return toast.error("Please select a candidate first.");
+
     setIsLoading(true);
     const { error } = await castVote(electionId, selected.toString());
+    setIsLoading(false);
 
-    if (!selected) return;
     if (error) {
       toast.error(error);
     } else {
@@ -63,69 +67,80 @@ const CandidatesModal = ({
   };
 
   return (
-    <div className="space-y-4">
-      {candidates.map((c) => {
-        const partyColor = c.color || "#9ca3af";
-        const acronym = c.acronym || "N/A";
+    <div className="flex max-h-[60vh] flex-col">
+      <div className="-mt-2 flex flex-row items-center gap-2 pb-2">
+        <Typography variant="small" className="text-muted-foreground">
+          {selected ? "Selected Candidate:" : "Select a candidate to vote:"}
+        </Typography>
 
-        return (
-          <div
-            key={c.id}
-            className="bg-card hover:bg-muted/40 flex items-center justify-between rounded-lg border p-3 transition"
-          >
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
-                {c.image ? (
-                  <Image
-                    src={c.image}
-                    alt={c.name}
-                    width={40}
-                    height={40}
-                    className="h-10 w-10 rounded-full object-cover"
-                  />
-                ) : (
-                  // simple fallback if no image
-                  <div className="text-muted-foreground grid h-full w-full place-content-center text-xs">
-                    N/A
+        {selectedCandidate && (
+          <Typography variant="p" className="font-semibold">
+            {selectedCandidate.name}
+          </Typography>
+        )}
+      </div>
+
+      <div className="flex-1 space-y-4 overflow-y-auto pr-1">
+        {candidates.map((c) => {
+          const partyColor = c.color || "#9ca3af";
+          const acronym = c.partylist || "N/A";
+
+          return (
+            <Button
+              key={c.id}
+              className={`bg-card flex h-fit w-full items-center justify-between rounded-lg border p-3 transition ${selected === c.id ? "border-primary bg-primary/10" : "hover:bg-muted/40"}`}
+              onClick={() => setSelected(c.id)}
+              variant="ghost"
+            >
+              <div className="flex w-full flex-col justify-center gap-3">
+                <div className="flex items-center justify-start gap-2">
+                  {/* Image */}
+                  <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
+                    {c.image ? (
+                      <Image
+                        src={c.image}
+                        alt={c.name}
+                        width={40}
+                        height={40}
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      // simple fallback if no image
+                      <div className="text-muted-foreground grid h-full w-full place-content-center text-xs">
+                        N/A
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              {/* <Typography variant="p">{c.name}</Typography> */}
-              <div className="mb-2 flex items-center justify-between">
-                <div className="flex flex-row items-center gap-2">
-                  <Typography variant="p">{c.name}</Typography>
-                  <span
-                    className="rounded-full px-2 py-0.5 text-xs font-bold uppercase"
-                    style={{
-                      backgroundColor: partyColor,
-                      color:
-                        acronym === "N/A"
-                          ? "#e9eefd"
-                          : getTextColor(partyColor),
-                      textAlign: "center",
-                    }}
-                  >
-                    {acronym}
-                  </span>
+
+                  <div className="flex flex-col text-left">
+                    <Typography variant="p">{c.name}</Typography>
+                    <span
+                      className={`w-fit rounded-full px-2 py-0.5 text-xs font-bold uppercase opacity-70 ${c.partylist ? "block" : "hidden"}`}
+                      style={{
+                        backgroundColor: partyColor,
+                        color:
+                          acronym === "N/A"
+                            ? "#e9eefd"
+                            : getTextColor(partyColor),
+                        textAlign: "center",
+                      }}
+                    >
+                      {acronym}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <Button
-              variant={selected === c.id ? "default" : "outline"}
-              onClick={() => setSelected(c.id)}
-            >
-              {selected === c.id ? "Selected" : "Vote"}
             </Button>
-          </div>
-        );
-      })}
-
+          );
+        })}
+      </div>
       <div className="flex justify-end gap-3 pt-3">
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
 
         <Button
+          autoFocus
           type="submit"
           variant="default"
           disabled={selected === null || isLoading}

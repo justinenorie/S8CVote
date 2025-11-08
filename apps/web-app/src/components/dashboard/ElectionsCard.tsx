@@ -11,7 +11,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer";
 import CandidatesModal from "./CandidatesCard";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useVoteStore } from "@/stores/useVoteStore";
 
 type Candidates = {
@@ -19,6 +29,7 @@ type Candidates = {
   name: string;
   votes: number;
   percentage: number;
+  description: string | null;
   image: string | null;
   partylist?: string | null;
   acronym?: string | null;
@@ -62,8 +73,8 @@ const ElectionCard = ({
   candidates,
 }: ElectionCardProps) => {
   const [open, setOpen] = useState(false);
-
   const { loadElections } = useVoteStore();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   useEffect(() => {
     loadElections();
@@ -97,7 +108,7 @@ const ElectionCard = ({
                     </Typography>
                     <Typography variant="p">{c.name}</Typography>
                     <span
-                      className="rounded-full px-2 py-0.5 text-xs font-bold uppercase"
+                      className={`rounded-full px-2 py-0.5 text-xs font-bold uppercase ${c.partylist ? "block" : "hidden"}`}
                       style={{
                         backgroundColor: partyColor,
                         color:
@@ -140,21 +151,56 @@ const ElectionCard = ({
       </div>
 
       {/* Modal */}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{electionTitle}</DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              Select Candidates to vote:
-            </DialogDescription>
-          </DialogHeader>
-          <CandidatesModal
-            electionId={electionId}
-            candidates={candidates}
-            onClose={() => setOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
+      <div className="p-2">
+        {isDesktop ? (
+          // DESKTOP = Dialog
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent
+              className="max-w-md"
+              onOpenAutoFocus={(e) => e.preventDefault()}
+            >
+              <DialogHeader>
+                <DialogTitle>{electionTitle}</DialogTitle>
+                <DialogDescription className="text-muted-foreground hidden">
+                  Select a candidate to vote:
+                </DialogDescription>
+              </DialogHeader>
+
+              <CandidatesModal
+                electionId={electionId}
+                candidates={candidates}
+                onClose={() => setOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        ) : (
+          // MOBILE = Bottom Drawer
+          <Drawer open={open} onOpenChange={setOpen}>
+            <DrawerContent onOpenAutoFocus={(e) => e.preventDefault()}>
+              <DrawerHeader className="px-4 py-2">
+                <DrawerTitle className="text-left">{electionTitle}</DrawerTitle>
+                <DrawerDescription className="hidden text-left">
+                  Select a candidate to vote:
+                </DrawerDescription>
+              </DrawerHeader>
+
+              <div className="flex-1 overflow-y-auto p-4">
+                <CandidatesModal
+                  electionId={electionId}
+                  candidates={candidates}
+                  onClose={() => setOpen(false)}
+                />
+              </div>
+
+              <DrawerFooter className="hidden">
+                <DrawerClose asChild className="hidden">
+                  <Button variant="outline">Close</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+        )}
+      </div>
     </div>
   );
 };

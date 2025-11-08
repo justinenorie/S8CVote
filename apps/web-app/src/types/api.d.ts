@@ -18,6 +18,7 @@ export interface CandidateResult {
   votes_count: number;
   percentage: number;
   candidate_profile: string | null;
+  description: string | null;
   partylist_id: string | null;
   partylist_name: string | null;
   partylist_acronym: string | null;

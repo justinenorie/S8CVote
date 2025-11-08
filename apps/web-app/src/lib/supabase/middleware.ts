@@ -69,7 +69,14 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Redirect logged-in users away from auth pages
-  const authPaths = ["/", "/register", "/forgot-password", "/verify-otp"];
+  const authPaths = [
+    "/",
+    "/register",
+    "/forgot-password",
+    "/verify-otp",
+    "/reset-password",
+    "/verify-reset-otp",
+  ];
   const isAuthPath = authPaths.includes(request.nextUrl.pathname);
 
   if (isAuthPath && user) {
