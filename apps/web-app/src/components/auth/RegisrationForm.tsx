@@ -23,18 +23,25 @@ import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/Typography";
 import { UserRound, Lock, Eye, EyeOff, Mail, IdCard } from "lucide-react";
 
-const registerSchema = z.object({
-  email: z.string().email("Enter a valid email address"),
-  name: z.string(),
-  student_id: z.string().min(1, "Enter your Student ID"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-});
+const registerSchema = z
+  .object({
+    email: z.string().email("Enter a valid email address"),
+    name: z.string(),
+    student_id: z.string().min(1, "Enter your Student ID"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string().min(8, "Confirm password is required"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
   const [verified, setVerfied] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const router = useRouter();
   const { registerStudent, verifyStudent, loading, error } = useAuthStore();
 
@@ -46,6 +53,7 @@ export default function RegisterForm() {
       name: "",
       student_id: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -61,6 +69,7 @@ export default function RegisterForm() {
 
     form.clearErrors("student_id");
     setVerfied(true);
+    // TODO: Replace this as another layer of verification if they're full name is correct, valid or not
     // form.setValue("name", (data as { fullname: string }).fullname);
     toast.success("Student verified!");
   };
@@ -77,15 +86,12 @@ export default function RegisterForm() {
       return;
     }
 
-    // toast.success("Registration successful!");
-    // router.push("/dashboard");
-
     toast.success("Account created! Please verify your email.");
     router.push(`/verify-otp?email=${values.email}`);
   };
 
   return (
-    <div className="bg-BGlight dark:bg-BGdark flex min-h-screen items-center justify-center px-1 md:px-10">
+    <div className="flex min-h-screen items-center justify-center px-1 md:px-10">
       <div className="md:bg-card flex w-full overflow-hidden rounded-lg shadow-lg md:max-w-[1050px] md:border">
         {/* Left Side*/}
         <div className="flex w-full flex-col items-center justify-center p-4 sm:p-6 md:w-1/2 md:p-8">
@@ -101,7 +107,7 @@ export default function RegisterForm() {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full space-y-6"
+              className="w-full space-y-4"
             >
               {/* Email */}
               <FormField
@@ -233,6 +239,44 @@ export default function RegisterForm() {
                           className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
                         >
                           {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Confirm Password */}
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+                          <Lock className="h-5 w-5" />
+                        </span>
+
+                        <Input
+                          type={showConfirm ? "text" : "password"}
+                          placeholder="Re-enter password"
+                          className="px-10"
+                          {...field}
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirm(!showConfirm)}
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
+                        >
+                          {showConfirm ? (
                             <EyeOff className="h-5 w-5" />
                           ) : (
                             <Eye className="h-5 w-5" />

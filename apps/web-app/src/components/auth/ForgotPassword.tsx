@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/Typography";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { MoveLeft } from "lucide-react";
 
 export default function ForgotPassword() {
   const { requestPasswordReset, loading } = useAuthStore();
@@ -23,24 +24,34 @@ export default function ForgotPassword() {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center space-y-4 p-4">
-      <div className="space-y-5 border-red-300">
-        <Typography variant="h2">Forgot Password</Typography>
+      <div className="flex max-w-sm flex-col items-center justify-center space-y-5">
+        <div className="space-y-2 text-left">
+          <Typography variant="h2">Forgot Password?</Typography>
+          <Typography variant="p">
+            No worries! We will send an instructions to reset your password.
+          </Typography>
+        </div>
 
         <Input
           type="email"
           placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="max-w-sm"
+          className="w-full"
         />
 
-        <div className="flex w-full flex-row justify-between border-2 border-red-400">
-          <Button onClick={() => router.back()} className="">
-            Go Back
+        <div className="flex w-full flex-col gap-5">
+          <Button onClick={handleSend} disabled={loading} className="">
+            Reset Password
           </Button>
 
-          <Button onClick={handleSend} disabled={loading} className="">
-            Send Reset Code
+          <Button
+            onClick={() => router.back()}
+            variant="ghost"
+            className="flex items-center"
+          >
+            <MoveLeft />
+            Back to Login
           </Button>
         </div>
       </div>

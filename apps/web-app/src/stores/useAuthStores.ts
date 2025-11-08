@@ -164,7 +164,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     // Step 1: Check if student exists
     const { data: student, error: studentError } = await supabase
       .from("students")
-      .select("fullname, isRegistered")
+      .select("fullname, isRegistered, created_at, updated_at")
       .eq("student_id", student_id)
       .single();
 
@@ -197,6 +197,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       .update({
         isRegistered: 1,
         email,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       })
       .eq("student_id", student_id);
 
@@ -230,7 +232,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       return { data: null, error: "This student ID is already registered" };
     }
 
-    return { data: { fullname: student.fullname }, error: null };
+    return {
+      data: {
+        fullname: student.fullname,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      error: null,
+    };
   },
 
   getCurrentUser: async () => {
@@ -277,6 +286,24 @@ export const useAuthStore = create<AuthState>((set) => ({
   requestPasswordReset: async (email) => {
     set({ loading: true, error: null });
 
+    // Check if email exists in profile / student records
+    const { data: student, error: studentError } = await supabase
+      .from("students")
+      .select("student_id, isRegistered")
+      .eq("email", email)
+      .single();
+
+    if (studentError || !student) {
+      set({ loading: false, error: "Email not found or not registered" });
+      return { data: null, error: "Email not found or not registered" };
+    }
+
+    if (student.isRegistered !== 1) {
+      set({ loading: false, error: "Account is not registered yet" });
+      return { data: null, error: "Account is not registered yet" };
+    }
+
+    // Send the password reset email
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });

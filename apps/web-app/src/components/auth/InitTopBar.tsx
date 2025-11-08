@@ -1,12 +1,8 @@
 import Typography from "@/components/ui/Typography";
 
-export default async function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const InitTopBar = () => {
   return (
-    <div className="dark:text-TEXTlight text-TEXTdark flex w-full flex-col">
+    <div className="dark:text-TEXTlight text-TEXTdark fixed -z-50 flex min-h-screen w-full flex-col">
       {/* Top Banner */}
       <header className="flex w-full items-center gap-3 border-b px-6 py-4 shadow-sm">
         <img
@@ -14,13 +10,10 @@ export default async function AuthLayout({
           alt="S8CVote Logo"
           className="h-8 w-8 object-contain"
         />
-        <Typography className="text-xl font-semibold tracking-wide">
+        <Typography variant="h3" className="font-semibold tracking-wide">
           S8CVote
         </Typography>
       </header>
-
-      {/* Auth Content */}
-      <main className="absolute w-full">{children}</main>
     </div>
   );
-}
+};

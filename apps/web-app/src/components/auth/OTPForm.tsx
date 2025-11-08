@@ -12,6 +12,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { MoveLeft } from "lucide-react";
 
 export default function VerifyOtpForm() {
   const router = useRouter();
@@ -51,12 +52,16 @@ export default function VerifyOtpForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <Typography variant="h2">Verify Your Email</Typography>
-
-      <Typography variant="p" className="text-muted-foreground text-center">
-        Enter the 6-digit code sent to <strong>{email}</strong>
-      </Typography>
+    <div className="flex max-w-sm flex-col items-center justify-center space-y-5">
+      <div className="space-y-2 text-center">
+        <Typography variant="h2">Verify Your Email</Typography>
+        <Typography
+          variant="small"
+          className="text-muted-foreground text-center"
+        >
+          Enter the 6-digit code sent to <strong>{email}</strong>
+        </Typography>
+      </div>
 
       <InputOTP
         maxLength={6}
@@ -65,31 +70,42 @@ export default function VerifyOtpForm() {
         pattern={REGEXP_ONLY_DIGITS}
       >
         <InputOTPGroup>
-          <InputOTPSlot index={0} />
-          <InputOTPSlot index={1} />
-          <InputOTPSlot index={2} />
-          <InputOTPSlot index={3} />
-          <InputOTPSlot index={4} />
-          <InputOTPSlot index={5} />
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <InputOTPSlot className="h-15 w-15" index={i} key={i} />
+          ))}
         </InputOTPGroup>
       </InputOTP>
 
-      <Button
-        disabled={loading || otp.length < 6}
-        onClick={handleVerify}
-        className="w-full max-w-xs"
-      >
-        Verify Email
-      </Button>
+      <div className="flex w-full flex-col gap-5">
+        <Button
+          disabled={loading || otp.length < 6}
+          onClick={handleVerify}
+          className="cursor-pointer"
+        >
+          Verify Code
+        </Button>
 
-      <Button
-        variant="ghost"
-        disabled={cooldown > 0}
-        onClick={handleResend}
-        className="text-sm"
-      >
-        {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend Code"}
-      </Button>
+        <div className="flex flex-row items-center justify-center">
+          <Typography variant="small">Didn't receive a OTP code?</Typography>
+          <Button
+            variant="link"
+            disabled={cooldown > 0}
+            onClick={handleResend}
+            className="cursor-pointer text-sm"
+          >
+            {cooldown > 0 ? `Resend in ${cooldown}s` : "Click to resend"}
+          </Button>
+        </div>
+
+        <Button
+          onClick={() => router.push("/")}
+          variant="ghost"
+          className="flex cursor-pointer items-center"
+        >
+          <MoveLeft />
+          Back to Login
+        </Button>
+      </div>
     </div>
   );
 }

@@ -61,7 +61,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="bg-BGlight dark:bg-BGdark flex min-h-screen items-center justify-center px-1 md:px-10">
+    <div className="flex min-h-screen items-center justify-center px-1 md:px-10">
       <div className="md:bg-card flex w-full overflow-hidden rounded-lg shadow-lg md:max-w-[1050px] md:border">
         {/* Left Side - Image */}
         <div className="hidden w-1/2 md:block">
