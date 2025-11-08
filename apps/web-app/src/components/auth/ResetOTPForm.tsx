@@ -81,7 +81,9 @@ export default function VerifyResetOtp() {
         </Button>
 
         <div className="flex flex-row items-center justify-center">
-          <Typography variant="small">Didn't receive a OTP code?</Typography>
+          <Typography variant="small">
+            {"Didn't receive a OTP code?"}
+          </Typography>
           <Button
             variant="link"
             disabled={cooldown > 0}
