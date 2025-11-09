@@ -62,7 +62,7 @@ export default function LoginForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-1 md:px-10">
-      <div className="md:bg-card flex w-full overflow-hidden rounded-lg shadow-lg md:max-w-[1050px] md:border">
+      <div className="md:bg-card flex w-full overflow-hidden rounded-lg md:max-w-[1050px] md:border md:shadow-lg">
         {/* Left Side - Image */}
         <div className="hidden w-1/2 md:block">
           <Image
@@ -76,9 +76,9 @@ export default function LoginForm() {
         </div>
 
         {/* Right Side - Form */}
-        <div className="flex w-full flex-col items-center justify-center p-4 sm:p-6 md:w-1/2 md:p-8">
+        <div className="flex w-full flex-col items-center justify-center p-2 sm:p-6 md:w-1/2 md:p-8">
           <div className="text-center">
-            <Typography variant="h2" className="">
+            <Typography variant="h3" className="">
               Welcome back
             </Typography>
             <Typography variant="p" className="text-muted-foreground mb-6">

@@ -15,12 +15,12 @@ const Typography: React.FC<TypographyProps> = ({
   className = "",
 }) => {
   const baseStyles: Record<Variant, string> = {
-    h1: "font-title font-bold text-4xl",
-    h2: "font-title font-semibold text-3xl",
-    h3: "font-title font-medium text-2xl",
-    h4: "font-title font-medium text-xl",
-    p: "font-body text-base leading-7",
-    small: "font-body text-sm leading-none",
+    h1: "font-title font-bold text-3xl md:text-4xl",
+    h2: "font-title font-semibold text-2xl md:text-3xl",
+    h3: "font-title font-medium text-1xl md:text-2xl",
+    h4: "font-title font-medium text-xl md:text-1xl",
+    p: "font-body text-sm md:text-lg leading-7",
+    small: "font-body text-xs sm:text-sm leading-none",
   };
 
   return React.createElement(

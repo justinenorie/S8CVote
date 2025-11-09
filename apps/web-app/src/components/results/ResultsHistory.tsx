@@ -20,13 +20,6 @@ export default function ResultsHistory() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <Typography variant="h2">Election Results</Typography>
-        <Typography variant="p" className="text-muted-foreground">
-          View detailed results from the elections
-        </Typography>
-      </div>
-
       <YearSelectionCard
         years={years}
         selectedYear={selectedYear ?? years[0]}

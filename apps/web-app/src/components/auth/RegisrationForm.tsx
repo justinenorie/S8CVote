@@ -91,12 +91,12 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-1 md:px-10">
-      <div className="md:bg-card flex w-full overflow-hidden rounded-lg shadow-lg md:max-w-[1050px] md:border">
+    <div className="flex min-h-screen items-center justify-center px-1 py-15 md:px-10">
+      <div className="md:bg-card flex w-full overflow-hidden rounded-lg md:max-w-[1050px] md:border md:shadow-lg">
         {/* Left Side*/}
-        <div className="flex w-full flex-col items-center justify-center p-4 sm:p-6 md:w-1/2 md:p-8">
-          <div>
-            <Typography variant="h2" className="">
+        <div className="flex w-full flex-col items-center justify-center p-2 sm:p-6 md:w-1/2 md:p-8">
+          <div className="text-center">
+            <Typography variant="h3" className="">
               Create an account
             </Typography>
             <Typography variant="p" className="text-muted-foreground mb-6">

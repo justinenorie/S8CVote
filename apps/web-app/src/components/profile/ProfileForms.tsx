@@ -61,13 +61,6 @@ export default function ProfileForms() {
       {/* Header */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <Typography variant="h2">Profile Settings</Typography>
-            <Typography variant="p" className="text-muted-foreground mb-6">
-              Manage your account information and security.
-            </Typography>
-          </div>
-
           {/* Personal Info */}
           <div className="bg-card rounded-2xl p-6 shadow-md transition hover:shadow-lg">
             <Typography variant="h4" className="mb-4">
