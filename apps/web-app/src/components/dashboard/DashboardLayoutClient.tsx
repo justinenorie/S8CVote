@@ -6,7 +6,14 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/Typography";
-import { Home, ChartGantt, User, LogOut, Menu } from "lucide-react";
+import {
+  Home,
+  ChartGantt,
+  User,
+  LogOut,
+  Menu,
+  UserRoundCog,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -43,8 +50,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     await signOutStudent();
 
     if (!useAuthStore.getState().user) {
-      toast.success("Logout Success!", {
-        description: "Clearing out your tokens...",
+      toast.success("Success!", {
+        description: "Logout Successfully!",
       });
       router.push("/");
     } else {
@@ -200,35 +207,41 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                         </Button>
                       </SheetClose>
                     </Link>
+
+                    <Link href="/dashboard/profile">
+                      <SheetClose asChild>
+                        <Button
+                          variant={
+                            pathname === "/dashboard/profile"
+                              ? "default"
+                              : "link"
+                          }
+                          className="w-full justify-start"
+                        >
+                          <UserRoundCog size={16} className="mr-2" />
+                          Profile
+                        </Button>
+                      </SheetClose>
+                    </Link>
                   </div>
                 </div>
 
                 {/* Bottom Section */}
                 <div className="mt-6 flex flex-col gap-3 border-t pt-4">
-                  <SheetClose asChild>
-                    <Button
-                      variant="link"
-                      className="w-full justify-start text-left"
-                      onClick={() => router.push("/dashboard/profile")}
-                    >
-                      <div className="flex flex-col items-start">
-                        {loading ? (
-                          <Typography variant="small">Loading.....</Typography>
-                        ) : (
-                          <div>
-                            <Typography variant="p">
-                              {profile?.fullname}
-                            </Typography>
-                            <Typography variant="small" className="text-right">
-                              {profile?.student_id}
-                            </Typography>
-                          </div>
-                        )}
+                  <div className="flex flex-col items-start">
+                    {loading ? (
+                      <Typography variant="small">Loading.....</Typography>
+                    ) : (
+                      <div>
+                        <Typography variant="p">{profile?.fullname}</Typography>
+                        <Typography variant="small" className="text-right">
+                          {profile?.student_id}
+                        </Typography>
                       </div>
-                    </Button>
-                  </SheetClose>
+                    )}
+                  </div>
 
-                  <div className="px-4">
+                  <div className="">
                     <ThemeToggle />
                   </div>
 
@@ -248,7 +261,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       </header>
 
       {/* Page Content */}
-      <main className="mx-auto max-w-[1200px] p-3 sm:p-6">{children}</main>
+      <main className="mx-auto max-w-[1200px] p-3 sm:p-10">{children}</main>
     </div>
   );
 };

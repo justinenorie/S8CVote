@@ -6,6 +6,7 @@ import Typography from "@/components/ui/Typography";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useVoteStore } from "@/stores/useVoteStore";
 
 type Candidate = {
@@ -46,10 +47,15 @@ const CandidatesModal = ({
   candidates,
   onClose,
 }: CandidatesModalProps) => {
+  const { castVote } = useVoteStore();
+
   const [selected, setSelected] = useState<number | string>("");
   const selectedCandidate = candidates.find((c) => c.id === selected);
   const [isLoading, setIsLoading] = useState(false);
-  const { castVote } = useVoteStore();
+  const [search, setSearch] = useState("");
+  const filtered = candidates.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   const onSubmit = async () => {
     if (!selected) return toast.error("Please select a candidate first.");
@@ -68,20 +74,29 @@ const CandidatesModal = ({
 
   return (
     <div className="flex max-h-[60vh] flex-col">
-      <div className="-mt-2 flex flex-row items-center gap-2 pb-2">
-        <Typography variant="small" className="text-muted-foreground">
-          {selected ? "Selected Candidate:" : "Select a candidate to vote:"}
-        </Typography>
-
-        {selectedCandidate && (
-          <Typography variant="p" className="font-semibold">
-            {selectedCandidate.name}
+      <div className="">
+        <div className="-mt-2 flex flex-row items-center gap-2 pb-2">
+          <Typography variant="small" className="text-muted-foreground">
+            {selected ? "Selected Candidate:" : "Select a candidate to vote:"}
           </Typography>
-        )}
+
+          {selectedCandidate && (
+            <Typography variant="p" className="font-semibold">
+              {selectedCandidate.name}
+            </Typography>
+          )}
+        </div>
+
+        <Input
+          placeholder="Search candidate..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="mb-2"
+        />
       </div>
 
       <div className="flex-1 space-y-4 overflow-y-auto pr-1">
-        {candidates.map((c) => {
+        {filtered.map((c) => {
           const partyColor = c.color || "#9ca3af";
           const acronym = c.partylist || "N/A";
 

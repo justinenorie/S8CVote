@@ -21,6 +21,7 @@ import {
   DrawerClose,
 } from "@/components/ui/drawer";
 import CandidatesModal from "./CandidatesCard";
+import FullCandidatesList from "./FullCandidatesList";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useVoteStore } from "@/stores/useVoteStore";
 
@@ -73,6 +74,7 @@ const ElectionCard = ({
   candidates,
 }: ElectionCardProps) => {
   const [open, setOpen] = useState(false);
+  const [viewAllOpen, setViewAllOpen] = useState(false);
   const { loadElections } = useVoteStore();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -88,7 +90,7 @@ const ElectionCard = ({
         </Typography>
 
         <div className="mb-4 space-y-2">
-          {candidates.map((c, index) => {
+          {candidates.slice(0, 5).map((c, index) => {
             const isFirstRunnerUp = index === 0;
             const partyColor = c.color || "#9ca3af";
             const acronym = c.acronym || "N/A";
@@ -148,6 +150,16 @@ const ElectionCard = ({
         >
           {voted ? "Already Voted" : "Vote Now"}
         </Button>
+
+        {candidates.length > 5 && (
+          <Button
+            variant="outline"
+            onClick={() => setViewAllOpen(true)}
+            className="text-foreground/80 mt-2 w-full text-sm"
+          >
+            View all candidates →
+          </Button>
+        )}
       </div>
 
       {/* Modal */}
@@ -197,6 +209,38 @@ const ElectionCard = ({
                   <Button variant="outline">Close</Button>
                 </DrawerClose>
               </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+        )}
+      </div>
+
+      {/* MODAL FOR VIEW CANDIDATES */}
+      <div>
+        {/* VIEW ALL CANDIDATES MODAL */}
+        {isDesktop ? (
+          <Dialog open={viewAllOpen} onOpenChange={setViewAllOpen}>
+            <DialogContent className="max-w-lg">
+              <DialogHeader>
+                <DrawerTitle className="text-left">{electionTitle}</DrawerTitle>
+                <DrawerDescription className="text-left">
+                  All Candidates
+                </DrawerDescription>
+              </DialogHeader>
+              <FullCandidatesList candidates={candidates} />
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <Drawer open={viewAllOpen} onOpenChange={setViewAllOpen}>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle className="text-left">{electionTitle}</DrawerTitle>
+                <DrawerDescription className="text-left">
+                  All Candidates
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="p-4">
+                <FullCandidatesList candidates={candidates} />
+              </div>
             </DrawerContent>
           </Drawer>
         )}

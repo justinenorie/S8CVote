@@ -113,7 +113,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         loading: false,
         error: "Please verify your email before logging in",
       });
-      return { data: null, error: "Email not verified" };
+      return { data: null, error: "Email not verified or Incorrect password" };
     }
 
     if (error) {
