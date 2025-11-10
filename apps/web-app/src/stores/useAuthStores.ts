@@ -20,8 +20,6 @@ interface AuthState {
   error: string | null;
 
   // Actions
-  verifyEmailOtp: (email: string, token: string) => Promise<SignInResult>;
-  resendEmailOtp: (email: string) => Promise<SignInResult>;
   signInWithPassword: (
     email: string,
     password: string
@@ -31,14 +29,21 @@ interface AuthState {
     email: string,
     password: string
   ) => Promise<SignInResult<void>>;
+  getCurrentUser: () => Promise<SignInResult<void>>;
+  signOutStudent: () => Promise<void>;
+  verifyEmailOtp: (email: string, token: string) => Promise<SignInResult>;
+  resendEmailOtp: (email: string) => Promise<SignInResult>;
   verifyStudent: (
     student_id: string
   ) => Promise<SignInResult<{ fullname: string }>>;
-  getCurrentUser: () => Promise<SignInResult<void>>;
-  signOutStudent: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<SignInResult>;
   verifyResetOtp: (email: string, token: string) => Promise<SignInResult>;
   updatePassword: (newPassword: string) => Promise<SignInResult<void>>;
+  updateEmail: (email: string) => Promise<SignInResult<void>>;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string
+  ) => Promise<SignInResult>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -46,58 +51,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   session: null,
   loading: false,
   error: null,
-
-  // Verify Email using OTP
-  verifyEmailOtp: async (email, token) => {
-    set({ loading: true, error: null });
-
-    const { data, error } = await supabase.auth.verifyOtp({
-      email,
-      token,
-      type: "email",
-    });
-
-    set({ loading: false });
-    const user = data.user;
-    const fullname = localStorage.getItem("pending_fullname");
-    const student_id = localStorage.getItem("pending_student_id");
-
-    await supabase
-      .from("profiles")
-      .update({ fullname: fullname, student_id: student_id })
-      .eq("id", user?.id);
-
-    // Clear after verification
-    localStorage.removeItem("pending_fullname");
-    localStorage.removeItem("pending_student_id");
-
-    if (error) {
-      return { data: null, error: error.message };
-    }
-
-    return { data, error: null };
-  },
-
-  // Resend Email OTP
-  resendEmailOtp: async (email: string) => {
-    set({ loading: true, error: null });
-    console.log("Got Resended:", email);
-
-    // TODO: Not working properly
-
-    const { data, error } = await supabase.auth.resend({
-      type: "signup",
-      email: `${email}`,
-    });
-
-    set({ loading: false });
-
-    if (error) {
-      return { data: null, error: error.message };
-    }
-
-    return { data, error: null };
-  },
 
   // Login
   signInWithPassword: async (email, password) => {
@@ -262,7 +215,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     set({
       user,
-      profile: profile ?? null,
+      profile: { ...profile, email: user.email ?? "" } as Profile,
       loading: false,
     });
 
@@ -282,7 +235,62 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user: null, session: null });
   },
 
-  // TODO: must check if the email exist in the database and verified
+  // ==================================================================================
+
+  // Verify Email using OTP
+  verifyEmailOtp: async (email, token) => {
+    set({ loading: true, error: null });
+
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: "email",
+    });
+
+    set({ loading: false });
+    const user = data.user;
+    const fullname = localStorage.getItem("pending_fullname");
+    const student_id = localStorage.getItem("pending_student_id");
+
+    await supabase
+      .from("profiles")
+      .update({ fullname: fullname, student_id: student_id })
+      .eq("id", user?.id);
+
+    // Clear after verification
+    localStorage.removeItem("pending_fullname");
+    localStorage.removeItem("pending_student_id");
+
+    if (error) {
+      return { data: null, error: error.message };
+    }
+
+    return { data, error: null };
+  },
+
+  // Resend Email OTP
+  resendEmailOtp: async (email: string) => {
+    set({ loading: true, error: null });
+
+    // TODO: Not working properly
+
+    const { data, error } = await supabase.auth.resend({
+      type: "signup",
+      email: `${email}`,
+    });
+
+    set({ loading: false });
+
+    if (error) {
+      return { data: null, error: error.message };
+    }
+
+    return { data, error: null };
+  },
+
+  // ==================================================================================
+
+  // FORGOT PASSWORD AREA
   requestPasswordReset: async (email) => {
     set({ loading: true, error: null });
 
@@ -342,6 +350,47 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: false });
 
     if (error) return { data: null, error: error.message };
+    return { data, error: null };
+  },
+
+  // ==================================================================================
+
+  // UPDATING CURRENT USER
+  updateEmail: async (newEmail: string) => {
+    set({ loading: true, error: null });
+
+    const { data, error } = await supabase.auth.updateUser({ email: newEmail });
+
+    if (error) {
+      set({ loading: false, error: error.message });
+      return { data: null, error: error.message };
+    }
+
+    set({ loading: false });
+    return { data, error: null };
+  },
+
+  changePassword: async (currentPassword, newPassword) => {
+    set({ loading: true, error: null });
+
+    const state = useAuthStore.getState();
+    const currentEmail = state.user?.email;
+
+    const { error: reauthError } = await supabase.auth.signInWithPassword({
+      email: currentEmail!,
+      password: currentPassword,
+    });
+
+    if (reauthError) {
+      set({ loading: false, error: "Incorrect current password" });
+      return { data: null, error: "Incorrect current password" };
+    }
+
+    const { data, error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    set({ loading: false, error: updateError?.message ?? null });
     return { data, error: null };
   },
 }));

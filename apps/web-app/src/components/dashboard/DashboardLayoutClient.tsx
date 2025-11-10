@@ -177,7 +177,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
                   {/* Nav Links */}
                   <div className="flex flex-col gap-2">
-                    <SheetDescription>Navigations</SheetDescription>
+                    <SheetDescription>Navigation</SheetDescription>
                     <Link href="/dashboard">
                       <SheetClose asChild>
                         <Button

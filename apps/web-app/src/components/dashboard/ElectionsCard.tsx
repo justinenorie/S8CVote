@@ -221,10 +221,10 @@ const ElectionCard = ({
           <Dialog open={viewAllOpen} onOpenChange={setViewAllOpen}>
             <DialogContent className="max-w-lg">
               <DialogHeader>
-                <DrawerTitle className="text-left">{electionTitle}</DrawerTitle>
-                <DrawerDescription className="text-left">
+                <DialogTitle className="text-left">{electionTitle}</DialogTitle>
+                <DialogDescription className="text-left">
                   All Candidates
-                </DrawerDescription>
+                </DialogDescription>
               </DialogHeader>
               <FullCandidatesList candidates={candidates} />
             </DialogContent>

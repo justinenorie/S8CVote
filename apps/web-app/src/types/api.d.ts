@@ -35,6 +35,7 @@ export interface Election {
 
 export interface Profile {
   fullname: string;
+  email: string;
   student_id: string;
   role: string;
 }
