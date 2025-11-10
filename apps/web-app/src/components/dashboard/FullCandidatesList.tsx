@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Typography from "@/components/ui/Typography";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 
 type Candidate = {
   id: string | number;

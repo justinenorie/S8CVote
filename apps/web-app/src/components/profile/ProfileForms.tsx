@@ -25,8 +25,6 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
-  DrawerFooter,
-  DrawerClose,
 } from "@/components/ui/drawer";
 // import { toast } from "sonner";
 // import { Input } from "@/components/ui/input";
@@ -62,8 +60,7 @@ import { useAuthStore } from "@/stores/useAuthStores";
 // type PasswordForm = z.infer<typeof passwordSchema>;
 
 export default function ProfileForms() {
-  const { profile, getCurrentUser, updateEmail, changePassword } =
-    useAuthStore();
+  const { profile, getCurrentUser } = useAuthStore();
 
   const [emailOpen, setEmailOpen] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);

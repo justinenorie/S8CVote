@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Typography from "@/components/ui/Typography";
 import ResultsCard from "@/components/results/ResultsCard";
 import YearSelectionCard from "@/components/results/YearSelectionCard";
 import { useResultsStore } from "@/stores/useResultsStore";
