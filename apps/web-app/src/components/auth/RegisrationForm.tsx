@@ -39,7 +39,7 @@ const registerSchema = z
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
-  const [verified, setVerfied] = useState(false);
+  const [verified, setVerified] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const router = useRouter();
@@ -61,14 +61,14 @@ export default function RegisterForm() {
     const { error } = await verifyStudent(student_id);
 
     if (error) {
-      setVerfied(false);
+      setVerified(false);
       form.setError("student_id", { type: "manual", message: error });
       // form.setValue("name", error as string);
       return;
     }
 
     form.clearErrors("student_id");
-    setVerfied(true);
+    setVerified(true);
     // TODO: Replace this as another layer of verification if they're full name is correct, valid or not
     // form.setValue("name", (data as { fullname: string }).fullname);
     toast.success("Student verified!");

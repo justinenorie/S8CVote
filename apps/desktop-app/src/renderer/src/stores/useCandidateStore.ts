@@ -46,12 +46,6 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
   fetchCandidates: async () => {
     set({ loading: true, error: null });
 
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) {
-      set({ loading: false, error: "No user logged in" });
-      return { data: null, error: "No user logged in" };
-    }
-
     try {
       set({ loading: true });
       const data = await window.electronAPI.candidatesGet();
@@ -67,12 +61,6 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
 
   // ADD
   addCandidate: async (candidate) => {
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) {
-      set({ loading: false, error: "No user logged in" });
-      return { data: null, error: "No user logged in" };
-    }
-
     const newCandidates = {
       id: crypto.randomUUID(),
       ...candidate,
@@ -96,12 +84,6 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
 
   // UPDATE
   updateCandidate: async (id, updates) => {
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) {
-      set({ loading: false, error: "No user logged in" });
-      return { data: null, error: "No user logged in" };
-    }
-
     const updateCandidates = {
       ...updates,
       partylist_id: updates.partylist_id || null,
@@ -127,12 +109,6 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
 
   // DELETE
   deleteCandidate: async (id) => {
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) {
-      set({ loading: false, error: "No user logged in" });
-      return { data: null, error: "No user logged in" };
-    }
-
     try {
       set({ loading: true });
       await window.electronAPI.candidatesDelete(id);
@@ -151,6 +127,12 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
   // SYNC METHODS HERE FOR CANDIDATES
   // SYNC TO SERVER
   syncToServerCandidates: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     try {
       const unsynced = await window.electronAPI.candidatesGetUnsynced();
       if (!unsynced || unsynced.length === 0)
@@ -174,6 +156,12 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
 
   // SYNC FROM SERVER
   syncFromServerCandidates: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     try {
       const { data, error } = await supabase.from("candidates").select("*");
       if (error) throw error;
@@ -205,6 +193,12 @@ export const useCandidateStore = create<CandidateState>((set, get) => ({
   },
 
   fullSyncCandidates: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     set({ syncing: true, syncError: null });
     try {
       await get().syncToServerCandidates();

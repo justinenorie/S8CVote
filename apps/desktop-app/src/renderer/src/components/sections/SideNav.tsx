@@ -61,7 +61,7 @@ const SideNav = (): React.JSX.Element => {
 
   return (
     <aside
-      className={`bg-PRIMARY-50 dark:bg-PRIMARY-950 text-TEXTdark dark:text-TEXTlight z-10 h-screen shadow-[7px_7px_21px_5px_rgba(0,_0,_0,_0.1)] transition-all duration-500 ${
+      className={`bg-PRIMARY-50 dark:bg-PRIMARY-950 text-TEXTdark dark:text-TEXTlight z-10 h-screen text-wrap shadow-[7px_7px_21px_5px_rgba(0,0,0,0.1)] transition-all duration-500 ${
         isCollapsed ? "w-20" : "w-64"
       } flex flex-col`}
     >
@@ -120,25 +120,37 @@ const SideNav = (): React.JSX.Element => {
           {!isCollapsed && <Typography variant="p">Settings</Typography>}
         </Link>
 
-        <ThemeToggle isCollapsed={isCollapsed} />
-
         {!isCollapsed ? (
-          <div className="flex flex-row place-content-between items-center">
-            <img src={s8cvotelogo} alt="s8cvotelogo" className="h-10 w-10" />
-            {/* TODO: Change this based on the what user admin logged in */}
-            <div className="row-span-2 grid">
-              <Typography variant="p">{adminData?.fullname}</Typography>
-              <Typography variant="small">{adminData?.email}</Typography>
-            </div>
-            <Button variant="ghost" onClick={() => setShowConfirmLogout(true)}>
+          <div className="space-y-5">
+            <Button
+              variant="ghost"
+              onClick={() => setShowConfirmLogout(true)}
+              className="flex w-full justify-start gap-3 p-3"
+            >
               <LogOut />
+              <Typography variant="p" className="">
+                Logout
+              </Typography>
             </Button>
+            <div className="flex w-full flex-row items-center gap-2 overflow-hidden">
+              <img src={s8cvotelogo} alt="s8cvotelogo" className="h-10 w-10" />
+              <div className="flex flex-col">
+                <Typography variant="p" className="">
+                  {adminData?.fullname}
+                </Typography>
+                <Typography variant="small" className="wrap-anywhere">
+                  {adminData?.email}
+                </Typography>
+              </div>
+            </div>
           </div>
         ) : (
           <Button variant="ghost" onClick={() => setShowConfirmLogout(true)}>
             <LogOut />
           </Button>
         )}
+
+        <ThemeToggle isCollapsed={isCollapsed} />
 
         <ConfirmDialog
           open={showConfirmLogout}

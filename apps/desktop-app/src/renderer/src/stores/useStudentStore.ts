@@ -38,12 +38,6 @@ export const useStudentStore = create<StudentState>((set, get) => ({
   fetchStudents: async () => {
     set({ loading: true, error: null });
 
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) {
-      set({ loading: false, error: "No user logged in" });
-      return { data: null, error: "No user logged in" };
-    }
-
     try {
       set({ loading: true });
       const rows = await window.electronAPI.studentsGet();
@@ -114,6 +108,12 @@ export const useStudentStore = create<StudentState>((set, get) => ({
   },
 
   syncToServerStudents: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     try {
       const unsynced = await window.electronAPI.studentsGetUnsynced();
       if (!unsynced?.length) return { data: null, error: null };
@@ -135,6 +135,12 @@ export const useStudentStore = create<StudentState>((set, get) => ({
   },
 
   syncFromServerStudents: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     try {
       const { data, error } = await supabase.from("students").select("*");
       if (error) return { data: null, error: error.message };
@@ -152,6 +158,12 @@ export const useStudentStore = create<StudentState>((set, get) => ({
   },
 
   fullSyncStudents: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     try {
       set({ syncing: true });
       await get().syncFromServerStudents();

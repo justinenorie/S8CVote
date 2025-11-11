@@ -46,12 +46,6 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
   fetchPartylist: async () => {
     set({ loading: true, error: null });
 
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) {
-      set({ loading: false, error: "No user logged in" });
-      return { data: null, error: "No user logged in" };
-    }
-
     try {
       const data = await window.electronAPI.partylistGet();
 
@@ -71,9 +65,6 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
 
   // ADD
   addPartylist: async (record) => {
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) return { data: null, error: "No user logged in" };
-
     const newPartylist = {
       id: crypto.randomUUID(),
       ...record,
@@ -95,9 +86,6 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
 
   // UPDATE
   updatePartylist: async (id, updates) => {
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) return { data: null, error: "No user logged in" };
-
     try {
       set({ loading: true });
       await window.electronAPI.partylistUpdate(id, updates);
@@ -113,9 +101,6 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
 
   // DELETE (Soft Delete)
   deletePartylist: async (id) => {
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) return { data: null, error: "No user logged in" };
-
     try {
       set({ loading: true });
       await window.electronAPI.partylistDelete(id);
@@ -131,6 +116,12 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
 
   // 🔄 SYNC TO SERVER
   syncToServerPartylist: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     try {
       const unsynced = await window.electronAPI.partylistGetUnsynced();
       if (!unsynced || unsynced.length === 0)
@@ -157,6 +148,12 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
 
   // 🔁 SYNC FROM SERVER
   syncFromServerPartylist: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     try {
       const { data, error } = await supabase.from("partylist").select("*");
       if (error) throw error;
@@ -174,6 +171,12 @@ export const usePartylistStore = create<PartylistState>((set, get) => ({
 
   // 🧩 FULL SYNC
   fullSyncPartylist: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     set({ syncing: true, syncError: null });
     try {
       await get().syncToServerPartylist();

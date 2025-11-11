@@ -3,6 +3,12 @@ import { supabase } from "@renderer/lib/supabaseClient";
 import { Session, User } from "@supabase/supabase-js";
 import { Admin } from "@renderer/types/api";
 
+export type AuthStatus =
+  | "checking"
+  | "unauthenticated"
+  | "pendingApproval"
+  | "authorized";
+
 export type SignInResult<T = void> =
   | { data: null; error: string }
   | { data: T; error: null }
@@ -18,6 +24,7 @@ export interface AuthState {
   session: Session | null;
   adminData: Admin | null;
   loading: boolean;
+  authStatus: AuthStatus;
   error: string | null;
 
   // Actions
@@ -25,6 +32,13 @@ export interface AuthState {
     email: string,
     password: string
   ) => Promise<SignInResult>;
+  signUpAdmin: (
+    email: string,
+    password: string,
+    fullname: string
+  ) => Promise<SignInResult>;
+  verifyEmailOtp: (email: string, token: string) => Promise<SignInResult>;
+  resendEmailOtp: (email: string) => Promise<SignInResult>;
   loadAdminData: () => Promise<SignInResult>;
   signOut: () => Promise<void>;
 }
@@ -49,16 +63,17 @@ interface UpdateInfoState {
   ) => Promise<SignInResult>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   session: null,
   adminData: null,
   loading: false,
+  authStatus: "checking",
   error: null,
 
   // SIGN IN WITH PASSWORD
   signInWithPassword: async (email, password) => {
-    set({ loading: true, error: null });
+    set({ loading: true, authStatus: "checking", error: null });
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -66,30 +81,49 @@ export const useAuthStore = create<AuthState>((set) => ({
     });
 
     if (error) {
-      set({ error: error.message, loading: false });
+      set({
+        loading: false,
+        authStatus: "unauthenticated",
+        error: error?.message ?? "Login failed",
+      });
       return { data: null, error: error.message };
-    }
-
-    if (!data.user) {
-      set({ error: "No user found", loading: false });
-      return { data: null, error: "No user found" };
     }
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("role, fullname")
+      .select("role, fullname, is_approved")
       .eq("id", data.user.id)
       .single();
 
     if (profileError || !profile) {
-      set({ error: "Profile not found", loading: false });
+      set({
+        loading: false,
+        authStatus: "unauthenticated",
+        error: "Profile not found",
+      });
       return { data: null, error: "Profile not found" };
     }
 
+    // check if admin
     if (profile.role !== "admin") {
-      await supabase.auth.signOut();
-      set({ user: null, session: null, loading: false });
+      await get().signOut();
+      set({
+        loading: false,
+        authStatus: "unauthenticated",
+        error: "Only admins can log in here",
+      });
       return { data: null, error: "Only admins can log in here" };
+    }
+
+    // check if approved admin
+    if (!profile.is_approved) {
+      await get().signOut();
+      set({
+        loading: false,
+        authStatus: "pendingApproval",
+        error: "Your admin account is pending approval.",
+      });
+      return { data: null, error: "Your admin account is pending approval." };
     }
 
     // Save locally via IPC
@@ -111,6 +145,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       user: data.user,
       session: data.session,
       loading: false,
+      authStatus: "authorized",
     });
     return {
       data: {
@@ -122,32 +157,158 @@ export const useAuthStore = create<AuthState>((set) => ({
     };
   },
 
+  // LOAD ADMIN
   loadAdminData: async (): Promise<SignInResult<void>> => {
-    const localUser = await window.electronAPI.getAdminUser();
-    set({ adminData: localUser as Admin | undefined, loading: false });
-    return {
-      data: {
+    set({ loading: true, authStatus: "checking" });
+
+    try {
+      const localUser = (await window.electronAPI.getAdminUser()) as
+        | Admin
+        | undefined;
+
+      if (!localUser) {
+        set({
+          user: null,
+          session: null,
+          adminData: null,
+          loading: false,
+          authStatus: "unauthenticated",
+        });
+        return { data: null, error: null };
+      }
+
+      // ✅ Restore Supabase session tokens silently
+      const { data: sessionData, error } = await supabase.auth.setSession({
+        access_token: localUser.access_token!,
+        refresh_token: localUser.refresh_token!,
+      });
+
+      // If session is invalid → clear local and logout
+      if (error || !sessionData?.session) {
+        set({
+          user: null, // <-- THIS STAYS NULL (we do not need supabase user)
+          session: null,
+          adminData: localUser, // offline identity
+          loading: false,
+          authStatus: "authorized", // ✅ allow app usage
+        });
+
+        return { data: null, error: null };
+      }
+
+      // ✅ Authorized and restored properly
+      set({
+        adminData: localUser,
+        user: sessionData.session.user,
+        session: sessionData.session,
+        loading: false,
+        authStatus: "authorized",
+      });
+
+      return { data: null, error: null };
+    } catch (error) {
+      console.error("💥 loadAdminData error:", error);
+      set({
         user: null,
         session: null,
-        adminData: localUser as Admin | undefined,
-      },
-      error: null,
-    };
+        adminData: null,
+        loading: false,
+        authStatus: "unauthenticated",
+      });
+      return { data: null, error: "Failed to load admin data" };
+    }
   },
 
   // SIGN UP
-  // TODO: set up the sign up properly
+  signUpAdmin: async (email, password, fullname) => {
+    set({ loading: true, error: null });
+
+    // 1) Create user account
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (signUpError || !data.user) {
+      set({
+        loading: false,
+        error: signUpError?.message as string,
+      });
+      return { data: null, error: signUpError?.message as string };
+    }
+
+    // 2) Insert into profiles as pending admin
+    const { error: profileError } = await supabase.from("profiles").insert({
+      id: data.user.id,
+      fullname,
+      role: "admin",
+      is_approved: false,
+    });
+
+    if (profileError) {
+      set({ loading: false, error: profileError.message });
+      return { data: null, error: profileError.message };
+    }
+
+    set({ loading: false });
+    return { data: null, error: null };
+  },
+
+  // VERIFY EMAIL OTP
+  verifyEmailOtp: async (email, token) => {
+    set({ loading: true, error: null });
+
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: "signup",
+    });
+
+    set({ loading: false });
+
+    if (error) return { data: null, error: error.message };
+
+    // Retrieve fullname stored before verification
+    const fullname = localStorage.getItem("pending_admin_fullname");
+    localStorage.removeItem("pending_admin_fullname");
+
+    // Insert into profiles as pending admin
+    await supabase.from("profiles").insert({
+      id: data.user?.id,
+      fullname,
+      role: "admin",
+      is_approved: false,
+    });
+
+    return { data, error: null };
+  },
+
+  // RESEND OTP
+  resendEmailOtp: async (email) => {
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+    });
+
+    if (error) return { data: null, error: error.message };
+    return { data: null, error: null };
+  },
 
   // Sign out
   signOut: async () => {
     await supabase.auth.signOut();
     await window.electronAPI.clearSession();
-    set({ user: null, session: null });
+    set({
+      user: null,
+      session: null,
+      adminData: null,
+      authStatus: "unauthenticated",
+    });
   },
 }));
 
-// Listener for auth state changes
-supabase.auth.onAuthStateChange((_event, session) => {
+/**
+ * supabase.auth.onAuthStateChange((_event, session) => {
   const { user } = session ?? {};
   useAuthStore.setState({
     user: user ?? null,
@@ -156,7 +317,26 @@ supabase.auth.onAuthStateChange((_event, session) => {
     loading: false,
   });
 });
+ */
 
+// Listener for auth state changes
+supabase.auth.onAuthStateChange((_event, session) => {
+  const state = useAuthStore.getState();
+
+  // ✅ DO NOT allow this to auto-authorize a user.
+  // Only update tokens if already authorized.
+  if (
+    state.authStatus === "authorized" ||
+    state.authStatus === "pendingApproval"
+  ) {
+    useAuthStore.setState({
+      user: session?.user ?? null,
+      session: session ?? null,
+    });
+  }
+});
+
+// For Updating Data
 export const useUpdateAuthStore = create<UpdateInfoState>((set) => ({
   loading: false,
   error: null,

@@ -47,13 +47,6 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
   fetchElections: async (): Promise<Result<Election[]>> => {
     set({ loading: true, error: null });
 
-    // Check if userAdmin is logged in
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) {
-      set({ loading: false, error: "No user logged in" });
-      return { data: null, error: "No user logged in" };
-    }
-
     // Offline First fetch from SQLite
     try {
       set({ loading: true });
@@ -113,13 +106,6 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
 
   // ADD
   addElection: async (election) => {
-    // Check if userAdmin is logged in
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) {
-      set({ loading: false, error: "No user logged in" });
-      return { data: null, error: "No user logged in" };
-    }
-
     const newElection = {
       id: crypto.randomUUID(),
       ...election,
@@ -144,13 +130,6 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
 
   // UPDATE
   updateElection: async (id, updates: Partial<Election>) => {
-    // Check if userAdmin is logged in
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) {
-      set({ loading: false, error: "No user logged in" });
-      return { data: null, error: "No user logged in" };
-    }
-
     // Offline First
     try {
       set({ loading: true });
@@ -168,13 +147,6 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
 
   // DELETE
   deleteElection: async (id) => {
-    // Check if userAdmin is logged in
-    const userID = useAuthStore.getState().user?.id;
-    if (!userID) {
-      set({ loading: false, error: "No user logged in" });
-      return { data: null, error: "No user logged in" };
-    }
-
     try {
       set({ loading: true });
       await window.electronAPI.deleteElection(id);
@@ -194,6 +166,12 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
   // Check if Online then proceed
   // syncToServer: All data that has not exist in the server will sync from sqlite to supabase
   syncToServerElection: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     try {
       const unsynced: Election[] =
         await window.electronAPI.getUnsyncedElections();
@@ -225,6 +203,12 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
 
   // syncFromServer: Get all updated data from the supabase and pass to sqlite
   syncFromServerElection: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     try {
       const { data, error } = await supabase.from("elections").select("*");
       if (error) throw error;
@@ -239,6 +223,12 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
   },
 
   fullSyncElection: async () => {
+    const userID = useAuthStore.getState().user?.id;
+    if (!userID) {
+      set({ loading: false, error: "No user logged in" });
+      return { data: null, error: "No user logged in" };
+    }
+
     set({ syncing: true, syncError: null });
     try {
       await get().autoCloseFinishedElections();
@@ -308,34 +298,3 @@ export const useElectionStore = create<ElectionState>((set, get) => ({
     }
   },
 }));
-
-// function toLocalDate(dateStr: string, timeStr: string): Date {
-//   // dateStr: "YYYY-MM-DD"
-//   // timeStr: "HH:mm" | "HH:mm:ss" | "hh:mm AM/PM" | "hh:mm:ss AM/PM"
-//   let h = 0,
-//     m = 0,
-//     s = 0;
-
-//   const ampm =
-//     timeStr.trim().toUpperCase().includes("AM") ||
-//     timeStr.trim().toUpperCase().includes("PM");
-//   const clean = timeStr
-//     .trim()
-//     .toUpperCase()
-//     .replace(/\s*(AM|PM)\s*$/, "");
-//   const parts = clean.split(":").map(Number);
-//   h = parts[0] ?? 0;
-//   m = parts[1] ?? 0;
-//   s = parts[2] ?? 0;
-
-//   if (ampm) {
-//     const isPM = timeStr.toUpperCase().includes("PM");
-//     // Convert 12-hour to 24-hour
-//     if (isPM && h < 12) h += 12;
-//     if (!isPM && h === 12) h = 0;
-//   }
-
-//   const [year, month, day] = dateStr.split("-").map(Number);
-//   // Construct as LOCAL time
-//   return new Date(year, month - 1, day, h, m, s, 0);
-// }

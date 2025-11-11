@@ -19,7 +19,7 @@ const NotFound = (): React.JSX.Element => {
       </Typography>
 
       <Button variant="default">
-        <Link to="/dashboard" className="transition">
+        <Link to="/" className="transition">
           ⬅ Back to Dashboard
         </Link>
       </Button>

@@ -1,15 +1,23 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "@renderer/services/AuthProvider";
+import { useAuthStore } from "@renderer/stores/useAuthStore";
 
 const ProtectedRoutes = (): React.JSX.Element => {
-  const { user, loading } = useAuth();
+  const { authStatus } = useAuthStore();
 
-  if (loading) {
-    return <div className="p-6 text-center">Loading...</div>;
+  // if (authStatus === "checking") {
+  //   return <div className="p-6 text-center">Loading...</div>;
+  // }
+
+  // if (!user) {
+  //   return <Navigate to="/" replace />;
+  // }
+
+  if (authStatus === "unauthenticated") {
+    return <Navigate to="/" replace />;
   }
 
-  if (!user) {
-    return <Navigate to="/" replace />;
+  if (authStatus === "pendingApproval") {
+    return <Navigate to="/pending-approval" replace />;
   }
 
   return <Outlet />;
