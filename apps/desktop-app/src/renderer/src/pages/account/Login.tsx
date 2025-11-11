@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,7 +61,7 @@ const Login = (): React.JSX.Element => {
   return (
     <section className="bg-BGlight dark:bg-BGdark flex h-screen items-center justify-center">
       <div className="grid w-full grid-cols-2 items-center">
-        <div className="h-auto">
+        <div className="flex h-auto flex-col items-center">
           <img src={s8cvotelogo} alt="s8cvotelogo" className="h-20 w-20" />
 
           <Typography
@@ -77,100 +77,119 @@ const Login = (): React.JSX.Element => {
         </div>
 
         {/* LOGIN FORM */}
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="border-TEXTdark text-TEXTdark dark:text-TEXTlight bg-PRIMARY-100 dark:bg-PRIMARY-800/40 grid w-full gap-5 rounded-2xl border-1 p-8 py-20 shadow-lg"
-          >
-            <Typography
-              variant="h4"
-              className="text-TEXTdark dark:text-TEXTlight block text-center font-semibold"
-            >
-              Sign in to Admin Panel
-            </Typography>
+        <div className="border-TEXTdark text-TEXTdark dark:text-TEXTlight bg-PRIMARY-100 dark:bg-PRIMARY-800/40 grid w-full gap-5 rounded-2xl border p-8 py-20 shadow-lg">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-5">
+              <Typography
+                variant="h4"
+                className="text-TEXTdark dark:text-TEXTlight block text-center font-semibold"
+              >
+                Sign in to Admin Panel
+              </Typography>
 
-            {/* EMAIL */}
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
-                        <UserRound className="h-5 w-5" />
-                      </span>
-                      <Input
-                        {...field}
-                        type="email"
-                        placeholder="Email"
-                        className="border-TEXTdark/20 w-full rounded-lg border px-10"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              {/* EMAIL */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+                          <UserRound className="h-5 w-5" />
+                        </span>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="Email"
+                          className="border-TEXTdark/20 w-full rounded-lg border px-10"
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* PASSWORD */}
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
-                        <Lock className="h-5 w-5" />
-                      </span>
-                      <Input
-                        {...field}
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password"
-                        className="border-TEXTdark/20 w-full rounded-lg border px-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
+              {/* PASSWORD */}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex justify-between">
+                      <FormLabel>Password</FormLabel>
+                      <Link
+                        to={"/forgot-password"}
+                        className="cursor-pointer p-0"
                       >
-                        {showPassword ? (
-                          <EyeOff className="h-6 w-6" />
-                        ) : (
-                          <Eye className="h-6 w-6" />
-                        )}
-                      </button>
+                        <Typography
+                          variant="small"
+                          className="text-PRIMARY-900 dark:text-PRIMARY-200 hover:text-foreground/90"
+                        >
+                          Forgot password?
+                        </Typography>
+                      </Link>
                     </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+                          <Lock className="h-5 w-5" />
+                        </span>
+                        <Input
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Password"
+                          className="border-TEXTdark/20 w-full rounded-lg border px-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-6 w-6" />
+                          ) : (
+                            <Eye className="h-6 w-6" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="grid gap-2">
-              <Button type="submit" disabled={loading} variant="default">
-                {loading ? "Logging in..." : "Login"}
-              </Button>
-            </div>
+              <div className="grid gap-2">
+                <Button type="submit" disabled={loading} variant="default">
+                  {loading ? "Logging in..." : "Login"}
+                </Button>
+              </div>
+            </form>
+          </Form>
 
-            <div className="block text-center">
+          <div className="grid w-full place-content-center justify-center">
+            <Typography
+              variant="small"
+              className="text-muted-foreground text-center"
+            >
+              Don’t have an account?{" "}
               <Button
-                variant="link"
-                onClick={() => navigate("/forgot-password")}
+                variant="ghost"
+                onClick={() => navigate("/register")}
+                className="h-0 cursor-pointer p-0"
               >
                 <Typography
                   variant="small"
-                  className="text-PRIMARY-900 dark:text-PRIMARY-200"
+                  className="text-PRIMARY-900 dark:text-PRIMARY-200 hover:text-foreground/90"
                 >
-                  Forgot password?
+                  Sign up
                 </Typography>
               </Button>
-            </div>
-          </form>
-        </Form>
+            </Typography>
+          </div>
+        </div>
       </div>
     </section>
   );

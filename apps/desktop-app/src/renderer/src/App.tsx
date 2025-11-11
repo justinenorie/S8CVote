@@ -21,7 +21,13 @@ const App = (): React.JSX.Element => {
   return (
     <HashRouter>
       {/* <AuthProvider> */}
-      <Suspense fallback={<div className="p-6 text-center">Loading...</div>}>
+      <Suspense
+        fallback={
+          <div className="dark:bg-BGdark bg-BGlight text-TEXTdark dark:text-TEXTlight p-6 text-center">
+            Loading...
+          </div>
+        }
+      >
         <AppRoutes />
       </Suspense>
       <Toaster theme={theme} richColors position="top-right" />

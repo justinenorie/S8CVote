@@ -183,14 +183,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         refresh_token: localUser.refresh_token!,
       });
 
-      // If session is invalid → clear local and logout
+      // If session is offline set the local user
       if (error || !sessionData?.session) {
         set({
-          user: null, // <-- THIS STAYS NULL (we do not need supabase user)
+          user: null,
           session: null,
-          adminData: localUser, // offline identity
+          adminData: localUser,
           loading: false,
-          authStatus: "authorized", // ✅ allow app usage
+          authStatus: "authorized",
         });
 
         return { data: null, error: null };
@@ -227,6 +227,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: { role_type: "admin" }, // ← private metadata stored in auth.users
+      },
     });
 
     if (signUpError || !data.user) {
@@ -234,8 +237,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         loading: false,
         error: signUpError?.message as string,
       });
+      console.log(signUpError);
       return { data: null, error: signUpError?.message as string };
     }
+
+    // const userId = data.user.id;
+
+    // await supabase.from("profiles").delete().eq("id", userId);
 
     // 2) Insert into profiles as pending admin
     const { error: profileError } = await supabase.from("profiles").insert({
@@ -247,6 +255,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     if (profileError) {
       set({ loading: false, error: profileError.message });
+      console.log(profileError);
       return { data: null, error: profileError.message };
     }
 

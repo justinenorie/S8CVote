@@ -5,6 +5,8 @@ export interface Admin {
   email?: string;
   role?: string;
   status?: string;
+  access_token?: string;
+  refresh_token?: string;
   synced_at?: string;
   deleted_at?: string | null;
   updated_at?: string;
