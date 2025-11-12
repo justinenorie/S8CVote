@@ -93,7 +93,7 @@ section {
   @apply w-full px-4 py-5 md:px-12 md:py-10 lg:px-30 xl:px-50;
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -135,7 +135,6 @@ section {
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* SHADCN THEMES */
 :root {
   /* Base tokens */
   --radius: 0.625rem;
@@ -151,7 +150,7 @@ section {
   --popover-foreground: var(--color-TEXTdark);
 
   /* Brand colors */
-  --primary: var(--color-PRIMARY-900);
+  --primary: var(--color-PRIMARY-800);
   --primary-foreground: var(--color-TEXTlight);
 
   --secondary: var(--color-SECONDARY-500);
@@ -195,7 +194,7 @@ section {
   --popover-foreground: var(--color-TEXTlight);
 
   /* Brand colors */
-  --primary: var(--color-PRIMARY-50);
+  --primary: var(--color-PRIMARY-100);
   --primary-foreground: var(--color-TEXTdark);
 
   --secondary: var(--color-SECONDARY-400);

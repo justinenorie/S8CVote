@@ -7,6 +7,5 @@
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "cSpell.words": ["asar", "electronjs", "eslintcache", "nsis", "vite"]
+  }
 }

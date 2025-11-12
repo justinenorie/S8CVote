@@ -30,6 +30,7 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "@libsql/client": "^0.15.15",
+    "@radix-ui/react-dialog": "^1.1.15",
     "@supabase/supabase-js": "^2.57.4",
     "better-sqlite3": "^12.4.1",
     "dotenv": "^16.5.0",

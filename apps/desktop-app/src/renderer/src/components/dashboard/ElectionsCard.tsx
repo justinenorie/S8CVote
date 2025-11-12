@@ -1,5 +1,14 @@
-import * as React from "react";
+import { useState } from "react";
 import Typography from "../ui/Typography";
+import { Button } from "../ui/Button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@renderer/components/ui/dialog";
+import FullCandidatesList from "./FullCandidatesList";
 
 type Candidate = {
   id: string;
@@ -45,14 +54,16 @@ const ElectionsCard = ({
   electionTitle,
   candidates,
 }: ElectionCardProps): React.JSX.Element => {
+  const [viewAllOpen, setViewAllOpen] = useState(false);
+
   return (
-    <div className="bg-PRIMARY-50 dark:bg-PRIMARY-950 dark:border-PRIMARY-700 w-full rounded-2xl p-4 shadow-md dark:border-1">
+    <div className="bg-PRIMARY-50 dark:bg-PRIMARY-950 dark:border-PRIMARY-700 w-full rounded-2xl p-4 shadow-md dark:border">
       <Typography variant="h4" className="mb-3 font-semibold">
         {electionTitle}
       </Typography>
 
       <div className="space-y-4">
-        {candidates.map((cand, index) => {
+        {candidates.slice(0, 5).map((cand, index) => {
           const isFirstRunnerUp = index === 0;
           const partyColor = cand.color || "#9ca3af";
           const acronym = cand.acronym || "N/A";
@@ -62,7 +73,7 @@ const ElectionsCard = ({
               key={cand.id}
               className={`hover:bg-muted/30 border/50 rounded-md p-3 shadow-md transition ${
                 isFirstRunnerUp
-                  ? "bg-SUCCESSlight/20 border-SUCCESSlight/40 border-1"
+                  ? "bg-SUCCESSlight/20 border-SUCCESSlight/40 border"
                   : "bg-muted/20 hover:bg-muted/30 border-transparent"
               }`}
             >
@@ -109,6 +120,29 @@ const ElectionsCard = ({
             </div>
           );
         })}
+        {candidates.length > 5 && (
+          <Button
+            variant="outline"
+            onClick={() => setViewAllOpen(true)}
+            className="text-foreground/80 border-border mt-2 w-full border text-sm shadow-sm"
+          >
+            View all candidates →
+          </Button>
+        )}
+      </div>
+
+      <div>
+        <Dialog open={viewAllOpen} onOpenChange={setViewAllOpen}>
+          <DialogContent className="border-border text-foreground max-w-lg border">
+            <DialogHeader>
+              <DialogTitle className="text-left">{electionTitle}</DialogTitle>
+              <DialogDescription className="text-left">
+                All Candidates
+              </DialogDescription>
+            </DialogHeader>
+            <FullCandidatesList candidates={candidates} />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

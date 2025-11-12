@@ -3,6 +3,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* FONTS */
+@theme {
+  --font-title: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
 /* MAIN COLOR THEMES */
 @theme {
   /* BACKGROUND THEME */
@@ -90,12 +96,6 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-}
-
-/* FONTS */
-@theme {
-  --font-title: "Poppins", sans-serif;
-  --font-body: "Inter", sans-serif;
 }
 
 :root {

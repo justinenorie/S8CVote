@@ -189,7 +189,7 @@ export const AddCandidatesModal = ({
                       type="file"
                       accept="image/*"
                       onChange={(e) => field.onChange(e.target.files?.[0])}
-                      className="border-PRIMARY-800/50 dark:border-PRIMARY-400/50 cursor-pointer border"
+                      className="border-border cursor-pointer border"
                     />
                   </div>
                 </FormControl>
