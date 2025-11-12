@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: s8cvote
+productName: S8CVote
 directories:
   buildResources: build
   output: dist
@@ -19,7 +19,7 @@ asarUnpack:
   - resources/**
 win:
   icon: "resources/icon.ico"
-  executableName: desktop-app-admin
+  executableName: S8CVote
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

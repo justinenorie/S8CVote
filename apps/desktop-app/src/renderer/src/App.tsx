@@ -23,7 +23,7 @@ const App = (): React.JSX.Element => {
       {/* <AuthProvider> */}
       <Suspense
         fallback={
-          <div className="dark:bg-BGdark bg-BGlight text-TEXTdark dark:text-TEXTlight p-6 text-center">
+          <div className="dark:bg-BGdark bg-BGlight text-TEXTdark dark:text-TEXTlight h-screen p-6 text-center">
             Loading...
           </div>
         }
