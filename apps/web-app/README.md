@@ -59,45 +59,7 @@ This repository contains the **Web App**, intended for **students with internet 
 
 - **Supabase (PostgreSQL)**
 
-### **Shared Logic (Monorepo / Shared Library)**
-
-- Supabase client
-- Zod schemas
-- Reusable components/patterns used across Mobile, Desktop, and Web
-
 ---
-
-# ⚙️ Getting Started (Development)
-
-### 1. **Clone the repository**
-
-```bash
-git clone https://github.com/YOUR_USERNAME/s8cvote-web.git
-cd s8cvote-web
-
-npm install
-# or
-yarn
-# or
-pnpm install
-```
-
-### 2. **Create your environment variables file**
-
-Create a `.env.local` file with the following contents:
-
-```bash
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-```
-
-### 3. **Run Development Server**
-
-```bash
-npm run dev
-
-# open localhost:3000
-```
 
 ## 💬 Acknowledgements
 
@@ -105,11 +67,5 @@ npm run dev
 - Next.js Team for framework support
 - Shadcn UI for elegant UI component architecture
 - React Native & Electron teams for cross-platform functionality
-
----
-
-## 📄 License
-
-This project is part of the S8CVote — Event Voting Management System and is intended for academic and school-based use.
 
 ---
