@@ -1,50 +1,107 @@
-# Welcome to your Expo app 👋
+# 📱 S8CVote — Mobile Application
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Event Voting Management System (Mobile Module)**  
+Built with **Expo**, **React Native**, **NativeWind**, **Zustand**, and **SQLite**
 
-## Get started
+The Mobile App is designed for **Admins** and **Supervised Student Voting**, especially for **room-to-room offline voting** where internet access is limited.  
+It supports **full offline mode** using SQLite and syncs to Supabase PostgreSQL when the device goes online.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+# 🚀 Features (Mobile App)
 
-2. Start the app
+### 📴 **Offline-First Voting**
 
-   ```bash
-   npx expo start
-   ```
+- Detects network connectivity automatically:
+  - **Offline** → Saves votes & data to **SQLite**
+  - **Online** → Saves directly to **Supabase**
+- All offline records sync **automatically** when connection is restored.
 
-In the output, you'll find options to open the app in a
+### 🧑‍🏫 **Admin-Supervised Room-to-Room Voting**
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Students vote using the admin's mobile device to prevent unauthorized voting.
+- Voting process:
+  1. Student enters Student ID
+  2. System validates if they are enrolled
+  3. Checks if the student already voted for that election
+  4. Student selects candidates and submits vote
+  5. Prevents duplicate voting
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 🗳️ **Elections List**
 
-## Get a fresh project
+- Displays all active elections.
+- Each election includes:
+  - Candidates
+  - Candidate images
+  - Partylist info
+  - Position ordering
 
-When you're ready, run:
+### 🔁 **Auto Sync Engine**
 
-```bash
-npm run reset-project
-```
+- Runs in the background when:
+  - Network becomes online
+  - App starts
+  - Admin triggers manual sync
+- Syncs:
+  - Elections
+  - Candidates
+  - Students
+  - Votes
+- Uses conflict-safe logic to prevent double votes.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 📊 **Results Transparency (Mobile View)**
 
-## Learn more
+- View:
+  - Current active elections
+  - Past election results
+- Includes vote counts, winners, and partylists.
 
-To learn more about developing your project with Expo, look at the following resources:
+### ⚙️ **Admin Tools**
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Secure admin login
+- Track sync status
+- Local + Server data monitoring
+- Logout & session clearing
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+# 🧱 Tech Stack
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### **Core**
+
+- **Expo (React Native)**
+- **TypeScript**
+- **Expo Router** (file-based routing)
+- **Zustand** – global state management
+- **NativeWind** – Tailwind-like styling
+- **React Native Reanimated** (if animations exist)
+- **Zod** (validation)
+- **React-Hook-Form** (form management)
+
+### **Offline Database**
+
+- **SQLite (expo-sqlite or better-sqlite3)**  
+  Used for:
+  - Election records
+  - Local votes
+  - Student data
+  - Sync metadata
+
+### **Online Backend**
+
+- **Supabase**
+  - PostgreSQL
+  - Auth
+  - Row-Level Security
+  - Functions & triggers
+
+---
+
+## 💬 Acknowledgements
+
+- Expo Team for the robust cross-platform ecosystem
+- Supabase for backend/database services
+- React Native Community for open-source contributions
+- Zustand & NativeWind for making state management and styling simple
+
+---
