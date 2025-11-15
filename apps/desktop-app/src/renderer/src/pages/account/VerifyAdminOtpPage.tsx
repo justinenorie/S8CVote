@@ -74,7 +74,7 @@ const VerifyAdminOtpPage = () => {
       </InputOTP>
 
       <Button onClick={handleVerify} disabled={loading || otp.length < 6}>
-        Verify
+        {loading ? "Verifying..." : "Verify Code"}
       </Button>
 
       <div className="flex flex-row items-center justify-center">

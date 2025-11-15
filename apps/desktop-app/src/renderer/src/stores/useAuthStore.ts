@@ -14,7 +14,7 @@ export type SignInResult<T = void> =
   | { data: T; error: null }
   | { data: null; error: null }
   | {
-      data: { user: User | null; session: Session | null; adminData?: Admin };
+      data: { user: User | null; session?: Session | null; adminData?: Admin };
       error: null;
     };
 
@@ -41,6 +41,9 @@ export interface AuthState {
   resendEmailOtp: (email: string) => Promise<SignInResult>;
   loadAdminData: () => Promise<SignInResult>;
   signOut: () => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<SignInResult>;
+  verifyResetOtp: (email: string, token: string) => Promise<SignInResult>;
+  finishPasswordReset: (newPassword: string) => Promise<SignInResult<void>>;
 }
 
 // For Updating Data
@@ -297,6 +300,83 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       authStatus: "unauthenticated",
     });
   },
+
+  // ==================================================================================
+
+  // FORGOT PASSWORD STORE
+
+  requestPasswordReset: async (email) => {
+    set({ loading: true, error: null });
+
+    // 1. Verify IF admin exists in profiles
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("role, is_approved")
+      .eq("email", email)
+      .single();
+
+    if (profileError || !profile) {
+      set({ loading: false, error: "Email not found." });
+      return { data: null, error: "Email not found." };
+    }
+
+    if (profile.role !== "admin") {
+      set({ loading: false, error: "Only admins can reset password." });
+      return { data: null, error: "Only admins can reset password." };
+    }
+
+    if (!profile.is_approved) {
+      set({ loading: false, error: "Admin is not yet approved." });
+      return { data: null, error: "Admin is not yet approved." };
+    }
+
+    // 2. Send RESET OTP
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    set({ loading: false });
+
+    if (error) return { data: null, error: error.message };
+    return { data: null, error: null };
+  },
+
+  verifyResetOtp: async (email, token) => {
+    set({ loading: true, error: null });
+
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: "recovery",
+    });
+
+    set({ loading: false });
+
+    if (error) return { data: null, error: error.message };
+
+    // User is now logged in TEMPORARILY
+    useAuthStore.setState({
+      user: data.user,
+      session: data.session,
+      authStatus: "authorized",
+    });
+
+    return { data, error: null };
+  },
+
+  finishPasswordReset: async (newPassword) => {
+    set({ loading: true, error: null });
+
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    set({ loading: false });
+
+    if (error) return { data: null, error: error.message ?? "" };
+
+    return { data, error: null };
+  },
 }));
 
 /**
@@ -327,6 +407,8 @@ supabase.auth.onAuthStateChange((_event, session) => {
     });
   }
 });
+
+// ==================================================================================
 
 // For Updating Data
 export const useUpdateAuthStore = create<UpdateInfoState>((set) => ({

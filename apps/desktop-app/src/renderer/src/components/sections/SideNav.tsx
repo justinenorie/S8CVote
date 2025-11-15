@@ -48,6 +48,7 @@ const SideNav = (): React.JSX.Element => {
         description: `Please check: ${error}`,
       });
     }
+    setShowConfirmLogout(false);
   };
 
   const navItems = [
@@ -156,7 +157,6 @@ const SideNav = (): React.JSX.Element => {
           open={showConfirmLogout}
           onClose={() => setShowConfirmLogout(false)}
           onConfirm={() => {
-            setShowConfirmLogout(false);
             logout();
           }}
           isLoading={loading}

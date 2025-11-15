@@ -13,6 +13,15 @@ const VerifyAdminOtpPage = lazy(
 const PendingApproval = lazy(
   () => import("@renderer/pages/account/PendingApproval")
 );
+const ForgotPasswordPage = lazy(
+  () => import("@renderer/pages/account/ForgotPass")
+);
+const ForgotPassOTP = lazy(
+  () => import("@renderer/pages/account/ForgotPassOTP")
+);
+const ForgotPassChangePass = lazy(
+  () => import("@renderer/pages/account/ForgotPassChangePass")
+);
 const Dashboard = lazy(() => import("@renderer/pages/main/Dashboard"));
 const Elections = lazy(() => import("@renderer/pages/main/Elections"));
 const Partylist = lazy(() => import("@renderer/pages/main/Partylist"));
@@ -39,9 +48,18 @@ const AppRoutes = (): React.JSX.Element => {
           )
         }
       />
+      {/* REGISTER */}
       <Route path="/register" element={<RegistrationPage />}></Route>
       <Route path="/pending-approval" element={<PendingApproval />}></Route>
       <Route path="/verify-admin-otp" element={<VerifyAdminOtpPage />}></Route>
+
+      {/* FORGOT PASSWORD */}
+      <Route path="/forgot-password" element={<ForgotPasswordPage />}></Route>
+      <Route path="/forgot-otp" element={<ForgotPassOTP />}></Route>
+      <Route
+        path="/forgot-change-password"
+        element={<ForgotPassChangePass />}
+      ></Route>
 
       {/* Protected routes (with layout) */}
       <Route element={<ProtectedRoutes />}>
