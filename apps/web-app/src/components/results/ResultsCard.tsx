@@ -109,7 +109,7 @@ const ResultsCard = ({ data }: { data: ResultsProps }) => {
                     return (
                       <div key={electionIndex} className="space-y-4 rounded-lg">
                         {/* Top Summary */}
-                        <div className="grid grid-cols-3 gap-2 text-center">
+                        <div className="text-foreground/80 grid grid-cols-1 gap-2 text-center md:grid-cols-3">
                           <div className="border-PRIMARY-700 dark:border-PRIMARY-400 flex flex-row items-center justify-start gap-4 rounded-lg border-1 p-6">
                             <ScrollText size={50} />
                             <div className="text-left">

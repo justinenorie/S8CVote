@@ -223,40 +223,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signUpAdmin: async (email, password, fullname) => {
     set({ loading: true, error: null });
 
-    // 1) Create user account
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { role_type: "admin" }, // ← private metadata stored in auth.users
+        data: {
+          role_type: "admin",
+          fullname,
+        },
       },
     });
 
     if (signUpError || !data.user) {
-      set({
-        loading: false,
-        error: signUpError?.message as string,
-      });
-      console.log(signUpError);
-      return { data: null, error: signUpError?.message as string };
-    }
-
-    // const userId = data.user.id;
-
-    // await supabase.from("profiles").delete().eq("id", userId);
-
-    // 2) Insert into profiles as pending admin
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: data.user.id,
-      fullname,
-      role: "admin",
-      is_approved: false,
-    });
-
-    if (profileError) {
-      set({ loading: false, error: profileError.message });
-      console.log(profileError);
-      return { data: null, error: profileError.message };
+      set({ loading: false, error: signUpError?.message ?? "Sign up failed" });
+      return { data: null, error: signUpError?.message ?? "" };
     }
 
     set({ loading: false });
@@ -305,12 +285,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   // Sign out
   signOut: async () => {
+    set({ loading: true });
+
     await supabase.auth.signOut();
     await window.electronAPI.clearSession();
     set({
       user: null,
       session: null,
       adminData: null,
+      loading: false,
       authStatus: "unauthenticated",
     });
   },
