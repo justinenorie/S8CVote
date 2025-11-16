@@ -182,8 +182,8 @@ export default function RegisterForm() {
                       Student ID{" "}
                       {verified && !form.formState.errors.student_id && (
                         <Typography
-                          variant="p"
-                          className="mt-1 text-sm text-green-600"
+                          variant="small"
+                          className="mt-1 text-green-600"
                         >
                           Verified
                         </Typography>
@@ -309,7 +309,10 @@ export default function RegisterForm() {
                   className="text-muted-foreground text-center"
                 >
                   Already have an account?{" "}
-                  <Link href="/" className="text-primary hover:underline">
+                  <Link
+                    href="/"
+                    className="text-SECONDARY-600 dark:text-SECONDARY-300 hover:text-foreground/80 dark:hover:text-foreground/80 font-bold"
+                  >
                     Log in
                   </Link>
                 </Typography>

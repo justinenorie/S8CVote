@@ -46,7 +46,7 @@ interface AuthState {
   ) => Promise<SignInResult>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   session: null,
   loading: false,
@@ -265,6 +265,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       return { data: null, error: error.message };
     }
 
+    await get().signOutStudent();
+
     return { data, error: null };
   },
 
@@ -348,6 +350,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     });
 
     set({ loading: false });
+
+    await get().signOutStudent();
 
     if (error) return { data: null, error: error.message };
     return { data, error: null };

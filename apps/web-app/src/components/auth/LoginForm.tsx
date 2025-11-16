@@ -127,7 +127,7 @@ export default function LoginForm() {
                       <Typography variant="small">
                         <Link
                           href="/forgot-password"
-                          className="dark:text-PRIMARY-300 text-PRIMARY-700 dark:hover:text-PRIMARY-50 hover:text-PRIMARY-500"
+                          className="text-SECONDARY-600 dark:text-SECONDARY-300 hover:text-foreground/80 dark:hover:text-foreground/80"
                         >
                           Forgot password?
                         </Link>
@@ -181,7 +181,7 @@ export default function LoginForm() {
                   Don’t have an account?{" "}
                   <Link
                     href="/register"
-                    className="text-primary hover:underline"
+                    className="text-SECONDARY-600 dark:text-SECONDARY-300 hover:text-foreground/80 dark:hover:text-foreground/80 font-bold"
                   >
                     Sign up
                   </Link>
