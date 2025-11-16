@@ -26,7 +26,7 @@ const Settings = (): React.JSX.Element => {
 
       <div>
         <Tabs defaultValue="general" className="mt-6 w-full">
-          <TabsList className="bg-muted grid w-full grid-cols-2 rounded-lg">
+          <TabsList className="bg-card border-border grid w-full grid-cols-2 rounded-lg border shadow-lg">
             <TabsTrigger
               value="general"
               className="data-[state=active]:bg-primary dark:data-[state=active]:bg-primary data-[state=active]:text-TEXTlight dark:data-[state=active]:text-TEXTdark rounded-lg"

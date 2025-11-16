@@ -84,7 +84,7 @@ export default function ForgotPassChangePass() {
                       <Input
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter new password"
-                        className="px-10"
+                        className="border-border px-10"
                         {...field}
                       />
 
@@ -122,7 +122,7 @@ export default function ForgotPassChangePass() {
                       <Input
                         type={showConfirm ? "text" : "password"}
                         placeholder="Re-enter password"
-                        className="px-10"
+                        className="border-border px-10"
                         {...field}
                       />
 

@@ -146,7 +146,7 @@ const GeneralTab = (): React.ReactElement => {
   return (
     <div className="space-y-8">
       {/* Account Details */}
-      <div className="bg-PRIMARY-100 dark:bg-PRIMARY-900 rounded-lg p-6 shadow-sm">
+      <div className="bg-card rounded-lg p-6 shadow-lg">
         <Drawer open={openEmailConfirmDrawer} onOpenChange={() => {}}>
           <DrawerContent className="text-TEXTdark dark:text-TEXTlight space-y-6 p-6 pb-10">
             <Typography variant="h3" className="text-center">
@@ -311,7 +311,7 @@ const GeneralTab = (): React.ReactElement => {
       </div>
 
       {/* Change Password */}
-      <div className="bg-PRIMARY-100 dark:bg-PRIMARY-900 rounded-lg p-6 shadow-sm">
+      <div className="bg-card rounded-lg p-6 shadow-lg">
         <Typography variant="h3" className="mb-1 font-semibold">
           Change Password
         </Typography>

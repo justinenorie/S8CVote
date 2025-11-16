@@ -59,7 +59,7 @@ export default function ForgotPassOTP() {
     <div className="bg-background text-foreground flex h-screen items-center justify-center">
       <div className="flex max-w-sm flex-col items-center justify-center space-y-5">
         <div className="space-y-2 text-center">
-          <Typography variant="h2">Verify Your Email</Typography>
+          <Typography variant="h2">Password Reset</Typography>
           <Typography
             variant="small"
             className="text-muted-foreground text-center"

@@ -81,7 +81,7 @@ const RegistrationPage = (): React.JSX.Element => {
     <section className="bg-BGlight dark:bg-BGdark flex h-screen items-center">
       <div className="grid w-full grid-cols-2 items-center">
         {/* LOGIN FORM */}
-        <div className="border-TEXTdark text-TEXTdark dark:text-TEXTlight bg-PRIMARY-100 dark:bg-PRIMARY-800/40 grid w-full gap-5 rounded-2xl border p-8 py-20 shadow-lg">
+        <div className="border-border text-TEXTdark dark:text-TEXTlight bg-PRIMARY-100 dark:bg-PRIMARY-800/40 grid w-full gap-5 rounded-2xl border p-8 py-20 shadow-lg">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-5">
               <Typography
@@ -236,7 +236,7 @@ const RegistrationPage = (): React.JSX.Element => {
               >
                 <Typography
                   variant="small"
-                  className="text-PRIMARY-900 dark:text-PRIMARY-200 hover:text-foreground/90"
+                  className="text-SECONDARY-600 dark:text-SECONDARY-300 hover:text-foreground/80 dark:hover:text-foreground/80 font-bold"
                 >
                   Login
                 </Typography>

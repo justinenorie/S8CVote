@@ -29,7 +29,7 @@ const YearSelectionCard = ({
         onValueChange={(value) => onSelectYear(Number(value))}
         defaultValue={String(selectedYear)}
       >
-        <SelectTrigger className="w-full sm:w-50">
+        <SelectTrigger className="border-border w-full sm:w-50">
           <SelectValue placeholder="Select Year" />
         </SelectTrigger>
         <SelectContent>

@@ -73,8 +73,8 @@ const AdminsTab = () => {
         <Typography variant="h4" className="mb-2">
           Pending Admins
         </Typography>
-        <Typography variant="small" className="mb-4 block">
-          Registration requests awaiting approval.
+        <Typography variant="small" className="text-foreground/80 mb-4 block">
+          Registration requests awaiting approval
         </Typography>
         <DataTable
           columns={pendingColumns}
@@ -88,8 +88,8 @@ const AdminsTab = () => {
         <Typography variant="h4" className="mb-2">
           Verified Admins
         </Typography>
-        <Typography variant="small" className="mb-4 block">
-          Active admin accounts.
+        <Typography variant="small" className="text-foreground/80 mb-4 block">
+          List of Verified Admin accounts
         </Typography>
         <DataTable
           columns={verifiedColumns}

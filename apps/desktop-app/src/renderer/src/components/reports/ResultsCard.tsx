@@ -77,7 +77,7 @@ const ResultsCard = ({ data }: { data: ResultsProps }): React.ReactElement => {
                   }
                   defaultValue={""}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="border-border w-full">
                     <SelectValue placeholder="Select Election" />
                   </SelectTrigger>
                   <SelectContent>
