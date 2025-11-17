@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { z } from "zod";
 
@@ -68,19 +68,26 @@ export default function LoginPage() {
     <View className="bg-BGlight dark:bg-BGdark flex-1 justify-center items-center px-5">
       <View className="w-full bg-BGlight dark:bg-BGdark rounded-3xl shadow-md max-w-sm">
         {/* Header */}
-        <View className="mb-4">
-          <Text
-            variant="h1"
-            className="text-left text-TEXTdark dark:text-TEXTlight"
-          >
-            S8CVote
-          </Text>
-          <Text
-            variant="p"
-            className="text-gray-700 dark:text-gray-300 leading-none"
-          >
-            Sign in as Admin to start room to room elections
-          </Text>
+        <View className="mb-4 grid flex-row text-wrap overflow-hidden gap-2 border items-center">
+          <Image
+            source={require("../../assets/images/icon.png")}
+            style={{ width: 60, height: 60 }}
+          />
+
+          <View className="text-pretty">
+            <Text
+              variant="h1"
+              className="text-left text-TEXTdark dark:text-TEXTlight"
+            >
+              S8CVote
+            </Text>
+            <Text
+              variant="p"
+              className="text-gray-700 dark:text-gray-300 leading-none"
+            >
+              Sign in as Admin to start room to room
+            </Text>
+          </View>
         </View>
 
         {/* Email Input */}
@@ -166,13 +173,6 @@ export default function LoginPage() {
             <Text className="text-TEXTlight dark:text-TEXTdark">Sign in</Text>
           )}
         </Button>
-
-        {/* Forgot Password */}
-        <TouchableOpacity className="mt-3 self-end">
-          <Text className="text-xs text-blue-800 dark:text-blue-400">
-            Forgot Password?
-          </Text>
-        </TouchableOpacity>
       </View>
     </View>
   );

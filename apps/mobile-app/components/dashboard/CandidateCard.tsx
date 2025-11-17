@@ -1,6 +1,6 @@
-import { View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { getTextColor } from "@/utils/getTextColor";
+import { View } from "react-native";
 
 type CandidateProps = {
   rank: string;
@@ -33,7 +33,7 @@ export function CandidateCard({
       }`}
     >
       <View className="flex-row justify-between mb-2">
-        <Text variant="h4" className="ext-TEXTdark dark:text-TEXTlight">
+        <Text variant="h4" className="text-TEXTdark dark:text-TEXTlight">
           <Text variant="small">{rank}</Text> {name}
         </Text>
         <Text

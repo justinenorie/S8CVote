@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { View } from "react-native";
-import { Text } from "@/components/ui/text";
 import {
   Accordion,
+  AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  AccordionContent,
 } from "@/components/ui/accordion";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
+import { Text } from "@/components/ui/text";
+import { useState } from "react";
+import { Image, View } from "react-native";
 import { Label } from "../ui/label";
 
 interface Candidate {
@@ -57,7 +57,7 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
             value={`month-${monthIndex}`}
             className="bg-PRIMARY50 dark:bg-PRIMARY900 rounded-lg border border-border"
           >
-            <AccordionTrigger>
+            <AccordionTrigger className="flex items-center pr-8">
               <View className="px-4 py-3">
                 <Text
                   variant="h1"
@@ -139,7 +139,14 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
                               }`}
                             >
                               {/* Circle placeholder */}
-                              <View className="w-12 h-12 rounded-full border bg-gray-200 dark:bg-gray-600 mr-3" />
+                              {c.image ? (
+                                <Image
+                                  source={{ uri: `${c.image}` }}
+                                  className="w-12 h-12 rounded-full mr-3 self-center"
+                                />
+                              ) : (
+                                <View className="w-12 h-12 rounded-full border bg-gray-200 dark:bg-gray-600 mr-3" />
+                              )}
 
                               {/* Candidate Info */}
                               <View className="flex-1">

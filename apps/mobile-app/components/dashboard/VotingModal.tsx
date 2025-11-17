@@ -148,7 +148,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
 
   return (
     <Dialog open={visible} onOpenChange={onClose}>
-      <DialogContent className="p-6 w-fullj bg-PRIMARY50 dark:bg-PRIMARY950 rounded-2xl ">
+      <DialogContent className="p-6 w-full bg-PRIMARY50 dark:bg-PRIMARY950 rounded-2xl ">
         {/* Student ID input */}
         {step === "input" && (
           <View>
@@ -267,7 +267,11 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
             </Text>
 
             <View className="mt-3 gap-4" style={{ maxHeight: 300 }}>
-              <ScrollView className="mt-3" contentContainerStyle={{ gap: 16 }}>
+              <ScrollView
+                className="mt-3"
+                contentContainerStyle={{ gap: 16 }}
+                showsVerticalScrollIndicator={true}
+              >
                 {election.candidates.map((candi: Candidate) => {
                   const isSelected =
                     selectedCandidate?.candidate_id === candi.candidate_id;
@@ -279,17 +283,21 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
                       key={candi.candidate_id}
                       onPress={() => setSelectedCandidate(candi)}
                       activeOpacity={0.8}
-                      className={`border rounded-xl p-3  ${
+                      className={`border rounded-xl p-3 gap-2  ${
                         isSelected
                           ? "border-PRIMARY900 bg-PRIMARY100 dark:bg-PRIMARY800"
                           : "border-border bg-white dark:bg-PRIMARY900"
                       }`}
                     >
-                      <View className="flex flex-row ">
-                        <Image
-                          source={{ uri: `${candi.candidate_profile}` }}
-                          className="w-12 h-12 rounded-full mr-3 self-center"
-                        />
+                      <View className="flex flex-row">
+                        {candi.candidate_profile ? (
+                          <Image
+                            source={{ uri: `${candi.candidate_profile}` }}
+                            className="w-12 h-12 rounded-full mr-3 self-center"
+                          />
+                        ) : (
+                          <View className="w-12 h-12 rounded-full border bg-gray-200 dark:bg-gray-600 mr-3" />
+                        )}
 
                         <Text
                           variant="h4"
@@ -303,7 +311,7 @@ export const VotingModal = ({ visible, onClose, election }: any) => {
                         </Text>
                       </View>
                       <Text
-                        className="rounded-full border-2 px-2 py-0.5 text-xs font-bold uppercase"
+                        className={`rounded-full border-2 px-2 py-0.5 text-xs font-bold uppercase ${acronyms === "N/A" ? "hidden" : "block"}`}
                         style={{
                           backgroundColor: partyColor,
                           color:
