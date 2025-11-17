@@ -180,37 +180,36 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return { data: null, error: null };
       }
 
-      // ✅ Restore Supabase session tokens silently
-      const { data: sessionData, error } = await supabase.auth.setSession({
-        access_token: localUser.access_token!,
-        refresh_token: localUser.refresh_token!,
-      });
+      // 2. Check Supabase session (do NOT restore via setSession)
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      // If session is offline set the local user
-      if (error || !sessionData?.session) {
+      // 3. If session exists → authenticated
+      if (session) {
         set({
-          user: null,
-          session: null,
           adminData: localUser,
+          user: session.user,
+          session,
           loading: false,
           authStatus: "authorized",
         });
-
         return { data: null, error: null };
       }
 
-      // ✅ Authorized and restored properly
+      // 4. No valid session → NOT authenticated
+      // But still load adminData for offline display
       set({
         adminData: localUser,
-        user: sessionData.session.user,
-        session: sessionData.session,
+        user: null,
+        session: null,
         loading: false,
-        authStatus: "authorized",
+        authStatus: "unauthenticated",
       });
 
       return { data: null, error: null };
     } catch (error) {
-      console.error("💥 loadAdminData error:", error);
+      console.error("loadAdminData error:", error);
       set({
         user: null,
         session: null,
