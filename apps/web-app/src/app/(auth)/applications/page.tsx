@@ -1,5 +1,4 @@
 import Typography from "@/components/ui/Typography";
-import { Button } from "@/components/ui/button";
 import { Download, Smartphone, MonitorSmartphone } from "lucide-react";
 
 export default function ApplicationDownload() {
