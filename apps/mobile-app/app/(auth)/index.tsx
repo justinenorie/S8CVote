@@ -68,7 +68,7 @@ export default function LoginPage() {
     <View className="bg-BGlight dark:bg-BGdark flex-1 justify-center items-center px-5">
       <View className="w-full bg-BGlight dark:bg-BGdark rounded-3xl shadow-md max-w-sm">
         {/* Header */}
-        <View className="mb-4 grid flex-row text-wrap overflow-hidden gap-2 border items-center">
+        <View className="mb-4 grid flex-row text-wrap overflow-hidden gap-2 items-center">
           <Image
             source={require("../../assets/images/icon.png")}
             style={{ width: 60, height: 60 }}

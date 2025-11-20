@@ -160,8 +160,8 @@ const ResultsCard = ({ data }: { data?: ResultsProps }) => {
                                   <Text
                                     className={`px-2 rounded-full text-xs  ${
                                       isWinner
-                                        ? "bg-green-400 text-black"
-                                        : "bg-gray-300 dark:bg-gray-700 text-white"
+                                        ? "bg-green-400 text-foreground font-inter-bold"
+                                        : "bg-gray-300 dark:bg-gray-700 text-foreground font-inter-bold"
                                     }`}
                                   >
                                     {rank} {isWinner && "🏆"}
